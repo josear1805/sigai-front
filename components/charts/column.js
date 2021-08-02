@@ -93,7 +93,6 @@ const ChartColumn = () => {
         yField: 'PrecipitaciónMediaMensual',
         seriesField: 'nombre',
         dodgePadding: 2,
-
         label: {
           position: 'middle',
           layout: [

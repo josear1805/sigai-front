@@ -19,7 +19,7 @@ const SidebarApp = (props) => {
         
         <Sider breakpoint="sm" collapsedWidth={0} width={300}>
             <div className="div-logo">
-                <Image src="/images/cantv-white.png" alt="logo-cantv" />
+                <Image src="/images/cantv-white.png" alt="logo-cantv" layout='fill' />
             </div>
             {/* <div className="logo" /> */}
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
