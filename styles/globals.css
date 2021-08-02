@@ -1,0 +1,28 @@
+@import "~antd/dist/antd.css";
+
+.div-logo {
+  text-align: center;
+  padding: 5px;
+}
+
+.div-logo div {
+    position: relative !important;
+}
+
+.div-logo img {
+    position: relative !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 0% !important;
+    max-width: 100% !important;
+    min-height: 0% !important;
+    max-height: 100% !important;
+}
+
+.ant-layout-sider-zero-width-trigger {
+  top: 10px;
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
