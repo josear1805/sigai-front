@@ -38,7 +38,8 @@ const Signin = () => {
             >
               <Row gutter={[16, 16]} className="input-item">
                 <Col span={24}>
-                  <p>¡Bienvenido a Sigai Intranet!</p>
+                  <p>¡Bienvenido al Sistema de Apoyo a la Gestión de Indicadores!</p>
+                  <h2>(SAGI)</h2>
                 </Col>
                 <Col span={24}>
                   <Form.Item
@@ -80,17 +81,34 @@ const Signin = () => {
                 </Col>
 
                 <Col span={24}>
-                  <Form.Item>
-                    <Button
-                      block
-                      type="primary"
-                      htmlType="submit"
-                      // loading={AuthStore.loading}
-                      className="login-form-button"
-                    >
-                      Iniciar
-                    </Button>
-                  </Form.Item>
+                    <Row gutter={[16, 16]} >
+                        <Col span={12}>
+                            <Form.Item>
+                                <Button
+                                block
+                                type="primary"
+                                htmlType="submit"
+                                // loading={AuthStore.loading}
+                                className="login-form-button"
+                                >
+                                Iniciar
+                                </Button>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item>
+                                <Button
+                                block
+                                type="secondary"
+                                htmlType="submit"
+                                // loading={AuthStore.loading}
+                                className="login-form-button"
+                                >
+                                Registrarse
+                                </Button>
+                            </Form.Item>
+                        </Col>
+                    </Row>
                 </Col>
               </Row>
             </Form>
@@ -98,7 +116,19 @@ const Signin = () => {
           </Spin>
         </Col>
       </Row>
-      <Footer className="site-layout-background">Insight Latam (R)</Footer>
+      <Footer  >
+        <Row className="div-footer-login">
+            <Col xs={{ span: 5, offset: 1 }} lg={{ span: 6, offset: 2 }} className="img-min" style={{ textAlign: "center" }}>
+                <img src="/images/mincyt.png" alt="logo-cantv" width="200"/>
+            </Col>
+            <Col xs={{ span: 11, offset: 1 }} lg={{ span: 12, offset: 2 }}>
+                
+                </Col>
+            <Col xs={{ span: 5, offset: 1 }} lg={{ span: 6, offset: 2 }} className="img-logo" style={{ textAlign: "center" }}>
+                <img src="/images/cantv-colors.png" alt="logo-cantv" width="100"/>
+            </Col>
+        </Row>
+      </Footer>
     </Layout>
   );
 };

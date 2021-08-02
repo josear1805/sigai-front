@@ -87,20 +87,21 @@ const ChartColumn = () => {
 
     var config = {
         data: data,
-        width: '100%',
+        // width: '100%',
         isGroup: true,
         xField: 'mes',
         yField: 'PrecipitaciónMediaMensual',
         seriesField: 'nombre',
         dodgePadding: 2,
         label: {
-          position: 'middle',
+        //   position: 'middle',
           layout: [
             { type: 'interval-adjust-position' },
             { type: 'interval-hide-overlap' },
             { type: 'adjust-color' },
           ] 
         },
+        scrollbar: { type: 'horizontal' }
       };
 
     return (

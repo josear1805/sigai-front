@@ -7,7 +7,6 @@ import {
     BarChartOutlined,
     LineChartOutlined,
 } from '@ant-design/icons';
-import Image from 'next/image'
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -19,7 +18,7 @@ const SidebarApp = (props) => {
         
         <Sider breakpoint="sm" collapsedWidth={0} width={300}>
             <div className="div-logo">
-                <Image src="/images/cantv-white.png" alt="logo-cantv" layout='fill' />
+                <img src="/images/cantv-white.png" alt="logo-cantv" />
             </div>
             {/* <div className="logo" /> */}
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
