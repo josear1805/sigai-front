@@ -15,7 +15,7 @@ const ChartLine = () => {
     
       const config = {
         data,
-        height: 400,
+        height: 200,
         width: '100%',
         xField: 'year',
         yField: 'value',

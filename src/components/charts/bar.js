@@ -25,7 +25,7 @@ const ChartBar = () => {
       ];
       const config = {
         data: data,
-        width: '100%',
+        height: 200,
         xField: 'value',
         yField: 'year',
         seriesField: 'year',

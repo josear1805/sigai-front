@@ -1,5 +1,5 @@
 @import "~antd/dist/antd.css";
-  
+
 .div-logo {
   text-align: center;
   padding: 5px;
@@ -32,32 +32,37 @@
 }
 
 .div-login {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .colForm {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-	.cardForm {
-		width: 100%;
-		form {
-		text-align: center;
-		max-width: 100%;
-		}
-	}
+  .cardForm {
+    width: 100%;
+    form {
+      text-align: center;
+      max-width: 100%;
+    }
+  }
+}
+
+.div-header {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .div-footer-login {
-    .img-min {
-        max-width: 200px;
-    }
+  .img-min {
+    max-width: 200px;
+  }
 
-    .img-logo {
-        max-width: 100px;
-    }
+  .img-logo {
+    max-width: 100px;
+  }
 }

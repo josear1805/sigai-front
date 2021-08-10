@@ -30,7 +30,7 @@ const ChartPie = () => {
       const config = {
         appendPadding: 10,
         data: data,
-        width: '100%',
+        height: 200,
         angleField: 'value',
         colorField: 'type',
         radius: 0.9,

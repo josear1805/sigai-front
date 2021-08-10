@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Row, Col, Card, Form, Input, Button, Layout, notification, Spin } from "antd";
-import { MailOutlined, LockOutlined } from "@ant-design/icons";
+import { MailOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { useDispatch } from "react-redux"
 import { login } from "src/redux/actions/globalActions";
 import Link from "next/link";
-
 
 const { Header, Footer } = Layout;
 
@@ -15,29 +14,10 @@ const Signin = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
-    const onFinish = ({ email, password }) => {
-        console.log('login', email, password)
-        if (email === "admin@test.com" && password === "123456") {
-            const parameters = {
-                name: "Admin",
-                token: "JN0&HJKDAUI872I"
-            }
-            dispatch(login(parameters))
-            notification.success({
-                message: 'Inicio de Sesión Exitoso!!',
-                placement: 'bottomRight',
-            });
-            setTimeout(() => {
-                setLoading(false)
-                router.push("/");
-            }, 100);
-        } else {
-            notification.error({
-                message: 'Error con los datos Ingresados!!',
-                placement: 'bottomRight',
-            });
-            setTimeout(() => { setLoading(false) }, 100);
-        }
+    const onFinish = ({ name, email, password1, password2 }) => {
+        setLoading(true)
+        console.log('register',name, email, password1, password2)
+        setTimeout(() => { setLoading(false) }, 100);
     };
 
     return (
@@ -46,7 +26,7 @@ const Signin = () => {
                 <title>Sigai Intranet</title>
             </Head>
             {/* <Header></Header> */}
-            <Header className="site-layout-background">
+            <Header className="site-layout-background" style={{ padding: 0 }} >
                 <img src="/images/cantv-white.png" alt="logo-cantv" />
             </Header>
             <Row justify="center" className="div-login">
@@ -65,7 +45,23 @@ const Signin = () => {
                                         <p>¡Bienvenido al Sistema de Apoyo a la Gestión de Indicadores!</p>
                                         <h2>(SAGI)</h2>
                                     </Col>
-                                    
+                                    <Col span={24}>
+                                        <Form.Item
+                                            name="name"
+                                            hasFeedback
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: "¡Por favor, ingrese un nombre!",
+                                                },
+                                            ]}
+                                        >
+                                            <Input
+                                                prefix={<UserOutlined className="site-form-item-icon" />}
+                                                placeholder="Nombre"
+                                            />
+                                        </Form.Item>
+                                    </Col>
                                     <Col span={24}>
                                         <Form.Item
                                             name="email"
@@ -87,7 +83,7 @@ const Signin = () => {
 
                                     <Col span={24}>
                                         <Form.Item
-                                            name="password"
+                                            name="password1"
                                             hasFeedback
                                             rules={[
                                                 {
@@ -106,6 +102,26 @@ const Signin = () => {
                                     </Col>
 
                                     <Col span={24}>
+                                        <Form.Item
+                                            name="password2"
+                                            hasFeedback
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: "¡Por favor, ingrese su contraseña y que sea mínimo cuatro carácteres!",
+                                                    min: 4,
+                                                },
+                                            ]}
+                                        >
+                                            <Input
+                                                prefix={<LockOutlined className="site-form-item-icon" />}
+                                                type="password"
+                                                placeholder="Confirmar contraseña"
+                                            />
+                                        </Form.Item>
+                                    </Col>
+
+                                    <Col span={24}>
                                         <Row gutter={[16, 16]} >
                                             <Col span={12}>
                                                 <Form.Item>
@@ -116,7 +132,7 @@ const Signin = () => {
                                                         // loading={AuthStore.loading}
                                                         className="login-form-button"
                                                     >
-                                                        Iniciar
+                                                        Registrar
                                                     </Button>
                                                 </Form.Item>
                                             </Col>
@@ -126,11 +142,10 @@ const Signin = () => {
                                                         block
                                                         type="secondary"
                                                         // loading={AuthStore.loading}
-                                                        onClick={() => router.push("/register")}
                                                         className="login-form-button"
                                                     >
                                                         <Link href={`/login`}>
-                                                            Registrarse
+                                                            Iniciar Sessión
                                                         </Link>
                                                     </Button>
                                                 </Form.Item>
