@@ -55,3 +55,4 @@ const SidebarApp = (props) => {
 }
 
 export default SidebarApp;
+

@@ -6,6 +6,7 @@ import Head from "next/head";
 import { useDispatch } from "react-redux"
 import { login } from "src/redux/actions/globalActions";
 import Link from "next/link";
+import axios from "axios";
 
 
 const { Header, Footer } = Layout;
@@ -15,29 +16,65 @@ const Signin = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
-    const onFinish = ({ email, password }) => {
-        console.log('login', email, password)
-        if (email === "admin@test.com" && password === "123456") {
-            const parameters = {
-                name: "Admin",
-                token: "JN0&HJKDAUI872I"
-            }
-            dispatch(login(parameters))
-            notification.success({
-                message: 'Inicio de Sesión Exitoso!!',
-                placement: 'bottomRight',
-            });
-            setTimeout(() => {
-                setLoading(false)
-                router.push("/");
-            }, 100);
-        } else {
-            notification.error({
-                message: 'Error con los datos Ingresados!!',
-                placement: 'bottomRight',
-            });
-            setTimeout(() => { setLoading(false) }, 100);
-        }
+    const onFinish = async (values) => {
+        console.log('login', values)
+
+        // {
+        //     method: 'POST',
+        //     data: qs.stringify(data),
+        //     url,
+        // }
+
+        // fetch('http://66.23.226.204/indican/verificarusuario.php', {method: 'POST', body: JSON.stringify(values)})
+        //     .then(res => res.json())
+        //     .then(res => console.log(res));
+
+
+        // axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
+
+        axios({
+            method: 'POST',
+            url: 'http://66.23.226.204/indican/verificarusuario.php',
+            data: JSON.stringify(values),
+            headers: { 'Content-Type': 'application/json' }
+          })
+          .then((response) => {
+            console.log(response)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+        
+        // await axios.post("http://66.23.226.204/indican/verificarusuario.php", values, { "Content-Type": "multipart/form-data" })
+        // .then(response => {
+        //     console.log(response);
+        // })
+        // .catch(error => {
+        //     console.log(error)
+        // })
+
+
+        // if (email === "admin@test.com" && password === "123456") {
+        //     const parameters = {
+        //         name: "Admin",
+        //         token: "JN0&HJKDAUI872I"
+        //     }
+        //     dispatch(login(parameters))
+        //     notification.success({
+        //         message: 'Inicio de Sesión Exitoso!!',
+        //         placement: 'bottomRight',
+        //     });
+        //     setTimeout(() => {
+        //         setLoading(false)
+        //         router.push("/");
+        //     }, 100);
+        // } else {
+        //     notification.error({
+        //         message: 'Error con los datos Ingresados!!',
+        //         placement: 'bottomRight',
+        //     });
+        //     setTimeout(() => { setLoading(false) }, 100);
+        // }
     };
 
     return (
@@ -68,15 +105,15 @@ const Signin = () => {
                                     
                                     <Col span={24}>
                                         <Form.Item
-                                            name="email"
+                                            name="Usuario"
                                             hasFeedback
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    type: "email",
-                                                    message: "¡Por favor, ingrese su correo electrónico!",
-                                                },
-                                            ]}
+                                            // rules={[
+                                            //     {
+                                            //         required: true,
+                                            //         type: "email",
+                                            //         message: "¡Por favor, ingrese su correo electrónico!",
+                                            //     },
+                                            // ]}
                                         >
                                             <Input
                                                 prefix={<MailOutlined className="site-form-item-icon" />}
@@ -87,13 +124,13 @@ const Signin = () => {
 
                                     <Col span={24}>
                                         <Form.Item
-                                            name="password"
+                                            name="Clave"
                                             hasFeedback
                                             rules={[
                                                 {
                                                     required: true,
-                                                    message: "¡Por favor, ingrese su contraseña y que sea mínimo cuatro carácteres!",
-                                                    min: 4,
+                                                    message: "¡Por favor, ingrese su contraseña y que sea mínimo tres carácteres!",
+                                                    min: 3,
                                                 },
                                             ]}
                                         >

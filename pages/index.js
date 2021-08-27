@@ -47,7 +47,8 @@ const Home = () => {
                                 </Select>
                             </Col>
                             <Col span={24}>
-                                <ChartLine />
+                            <ChartColumn />
+                                {/* <ChartLine /> */}
                             </Col>
                         </Row>
                     </Card>
@@ -66,7 +67,8 @@ const Home = () => {
                                 </Select>
                             </Col>
                             <Col span={24}>
-                                <ChartBar />
+                            <ChartColumn />
+                                {/* <ChartBar /> */}
                             </Col>
                         </Row>
                     </Card>
@@ -85,7 +87,8 @@ const Home = () => {
                                 </Select>
                             </Col>
                             <Col span={24}>
-                                <ChartPie />
+                            <ChartColumn />
+                                {/* <ChartPie /> */}
                             </Col>
                         </Row>
                     </Card>

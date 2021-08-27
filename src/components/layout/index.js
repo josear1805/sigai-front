@@ -11,6 +11,11 @@ const LayoutApp = (props) => {
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Head>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                <meta
+                httpEquiv="Content-Security-Policy: default-src *://66.23.226.204"
+                content="upgrade-insecure-requests"
+                />
                 <title>SIGAI</title>
             </Head>
             <SidebarApp />
