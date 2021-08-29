@@ -10,9 +10,7 @@ const { Header } = Layout;
 const HeaderApp = (props) => {
     const router = useRouter();
     const dispatch = useDispatch();
-    const { auth } = useSelector((stateData) => stateData.global)
-
-    console.log('global', auth)
+    const { dataUser } = useSelector((stateData) => stateData.global)
 
     const handleLogout = () => {
         dispatch(logout());
@@ -25,14 +23,14 @@ const HeaderApp = (props) => {
       );
 
     useEffect(() => {
-        !auth.token && router.push("/login");
-    }, [auth])
+        (!dataUser.nombres || !dataUser.apellidos) && router.push("/login");
+    }, [dataUser])
 
     return (
         <Header className="site-layout-background div-header">
             <Dropdown overlay={menu}>
                 <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                    {auth.name}
+                    {`${dataUser.nombres} ${dataUser.apellidos}`}
                 </a>
             </Dropdown>
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import Link from "next/link";
 import { Layout, Menu } from 'antd';
 import {
     DesktopOutlined,
@@ -12,20 +12,23 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 const SidebarApp = (props) => {
-    
+
 
     return (
-        
+
         <Sider breakpoint="sm" collapsedWidth={0} width={300}>
             <div className="div-logo">
-                <img src="/images/cantv-white.png" alt="logo-cantv" />
+                <Link href="/">
+                    <img src="/images/cantv-white.png" alt="logo-cantv" />
+                </Link>
             </div>
-            {/* <div className="logo" /> */}
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
                 <Menu.Item key="inicio" icon={<HomeOutlined />}>
-                    Inicio
+                    <Link href="/">
+                        Inicio
+                    </Link>
                 </Menu.Item>
-                
+
                 <SubMenu key="sub1" icon={<BarChartOutlined />} title="Indicadores Iniciales">
                     <Menu.Item key="sub1_1">Team 1</Menu.Item>
                     <Menu.Item key="sub1_2">Team 2</Menu.Item>
@@ -41,7 +44,7 @@ const SidebarApp = (props) => {
                     <Menu.Item key="sub2_8">Sistemas</Menu.Item>
                     <Menu.Item key="sub2_9">Tecnología y operaciones</Menu.Item>
                 </SubMenu>
-                
+
                 <Menu.Item key="9" icon={<SettingOutlined />}>
                     Configuración
                 </Menu.Item>

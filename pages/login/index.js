@@ -17,65 +17,37 @@ const Signin = () => {
     const [loading, setLoading] = useState(false);
 
     const onFinish = async (values) => {
-        console.log('login', values)
-
-        // {
-        //     method: 'POST',
-        //     data: qs.stringify(data),
-        //     url,
-        // }
-
-        // fetch('http://66.23.226.204/indican/verificarusuario.php', {method: 'POST', body: JSON.stringify(values)})
-        //     .then(res => res.json())
-        //     .then(res => console.log(res));
-
-
-        // axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
-
-        axios({
-            method: 'POST',
-            url: 'http://66.23.226.204/indican/verificarusuario.php',
-            data: JSON.stringify(values),
-            headers: { 'Content-Type': 'application/json' }
-          })
-          .then((response) => {
-            console.log(response)
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+        const { Usuario, Clave } = values;
         
-        // await axios.post("http://66.23.226.204/indican/verificarusuario.php", values, { "Content-Type": "multipart/form-data" })
-        // .then(response => {
-        //     console.log(response);
-        // })
-        // .catch(error => {
-        //     console.log(error)
-        // })
-
-
-        // if (email === "admin@test.com" && password === "123456") {
-        //     const parameters = {
-        //         name: "Admin",
-        //         token: "JN0&HJKDAUI872I"
-        //     }
-        //     dispatch(login(parameters))
-        //     notification.success({
-        //         message: 'Inicio de Sesión Exitoso!!',
-        //         placement: 'bottomRight',
-        //     });
-        //     setTimeout(() => {
-        //         setLoading(false)
-        //         router.push("/");
-        //     }, 100);
-        // } else {
-        //     notification.error({
-        //         message: 'Error con los datos Ingresados!!',
-        //         placement: 'bottomRight',
-        //     });
-        //     setTimeout(() => { setLoading(false) }, 100);
-        // }
+        await axios.get(`http://66.23.226.204/indican/verificarusuario.php?Usuario=${Usuario}&Clave=${Clave}`)
+        .then(response => {
+            if (response.status === 200) {
+                const { data } = response;
+                dispatch(login(data.DatosUsuario))
+                notification.success({
+                    message: 'Inicio de Sesión Exitoso!!',
+                    placement: 'bottomRight',
+                });
+                setTimeout(() => {
+                    setLoading(false)
+                    router.push("/");
+                }, 100);
+            } else {
+                handleErrorLogin()
+            }
+        })
+        .catch(error => {
+            handleErrorLogin()
+        })
     };
+
+    const handleErrorLogin = () => {
+        notification.error({
+            message: 'Error con los datos Ingresados!!',
+            placement: 'bottomRight',
+        });
+        setTimeout(() => { setLoading(false) }, 100);
+    }
 
     return (
         <Layout style={{ height: "100vh" }}>

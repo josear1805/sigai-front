@@ -1,43 +1,11 @@
-import { useState, useRef } from 'react'
 import { Column } from '@ant-design/charts'
 
-const ChartColumn = () => {
-    var data = [
-        // {
-        //     nombre: 'Real',
-        //     mes: 'Enero',
-        //     valor: 100,
-        // },
-        // {
-        //     nombre: 'Real',
-        //     mes: 'Febrero',
-        //     valor: 99,
-        // },
-        {
-            nombre: 'Meta',
-            mes: 'Enero',
-            valor: 50,
-        },
-        {
-            nombre: 'Meta',
-            mes: 'Febrero',
-            valor: 28.8,
-        },
-        {
-            nombre: 'Ejecutado',
-            mes: 'Enero',
-            valor: 60,
-        },
-        {
-            nombre: 'Ejecutado',
-            mes: 'Febrero',
-            valor: 23.2,
-        }
-    ];
+const ChartColumn = (props) => {
+    const { height, data } = props
 
     var config = {
-        height: 200,
-        data: data,
+        height,
+        data,
         isGroup: true,
         xField: 'mes',
         yField: 'valor',

@@ -1,7 +1,7 @@
 import { types } from "src/types";
 
 const initialState = {
-    auth: {}
+    dataUser: {}
 }
 
 export const globalReducer = (state = initialState, action) => {
@@ -9,15 +9,12 @@ export const globalReducer = (state = initialState, action) => {
         case types.login:
             return {
                 ...state,
-                auth: {
-                    name: action.payload.name,
-                    token: action.payload.token
-                }
+                dataUser: action.payload
             }
         case types.logout:
             return {
                 ...state,
-                auth: {}
+                dataUser: {}
             }
         default:
             return state
