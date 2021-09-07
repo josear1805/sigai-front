@@ -115,7 +115,7 @@ const Signin = () => {
                                     </Col>
 
                                     <Col span={24}>
-                                        <Row gutter={[16, 16]} >
+                                        <Row gutter={[16, 16]} justify="center">
                                             <Col span={12}>
                                                 <Form.Item>
                                                     <Button
@@ -129,7 +129,7 @@ const Signin = () => {
                                                     </Button>
                                                 </Form.Item>
                                             </Col>
-                                            <Col span={12}>
+                                            {/* <Col span={12}>
                                                 <Form.Item>
                                                     <Button
                                                         block
@@ -143,7 +143,7 @@ const Signin = () => {
                                                         </Link>
                                                     </Button>
                                                 </Form.Item>
-                                            </Col>
+                                            </Col> */}
                                         </Row>
                                     </Col>
                                 </Row>
