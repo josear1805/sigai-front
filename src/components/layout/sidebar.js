@@ -1,5 +1,7 @@
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Link from "next/link";
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, notification } from 'antd';
 import {
     DesktopOutlined,
     HomeOutlined,
@@ -7,11 +9,30 @@ import {
     BarChartOutlined,
     LineChartOutlined,
 } from '@ant-design/icons';
+import axios from 'axios';
+
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 const SidebarApp = (props) => {
+    const { dataUser } = useSelector((stateData) => stateData.global)
+    const { id_usuario, id_perfil } = dataUser;
+
+    const handleGetMenu = async () => {
+        await axios.get(`http://66.23.226.204/indican/menu.php?id_Usuario=${id_usuario}&id_Perfil=${id_perfil}`)
+            .then(response => {
+                const { data } = response;
+                console.log(data)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    useEffect(() => {
+        handleGetMenu()
+    }, [])
 
 
     return (
@@ -29,7 +50,7 @@ const SidebarApp = (props) => {
                     </Link>
                 </Menu.Item>
 
-                <SubMenu key="sub1" icon={<BarChartOutlined />} title="Indicadores Iniciales">
+                {/* <SubMenu key="sub1" icon={<BarChartOutlined />} title="Indicadores Iniciales">
                     <Menu.Item key="sub1_1">Team 1</Menu.Item>
                     <Menu.Item key="sub1_2">Team 2</Menu.Item>
                 </SubMenu>
@@ -43,13 +64,17 @@ const SidebarApp = (props) => {
                     <Menu.Item key="sub2_7">Proyectos mayores</Menu.Item>
                     <Menu.Item key="sub2_8">Sistemas</Menu.Item>
                     <Menu.Item key="sub2_9">Tecnología y operaciones</Menu.Item>
-                </SubMenu>
+                </SubMenu> */}
 
-                <Menu.Item key="9" icon={<SettingOutlined />}>
-                    Configuración
+                <Menu.Item key="9" icon={<LineChartOutlined />}>
+                    <Link href="/my_indicators">
+                        Mis Indicadores
+                    </Link>
                 </Menu.Item>
-                <Menu.Item key="2" icon={<DesktopOutlined />}>
-                    Opcional
+                <Menu.Item key="2" icon={<BarChartOutlined />}>
+                    <Link href="/data_indicators">
+                        Datos de Indicadores
+                    </Link>
                 </Menu.Item>
             </Menu>
         </Sider>

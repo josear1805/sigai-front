@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import LayoutApp from 'src/components/layout';
 import dynamic from 'next/dynamic'
-import { Row, Col, Card, Select, Spin, Button, Tooltip } from 'antd';
+import { Row, Col, Card, Select, Spin, Button, Tooltip, notification } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Link from 'next/link'
@@ -32,7 +32,6 @@ const Home = () => {
             .then(response => {
                 const { data } = response;
                 if (data.Estatus === 1) {
-                    console.log(data)
                     handleGetGrafics(1, data.ListaIndicadoresMostrar[0].id_indicador)
                     handleGetGrafics(2, data.ListaIndicadoresMostrar[1].id_indicador)
                     handleGetGrafics(3, data.ListaIndicadoresMostrar[2].id_indicador)
@@ -55,7 +54,7 @@ const Home = () => {
             })
     }
 
-    const handleGetGrafics = async (indicador, id_indicador, anio = 2021) => {
+    const handleGetGrafics = async (grafica, id_indicador, anio = 2021) => {
         let auxDataInd = []
         await axios.get(`http://66.23.226.204/indican/infoindicadorgra.php?id_Indicador=${id_indicador}&anio=${anio}`)
             .then(response => {
@@ -75,8 +74,18 @@ const Home = () => {
             .catch(error => {
                 console.log(error)
             })
+        
+        let auxLIM = state.ListaIndicadoresMostrar
+        if (auxLIM.length > 0 && auxLIM[grafica - 1]?.id_indicador !== id_indicador) {
+            auxLIM[grafica - 1].id_indicador = id_indicador
+            setState((prevState) => ({
+                ...prevState,
+                ListaIndicadoresMostrar: auxLIM,
+            }))
+        }
+        auxDataInd.map((item) => item.valor = item.valor? parseInt(item.valor): 0)
 
-        switch (indicador) {
+        switch (grafica) {
             case 1:
                 setState((prevState) => ({
                     ...prevState,
@@ -117,10 +126,10 @@ const Home = () => {
                 {!state.loading &&
                     <Row gutter={[24, 24]}>
                         <Col xs={24} sm={24} md={12} >
-                            <Card>
+                            <Card className="box-shadow">
                                 <Row gutter={[24, 24]} justify="end">
                                     <Col span={10} >
-                                        <Select defaultValue={state.ListaIndicadoresMostrar[0]?.id_indicador} style={{ width: "100%" }}>
+                                        <Select defaultValue={state.ListaIndicadoresMostrar[0]?.id_indicador} onChange={(value) => handleGetGrafics(1, value)} style={{ width: "100%" }}>
                                             <Option value={0}>Seleccione</Option>
                                             {
                                                 state.ListaIndicadores && state.ListaIndicadores.map((item) => (
@@ -145,10 +154,13 @@ const Home = () => {
                             </Card>
                         </Col>
                         <Col xs={24} sm={24} md={12} >
-                            <Card>
+                            <Card className="box-shadow">
                                 <Row gutter={[24, 24]} justify="end">
                                     <Col span={10} >
-                                        <Select defaultValue={state.ListaIndicadoresMostrar[1]?.id_indicador} style={{ width: "100%" }}>
+                                        <Select 
+                                            defaultValue={state.ListaIndicadoresMostrar[1]?.id_indicador}
+                                            onChange={(value) => handleGetGrafics(2, value)}
+                                            style={{ width: "100%" }}>
                                             <Option value={0}>Seleccione</Option>
                                             {
                                                 state.ListaIndicadores && state.ListaIndicadores.map((item) => (
@@ -173,10 +185,13 @@ const Home = () => {
                             </Card>
                         </Col>
                         <Col xs={24} sm={24} md={12} >
-                            <Card>
+                            <Card className="box-shadow">
                                 <Row gutter={[24, 24]} justify="end">
                                     <Col span={10} >
-                                        <Select defaultValue={state.ListaIndicadoresMostrar[2]?.id_indicador} style={{ width: "100%" }}>
+                                        <Select 
+                                            defaultValue={state.ListaIndicadoresMostrar[2]?.id_indicador}
+                                            onChange={(value) => handleGetGrafics(3, value)}
+                                            style={{ width: "100%" }}>
                                             <Option value={0}>Seleccione</Option>
                                             {
                                                 state.ListaIndicadores && state.ListaIndicadores.map((item) => (
@@ -201,10 +216,13 @@ const Home = () => {
                             </Card>
                         </Col>
                         <Col xs={24} sm={24} md={12} >
-                            <Card>
+                            <Card className="box-shadow">
                                 <Row gutter={[24, 24]} justify="end">
                                     <Col span={10} >
-                                        <Select defaultValue={state.ListaIndicadoresMostrar[3]?.id_indicador} style={{ width: "100%" }}>
+                                        <Select 
+                                            defaultValue={state.ListaIndicadoresMostrar[3]?.id_indicador} 
+                                            onChange={(value) => handleGetGrafics(4, value)}
+                                            style={{ width: "100%" }}>
                                             <Option value={0}>Seleccione</Option>
                                             {
                                                 state.ListaIndicadores && state.ListaIndicadores.map((item) => (

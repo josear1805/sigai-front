@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import LayoutApp from 'src/components/layout';
 import dynamic from 'next/dynamic'
-import { Row, Col } from 'antd';
+import { Row, Col, notification } from 'antd';
 import axios from 'axios';
 import { useRouter } from "next/router";
 
@@ -33,6 +33,7 @@ const Home = () => {
                 }
             })
 
+        auxDataInd.map((item) => item.valor = item.valor? parseInt(item.valor): 0)
         setDatosIndicador(auxDataInd)
     }
 
