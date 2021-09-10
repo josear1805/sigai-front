@@ -19,7 +19,7 @@ const Signin = () => {
     const onFinish = async (values) => {
         const { Usuario, Clave } = values;
         
-        await axios.get(`http://localhost/indican/verificarusuario.php?Usuario=${Usuario}&Clave=${Clave}`)
+        await axios.get(`http://66.23.226.204/indican/verificarusuario.php?Usuario=${Usuario}&Clave=${Clave}`)
         .then(response => {
             if (response.status === 200) {
                 const { data } = response;
