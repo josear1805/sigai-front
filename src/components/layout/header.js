@@ -23,7 +23,7 @@ const HeaderApp = (props) => {
       );
 
     useEffect(() => {
-        (!dataUser.nombres || !dataUser.apellidos) && router.push("/login");
+        // (!dataUser.nombres || !dataUser.apellidos) && router.push("/login");
     }, [dataUser])
 
     return (
