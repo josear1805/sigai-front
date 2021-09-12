@@ -1,5 +1,11 @@
-module.exports = {
-    eslint: {
-        ignoreDuringBuilds: true,
-    },
-}
+const withImages = require('next-images')
+
+module.exports = (
+
+    withImages(),
+    {
+        eslint: {
+            ignoreDuringBuilds: true,
+        },
+    }
+)
