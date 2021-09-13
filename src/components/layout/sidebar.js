@@ -10,6 +10,7 @@ import {
     LineChartOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
+import { enviroments } from 'src/config/enviroments';
 
 
 const { Sider } = Layout;
@@ -20,7 +21,7 @@ const SidebarApp = (props) => {
     const { id_usuario, id_perfil } = dataUser;
 
     const handleGetMenu = async () => {
-        await axios.get(`http://66.23.226.204/indican/menu.php?id_Usuario=${id_usuario}&id_Perfil=${id_perfil}`)
+        await axios.get(`${enviroments.api}/indican/menu.php?id_Usuario=${id_usuario}&id_Perfil=${id_perfil}`)
             .then(response => {
                 const { data } = response;
                 console.log(data)
@@ -46,7 +47,7 @@ const SidebarApp = (props) => {
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
                 <Menu.Item key="inicio" icon={<HomeOutlined />}>
                     <Link href="/">
-                        Inicio
+                        <a>Inicio</a>
                     </Link>
                 </Menu.Item>
 
@@ -68,12 +69,12 @@ const SidebarApp = (props) => {
 
                 <Menu.Item key="9" icon={<LineChartOutlined />}>
                     <Link href="/my_indicators">
-                        Mis Indicadores
+                        <a>Mis Indicadores</a>
                     </Link>
                 </Menu.Item>
                 <Menu.Item key="2" icon={<BarChartOutlined />}>
-                    <Link href="/data_indicators">
-                        Datos de Indicadores
+                    <Link href="/indicator_data">
+                        <a>Datos de Indicadores</a>
                     </Link>
                 </Menu.Item>
             </Menu>

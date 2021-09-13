@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux"
 import { login } from "src/redux/actions/globalActions";
 import Link from "next/link";
 import axios from "axios";
+import { enviroments } from "src/config/enviroments";
 
 
 const { Header, Footer } = Layout;
@@ -17,29 +18,25 @@ const Signin = () => {
     const [loading, setLoading] = useState(false);
 
     const onFinish = async (values) => {
-        const { Usuario, Clave } = values;
+        const { usuario, clave } = values;
         
-        // await axios.post(`http://localhost/indican/validarUsuario.php`, {Usuario, Clave})
-        await axios.post(`http://66.23.226.204/indican/validarUsuario.php`, {Usuario, Clave})
-        .then(response => {
-            if (response.status === 200) {
-                const { data } = response;
-                dispatch(login(data.DatosUsuario))
-                notification.success({
-                    message: 'Inicio de Sesión Exitoso!!',
-                    placement: 'bottomRight',
-                });
-                setTimeout(() => {
-                    setLoading(false)
-                    router.push("/");
-                }, 100);
-            } else {
-                handleErrorLogin()
-            }
-        })
-        .catch(error => {
+        const response = await axios.post(`${enviroments.api}/indican/validarUsuario.php`, {usuario, clave})
+        if (response.status === 200) {
+            const { DatosUsuario } = response.data;
+            // localStorage.setItem("user", JSON.stringify(DatosUsuario));
+            dispatch(login(DatosUsuario))
+            notification.success({
+                message: 'Inicio de Sesión Exitoso!!',
+                placement: 'bottomRight',
+            });
+            setTimeout(() => {
+                setLoading(false)
+                router.push("/");
+            }, 100);
+        } else {
             handleErrorLogin()
-        })
+        }
+
     };
 
     const handleErrorLogin = () => {
@@ -78,7 +75,7 @@ const Signin = () => {
                                     
                                     <Col span={24}>
                                         <Form.Item
-                                            name="Usuario"
+                                            name="usuario"
                                             hasFeedback
                                             // rules={[
                                             //     {
@@ -97,7 +94,7 @@ const Signin = () => {
 
                                     <Col span={24}>
                                         <Form.Item
-                                            name="Clave"
+                                            name="clave"
                                             hasFeedback
                                             rules={[
                                                 {

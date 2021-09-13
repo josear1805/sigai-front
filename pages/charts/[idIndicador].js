@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { Row, Col, notification } from 'antd';
 import axios from 'axios';
 import { useRouter } from "next/router";
+import { enviroments } from 'src/config/enviroments';
 
 const ChartColumn = dynamic(() => import('src/components/charts/column'), { ssr: false })
 
@@ -11,12 +12,20 @@ const Home = () => {
     const router = useRouter();
     const { idIndicador } = router.query;
 
+    const navigation = [
+		{
+			key: '1',
+			path: `/charts/${idIndicador}`,
+			breadcrumbName: 'Detalles Gráfica',
+		}
+	]
+
     const [datosIndicador, setDatosIndicador] = useState([])
     const [nombreIndicador, setNombreIndicador] = useState("")
 
     const handleGetGrafics = async () => {
         let auxDataInd = []
-        await axios.get(`http://66.23.226.204/indican/infoindicadorgra.php?id_Indicador=${idIndicador}&anio=2021`)
+        await axios.get(`${enviroments.api}/indican/infoindicadorgra.php?id_Indicador=${idIndicador}&anio=2021`)
             .then(response => {
                 const { data } = response;
                 if (data.Estatus === 1) {
@@ -42,7 +51,7 @@ const Home = () => {
     }, [])
 
     return (
-        <LayoutApp>
+        <LayoutApp navigation={navigation}>
             <Row gutter={[24, 24]}>
                 <Col>
                     <h2>{nombreIndicador}</h2>
