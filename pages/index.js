@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import LayoutApp from 'src/components/layout';
+import LayoutApp from 'src/layout';
 import dynamic from 'next/dynamic'
 import { Row, Col, Card, Select, Spin, Button, Tooltip, notification } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
@@ -27,9 +27,12 @@ const Home = () => {
     const { dataUser } = useSelector((stateData) => stateData.global)
     const { id_usuario, id_perfil } = dataUser;
     const [state, setState] = useState(initialState);
-
+    
     const handleGetListaIndicadores = async () => {
-        const response = await axios.get(`${enviroments.api}/indican/listagraficosasociados.php?id_Usuario=${id_usuario}&id_Perfil=${id_perfil}`)
+        const response = await axios.post(`${enviroments.api}/indican/listagraficosasociados.php`, {
+            idusuario: id_usuario,
+            idperfil: id_perfil
+        })
 
         if (response.data.Estatus === 1) {
             const { ListaIndicadoresMostrar, ListaIndicadores } = response.data;
@@ -53,7 +56,11 @@ const Home = () => {
 
     const handleGetGrafics = async (grafica, id_indicador, anio = 2021) => {
         let auxDataInd = []
-        const response = await axios.get(`${enviroments.api}/indican/infoindicadorgra.php?id_Indicador=${id_indicador}&anio=${anio}`)
+        
+        const response = await axios.post(`${enviroments.api}/indican/infoindicadorgra.php`, {
+            idindicador: id_indicador,
+            anio: anio
+        })
         if (response.data.Estatus === 1) {
             const { DatosIndicador } = response.data;
             DatosIndicador.map((item) => {

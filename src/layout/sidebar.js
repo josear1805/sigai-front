@@ -17,23 +17,23 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 const SidebarApp = (props) => {
-    const { dataUser } = useSelector((stateData) => stateData.global)
-    const { id_usuario, id_perfil } = dataUser;
+    // const { dataUser } = useSelector((stateData) => stateData.global)
+    // const { id_usuario, id_perfil } = dataUser;
 
-    const handleGetMenu = async () => {
-        await axios.get(`${enviroments.api}/indican/menu.php?id_Usuario=${id_usuario}&id_Perfil=${id_perfil}`)
-            .then(response => {
-                const { data } = response;
-                console.log(data)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
+    // const handleGetMenu = async () => {
+    //     await axios.get(`${enviroments.api}/indican/menu.php?id_Usuario=${id_usuario}&id_Perfil=${id_perfil}`)
+    //         .then(response => {
+    //             const { data } = response;
+    //             console.log(data)
+    //         })
+    //         .catch(error => {
+    //             console.log(error)
+    //         })
+    // }
 
-    useEffect(() => {
-        handleGetMenu()
-    }, [])
+    // useEffect(() => {
+    //     handleGetMenu()
+    // }, [])
 
 
     return (
@@ -46,8 +46,8 @@ const SidebarApp = (props) => {
             </div>
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
                 <Menu.Item key="inicio" icon={<HomeOutlined />}>
-                    <Link href="/">
-                        <a>Inicio</a>
+                    <Link href="/" passHref>
+                        Inicio
                     </Link>
                 </Menu.Item>
 
@@ -68,13 +68,13 @@ const SidebarApp = (props) => {
                 </SubMenu> */}
 
                 <Menu.Item key="9" icon={<LineChartOutlined />}>
-                    <Link href="/my_indicators">
-                        <a>Mis Indicadores</a>
+                    <Link href="/my_indicators" passHref>
+                        Mis Indicadores
                     </Link>
                 </Menu.Item>
                 <Menu.Item key="2" icon={<BarChartOutlined />}>
-                    <Link href="/indicator_data">
-                        <a>Datos de Indicadores</a>
+                    <Link href="/indicator_data" passHref>
+                        Datos de Indicadores
                     </Link>
                 </Menu.Item>
             </Menu>

@@ -5,9 +5,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { useDispatch } from "react-redux"
 import { login } from "src/redux/actions/globalActions";
-import Link from "next/link";
-import axios from "axios";
-import { enviroments } from "src/config/enviroments";
+import { makeRequest } from "src/helpers";
 
 
 const { Header, Footer } = Layout;
@@ -18,12 +16,18 @@ const Signin = () => {
     const [loading, setLoading] = useState(false);
 
     const onFinish = async (values) => {
+        setLoading(true)
         const { usuario, clave } = values;
-        
-        const response = await axios.post(`${enviroments.api}/indican/validarUsuario.php`, {usuario, clave})
-        if (response.status === 200) {
-            const { DatosUsuario } = response.data;
-            // localStorage.setItem("user", JSON.stringify(DatosUsuario));
+
+        const response = await makeRequest({
+            method: "POST",
+            path: "/indican/validarUsuario.php",
+            body: {usuario, clave}
+        })
+
+        if (response.Estatus === 1) {
+            const { DatosUsuario } = response;
+            localStorage.setItem("user", JSON.stringify(DatosUsuario));
             dispatch(login(DatosUsuario))
             notification.success({
                 message: 'Inicio de Sesión Exitoso!!',
@@ -34,18 +38,14 @@ const Signin = () => {
                 router.push("/");
             }, 100);
         } else {
-            handleErrorLogin()
+            notification.error({
+                message: 'Error con los datos Ingresados!!',
+                placement: 'bottomRight',
+            });
+            setTimeout(() => { setLoading(false) }, 100);
         }
 
     };
-
-    const handleErrorLogin = () => {
-        notification.error({
-            message: 'Error con los datos Ingresados!!',
-            placement: 'bottomRight',
-        });
-        setTimeout(() => { setLoading(false) }, 100);
-    }
 
     return (
         <Layout style={{ height: "100vh" }}>
@@ -58,7 +58,7 @@ const Signin = () => {
             </Header>
             <Row justify="center" className="div-login">
                 <Col sm={24} md={8} className="colForm">
-                    <Spin tip="Cargando..." spinning={loading}>
+                    <Spin tip="¡Por favor espere!" spinning={loading}>
                         <Card hoverable bordered={false} className="cardForm">
 
                             <Form

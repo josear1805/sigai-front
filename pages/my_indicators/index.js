@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import LayoutApp from 'src/components/layout';
+import LayoutApp from 'src/layout';
 import dynamic from 'next/dynamic'
 import { Row, Col, Card, Select, Spin, Button, Tooltip, notification } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
@@ -40,7 +40,7 @@ const MyIndicators = () => {
     const [state, setState] = useState(initialState);
 
     const handleGetListaVPGerencia = async () => {
-        const response = await axios.post(`${enviroments.api}/indican/listavpgerencia.php`, { id_usuario, id_perfil })
+        const response = await axios.post(`${enviroments.api}/indican/listavpgerencia.php`, { idusuario: id_usuario || 1, idperfil: id_perfil || 1 })
         const { Estatus, ListaGerencias, ListaVicePresidencias } = response.data
 
         if (Estatus === 1) {
@@ -59,7 +59,11 @@ const MyIndicators = () => {
     }
 
     const handleGetListaGraficosGerencia = async (id_gerencia) => {
-        const response = await axios.post(`${enviroments.api}/indican/listagraficosgerencia.php`, { id_usuario, id_perfil, id_gerencia })
+        const response = await axios.post(`${enviroments.api}/indican/listagraficosgerencia.php`, { 
+            idusuario: id_usuario || 1, 
+            idperfil: id_perfil || 1, 
+            idgerencia: id_gerencia 
+        })
         const { Estatus, ListaIndicadores, ListaIndicadoresMostrar } = response.data
 
         if (Estatus === 1) {
@@ -84,7 +88,8 @@ const MyIndicators = () => {
 
     const handleGetGrafics = async (grafica, id_indicador, anio = 2021) => {
         let auxDataInd = []
-        const response = await axios.get(`${enviroments.api}/indican/infoindicadorgra.php?id_Indicador=${id_indicador}&anio=${anio}`)
+        const response = await axios.post(`${enviroments.api}/indican/infoindicadorgra.php`, 
+        {idindicador: id_indicador, anio})
         if (response.data.Estatus === 1) {
             const { DatosIndicador } = response.data;
             DatosIndicador.map((item) => {

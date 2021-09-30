@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import LayoutApp from 'src/components/layout';
+import LayoutApp from 'src/layout';
 import dynamic from 'next/dynamic'
 import { Row, Col, notification } from 'antd';
 import axios from 'axios';
@@ -25,7 +25,10 @@ const Home = () => {
 
     const handleGetGrafics = async () => {
         let auxDataInd = []
-        await axios.get(`${enviroments.api}/indican/infoindicadorgra.php?id_Indicador=${idIndicador}&anio=2021`)
+        await axios.post(`${enviroments.api}/indican/infoindicadorgra.php?`, {
+            idindicador: idIndicador || 51 ,
+            anio: 2021
+        })
             .then(response => {
                 const { data } = response;
                 if (data.Estatus === 1) {

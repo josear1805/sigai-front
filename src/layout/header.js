@@ -3,7 +3,7 @@ import { Layout, Menu, Dropdown } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { LogoutOutlined } from '@ant-design/icons';
-import { logout } from "src/redux/actions/globalActions";
+import { login, logout } from "src/redux/actions/globalActions";
 
 const { Header } = Layout;
 
@@ -14,6 +14,10 @@ const HeaderApp = (props) => {
 
     const handleLogout = () => {
         dispatch(logout());
+        if (process.browser) {
+            localStorage.removeItem("user");
+            router.push("/login");
+        }
     }
 
     const menu = (
@@ -23,7 +27,10 @@ const HeaderApp = (props) => {
       );
 
     useEffect(() => {
-        (!dataUser.nombres || !dataUser.apellidos) && router.push("/login");
+        if (!dataUser.nombres || !dataUser.apellidos) {
+            const user = JSON.parse(localStorage.getItem("user"))
+            user ? dispatch(login(user)) : router.push("/login")
+        }
     }, [dataUser])
 
     return (
