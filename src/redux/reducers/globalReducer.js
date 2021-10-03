@@ -1,7 +1,9 @@
 import { types } from "src/types";
 
 const initialState = {
-    dataUser: {}
+    dataUser: {
+        nombres: null
+    }
 }
 
 export const globalReducer = (state = initialState, action) => {

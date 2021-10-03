@@ -25,7 +25,6 @@ const initialState = {
 
 const MyIndicators = (props) => {
     const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
-    const { id_usuario, id_perfil } = dataUser;
 
     const navigation = [
         {
@@ -42,8 +41,8 @@ const MyIndicators = (props) => {
             method: "POST",
             path: "/indican/listavpgerencia.php",
             body: { 
-                idusuario: id_usuario, 
-                idperfil: id_perfil 
+                idusuario: dataUser.id_usuario, 
+                idperfil: dataUser.id_perfil 
             }
         })
 
@@ -68,8 +67,8 @@ const MyIndicators = (props) => {
             method: "POST",
             path: "/indican/listagraficosgerencia.php",
             body: { 
-                idusuario: id_usuario, 
-                idperfil: id_perfil,
+                idusuario: dataUser.id_usuario, 
+                idperfil: dataUser.id_perfil,
                 idgerencia: id_gerencia
             }
         })
@@ -190,7 +189,7 @@ const MyIndicators = (props) => {
     }
 
     useEffect(() => {
-        handleGetListaVPGerencia()
+        dataUser && handleGetListaVPGerencia()
     }, [])
 
     return (

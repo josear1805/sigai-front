@@ -36,7 +36,9 @@ const HeaderApp = (props) => {
                     className="ant-dropdown-link"
                     onClick={(e) => e.preventDefault()}
                 >
-                    {`${dataUser.nombres} ${dataUser.apellidos}`}
+                    {
+                        `${dataUser?.nombres} ${dataUser?.apellidos}`
+                    }
                 </a>
             </Dropdown>
         </Header>

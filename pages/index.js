@@ -33,10 +33,10 @@ const initialState = {
 
 const Home = (props) => {
     const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
-    const { id_usuario, id_perfil } = dataUser;
     const [state, setState] = useState(initialState);
-
+    
     const handleGetListaIndicadores = async () => {
+        const { id_usuario, id_perfil } = dataUser;
         const response = await makeRequest({
             method: "POST",
             path: "/indican/listagraficosasociados.php",
@@ -140,7 +140,7 @@ const Home = (props) => {
     };
 
     useEffect(() => {
-        handleGetListaIndicadores();
+        dataUser && handleGetListaIndicadores();
     }, []);
 
     return (

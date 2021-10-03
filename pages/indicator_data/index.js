@@ -19,7 +19,6 @@ const initialState = {
 
 const DataIndicators = () => {
     const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
-    const { id_usuario, id_perfil } = dataUser;
 
     const [state, setState] = useState(initialState);
 
@@ -88,6 +87,7 @@ const DataIndicators = () => {
     ];
 
     const handleGetData = async () => {
+        const { id_usuario, id_perfil } = dataUser;
         const response = await makeRequest({
             method: "POST",
             path: "/indican/listavpgmetaresul.php",
@@ -137,7 +137,7 @@ const DataIndicators = () => {
     };
 
     useEffect(() => {
-        handleGetData();
+        dataUser && handleGetData();
     }, []);
 
     return (
