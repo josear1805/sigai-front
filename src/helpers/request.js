@@ -11,10 +11,10 @@ export const makeRequest = ({
     const url = enviroments.api + path;
     const config = {
         method: method,
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-        },
+        // headers: {
+        //     "Content-Type": "application/json",
+        //     Accept: "application/json",
+        // },
     };
 
     if (authValue) {

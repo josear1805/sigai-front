@@ -6,7 +6,7 @@ const initialState = {
 
 export const globalReducer = (state = initialState, action) => {
     switch (action.type) {
-        case types.login:
+        case types.setUser:
             return {
                 ...state,
                 dataUser: action.payload

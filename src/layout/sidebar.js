@@ -47,7 +47,7 @@ const SidebarApp = (props) => {
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
                 <Menu.Item key="inicio" icon={<HomeOutlined />}>
                     <Link href="/" passHref>
-                        Inicio
+                        <a>Inicio</a>
                     </Link>
                 </Menu.Item>
 
@@ -69,12 +69,12 @@ const SidebarApp = (props) => {
 
                 <Menu.Item key="9" icon={<LineChartOutlined />}>
                     <Link href="/my_indicators" passHref>
-                        Mis Indicadores
+                        <a>Mis Indicadores</a>
                     </Link>
                 </Menu.Item>
                 <Menu.Item key="2" icon={<BarChartOutlined />}>
                     <Link href="/indicator_data" passHref>
-                        Datos de Indicadores
+                        <a>Datos de Indicadores</a>
                     </Link>
                 </Menu.Item>
             </Menu>

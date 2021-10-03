@@ -3,15 +3,12 @@ import { Row, Col, Card, Form, Input, Button, Layout, notification, Spin } from 
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { useDispatch } from "react-redux"
-import { login } from "src/redux/actions/globalActions";
 import { makeRequest } from "src/helpers";
 
 
 const { Header, Footer } = Layout;
 
 const Signin = () => {
-    const dispatch = useDispatch();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
@@ -28,7 +25,6 @@ const Signin = () => {
         if (response.Estatus === 1) {
             const { DatosUsuario } = response;
             localStorage.setItem("user", JSON.stringify(DatosUsuario));
-            dispatch(login(DatosUsuario))
             notification.success({
                 message: 'Inicio de Sesión Exitoso!!',
                 placement: 'bottomRight',

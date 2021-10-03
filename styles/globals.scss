@@ -75,3 +75,21 @@
     max-width: 100px;
   }
 }
+
+.tag-table {
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.tag-table.ant-tag-success:hover {
+    color: #fff;
+    background: rgb(82 196 26 / 50%);
+    border-color: rgb(82 196 26);
+}
+
+.tag-table.ant-tag-processing:hover {
+    color: #fff;
+    background: #1890ff80;
+    border-color: #1890ff;
+}

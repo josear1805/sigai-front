@@ -1,12 +1,27 @@
-import { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Layout } from 'antd';
 import Head from 'next/head';
 import SidebarApp from "./sidebar";
 import HeaderApp from "./header";
 import FooterApp from "./footer";
 import ContentApp from "./content";
+import { useRouter } from 'next/router';
+import { useDispatch, useSelector, connect } from 'react-redux';
+import { setUser, logout } from "src/redux/actions/globalActions";
 
 const LayoutApp = (props) => {
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const user = process.browser && JSON.parse(localStorage.getItem("user"))
+    const { dataUser } = useSelector((stateData) => stateData.global)
+
+    useEffect(() => {
+        !user && router.push("/login");
+
+        if (!dataUser.nombres || !dataUser.apellidos) {
+            dispatch(setUser(user))
+        }
+    }, [])
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
@@ -18,7 +33,7 @@ const LayoutApp = (props) => {
             </Head>
             <SidebarApp />
             <Layout className="site-layout">
-                <HeaderApp />
+                <HeaderApp {...props}/>
                 <ContentApp {...props}/>
                 <FooterApp />
             </Layout>
@@ -26,4 +41,15 @@ const LayoutApp = (props) => {
     );
 }
 
-export default LayoutApp
+const mapStateToProps = (state) => ({
+    state,
+});
+
+const mapDispatchToProps = {
+    logout,
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(React.memo(LayoutApp));

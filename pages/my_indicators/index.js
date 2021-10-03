@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import LayoutApp from 'src/layout';
 import dynamic from 'next/dynamic'
 import { Row, Col, Card, Select, Spin, Button, Tooltip, notification } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
-import axios from 'axios';
 import Link from 'next/link'
-import { enviroments } from 'src/config/enviroments';
+import { makeRequest } from 'src/helpers';
 
 const ChartColumn = dynamic(() => import('src/components/charts/column'), { ssr: false })
 
@@ -25,8 +23,8 @@ const initialState = {
     datosIndicador4: [],
 }
 
-const MyIndicators = () => {
-    const { dataUser } = useSelector((stateData) => stateData.global)
+const MyIndicators = (props) => {
+    const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
     const { id_usuario, id_perfil } = dataUser;
 
     const navigation = [
@@ -40,10 +38,17 @@ const MyIndicators = () => {
     const [state, setState] = useState(initialState);
 
     const handleGetListaVPGerencia = async () => {
-        const response = await axios.post(`${enviroments.api}/indican/listavpgerencia.php`, { idusuario: id_usuario || 1, idperfil: id_perfil || 1 })
-        const { Estatus, ListaGerencias, ListaVicePresidencias } = response.data
+        const response = await makeRequest({
+            method: "POST",
+            path: "/indican/listavpgerencia.php",
+            body: { 
+                idusuario: id_usuario, 
+                idperfil: id_perfil 
+            }
+        })
 
-        if (Estatus === 1) {
+        if (response.Estatus === 1) {
+            const { ListaGerencias, ListaVicePresidencias } = response
             setState((prevState) => ({
                 ...prevState,
                 loading: false,
@@ -59,14 +64,18 @@ const MyIndicators = () => {
     }
 
     const handleGetListaGraficosGerencia = async (id_gerencia) => {
-        const response = await axios.post(`${enviroments.api}/indican/listagraficosgerencia.php`, { 
-            idusuario: id_usuario || 1, 
-            idperfil: id_perfil || 1, 
-            idgerencia: id_gerencia 
+        const response = await makeRequest({
+            method: "POST",
+            path: "/indican/listagraficosgerencia.php",
+            body: { 
+                idusuario: id_usuario, 
+                idperfil: id_perfil,
+                idgerencia: id_gerencia
+            }
         })
-        const { Estatus, ListaIndicadores, ListaIndicadoresMostrar } = response.data
-
-        if (Estatus === 1) {
+        
+        if (response.Estatus === 1) {
+            const { ListaIndicadores, ListaIndicadoresMostrar } = response
             handleGetGrafics(1, ListaIndicadoresMostrar[0].id_indicador)
             handleGetGrafics(2, ListaIndicadoresMostrar[1].id_indicador)
             handleGetGrafics(3, ListaIndicadoresMostrar[2].id_indicador)
@@ -88,10 +97,17 @@ const MyIndicators = () => {
 
     const handleGetGrafics = async (grafica, id_indicador, anio = 2021) => {
         let auxDataInd = []
-        const response = await axios.post(`${enviroments.api}/indican/infoindicadorgra.php`, 
-        {idindicador: id_indicador, anio})
-        if (response.data.Estatus === 1) {
-            const { DatosIndicador } = response.data;
+        const response = await makeRequest({
+            method: "POST",
+            path: "/indican/infoindicadorgra.php",
+            body: {
+                idindicador: id_indicador,
+                anio
+            }
+        })
+       
+        if (response.Estatus === 1) {
+            const { DatosIndicador } = response;
             DatosIndicador.map((item) => {
                 const aux = auxDataInd
                 auxDataInd = aux.concat(item)

@@ -1,57 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import LayoutApp from 'src/layout';
-import dynamic from 'next/dynamic'
-import { Row, Col, notification } from 'antd';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { enviroments } from 'src/config/enviroments';
+import dynamic from "next/dynamic";
+import LayoutApp from "src/layout";
+import { Row, Col, notification } from "antd";
+import { makeRequest } from "src/helpers";
 
-const ChartColumn = dynamic(() => import('src/components/charts/column'), { ssr: false })
+const ChartColumn = dynamic(() => import("src/components/charts/column"), {
+    ssr: false,
+});
 
-const Home = () => {
+const ChartDetails = () => {
     const router = useRouter();
     const { idIndicador } = router.query;
 
     const navigation = [
-		{
-			key: '1',
-			path: `/charts/${idIndicador}`,
-			breadcrumbName: 'Detalles Gráfica',
-		}
-	]
+        {
+            key: "1",
+            path: `/charts/${idIndicador}`,
+            breadcrumbName: "Detalles Gráfica",
+        },
+    ];
 
-    const [datosIndicador, setDatosIndicador] = useState([])
-    const [nombreIndicador, setNombreIndicador] = useState("")
+    const [datosIndicador, setDatosIndicador] = useState([]);
+    const [nombreIndicador, setNombreIndicador] = useState("");
 
-    const handleGetGrafics = async () => {
-        let auxDataInd = []
-        await axios.post(`${enviroments.api}/indican/infoindicadorgra.php?`, {
-            idindicador: idIndicador || 51 ,
-            anio: 2021
-        })
-            .then(response => {
-                const { data } = response;
-                if (data.Estatus === 1) {
-                    data.DatosIndicador.map((item) => {
-                        const aux = auxDataInd
-                        auxDataInd = aux.concat(item)
-                    })
-                    setNombreIndicador(data.nb_indicador);
-                } else {
-                    notification.error({
-                        message: 'Ha ocurrido un error interno, por favor intente nuevamente!',
-                        placement: 'bottomRight',
-                    });
-                }
-            })
+    const handleGetGrafics = async (idindicador) => {
+        let auxDataInd = [];
+        const response = await makeRequest({
+            method: "POST",
+            path: "/indican/infoindicadorgra.php",
+            body: {
+                idindicador,
+                anio: 2021,
+            },
+        });
 
-        auxDataInd.map((item) => item.valor = item.valor? parseInt(item.valor): 0)
-        setDatosIndicador(auxDataInd)
-    }
+        if (response.Estatus === 1) {
+            response.DatosIndicador.map((item) => {
+                let aux = auxDataInd;
+                auxDataInd = aux.concat(item);
+            });
+            setNombreIndicador(response.nb_indicador);
+            auxDataInd.map(
+                (item) => (item.valor = item.valor ? parseInt(item.valor) : 0)
+            );
+            setDatosIndicador(auxDataInd);
+        } else {
+            notification.error({
+                message:
+                    "Ha ocurrido un error interno, por favor intente nuevamente!",
+                placement: "bottomRight",
+            });
+        }
+    };
 
     useEffect(() => {
-        handleGetGrafics()
-    }, [])
+        handleGetGrafics(idIndicador);
+    }, [idIndicador]);
 
     return (
         <LayoutApp navigation={navigation}>
@@ -66,6 +71,6 @@ const Home = () => {
             </Row>
         </LayoutApp>
     );
-}
+};
 
-export default Home;
+export default ChartDetails;

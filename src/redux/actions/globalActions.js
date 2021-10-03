@@ -1,8 +1,8 @@
 import { types } from "src/types";
 
-export const login = (payload) => {
+export const setUser = (payload) => {
     return {
-        type: types.login,
+        type: types.setUser,
         payload
     }
 }

@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
-import { Layout, Menu, Dropdown } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
-import { LogoutOutlined } from '@ant-design/icons';
-import { login, logout } from "src/redux/actions/globalActions";
+import { Layout, Menu, Dropdown } from "antd";
+import { useDispatch, useSelector, connect } from 'react-redux';
+
+import { useRouter } from "next/router";
+import { LogoutOutlined } from "@ant-design/icons";
+import { setUser, logout } from "src/redux/actions/globalActions";
 
 const { Header } = Layout;
 
 const HeaderApp = (props) => {
+    const { dataUser } = props.state.global;
     const router = useRouter();
     const dispatch = useDispatch();
-    const { dataUser } = useSelector((stateData) => stateData.global)
 
     const handleLogout = () => {
         dispatch(logout());
@@ -18,31 +19,28 @@ const HeaderApp = (props) => {
             localStorage.removeItem("user");
             router.push("/login");
         }
-    }
+    };
 
     const menu = (
         <Menu>
-          <Menu.Item onClick={handleLogout} icon={<LogoutOutlined />}>Cerrar Sessión</Menu.Item>
+            <Menu.Item onClick={handleLogout} icon={<LogoutOutlined />}>
+                Cerrar Sessión
+            </Menu.Item>
         </Menu>
-      );
-
-    useEffect(() => {
-        if (!dataUser.nombres || !dataUser.apellidos) {
-            const user = JSON.parse(localStorage.getItem("user"))
-            user ? dispatch(login(user)) : router.push("/login")
-        }
-    }, [dataUser])
+    );
 
     return (
         <Header className="site-layout-background div-header">
             <Dropdown overlay={menu}>
-                <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                <a
+                    className="ant-dropdown-link"
+                    onClick={(e) => e.preventDefault()}
+                >
                     {`${dataUser.nombres} ${dataUser.apellidos}`}
                 </a>
             </Dropdown>
-
         </Header>
-    )
-}
+    );
+};
 
 export default HeaderApp;
