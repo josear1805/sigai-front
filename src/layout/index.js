@@ -17,7 +17,6 @@ const LayoutApp = (props) => {
 
     useEffect(() => {
         !user && router.push("/login");
-        console.log(dataUser)
         !dataUser?.nombres && dispatch(setUser(user))
     }, [])
 

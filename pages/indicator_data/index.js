@@ -5,6 +5,7 @@ import { Row, Col, Card, Select, Spin, Tag } from "antd";
 import { EyeOutlined, EditOutlined } from "@ant-design/icons";
 import { makeRequest } from "src/helpers";
 import { TableComponent } from "@components";
+import Link from 'next/link'
 
 const initialState = {
     loading: true,
@@ -39,8 +40,8 @@ const DataIndicators = () => {
         },
         {
             title: "Acción",
-            dataIndex: "id",
-            key: "id",
+            dataIndex: "id_indicador",
+            key: "id_indicador",
             search: false,
             width: "400px",
             render: (text, record) => {
@@ -49,13 +50,20 @@ const DataIndicators = () => {
                         <Col span={8}>
                             {(record.permiso === "1" ||
                                 record.permiso === "2") && (
-                                <Tag
-                                    icon={<EyeOutlined />}
-                                    color="success"
-                                    className="tag-table"
+                                <Link
+                                    key={1}
+                                    href="/charts/[idIndicador]"
+                                    as={`/charts/${record.id_indicador}`}
+                                    passHref
                                 >
-                                    Ver
-                                </Tag>
+                                    <Tag
+                                        icon={<EyeOutlined />}
+                                        color="success"
+                                        className="tag-table"
+                                    >
+                                        Ver
+                                    </Tag>
+                                </Link>
                             )}
                         </Col>
                         <Col span={8}>

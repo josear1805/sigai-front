@@ -13,8 +13,8 @@ const initialState = {
     listaGerencias: [],
     auxListaGerencias: [],
     listaVicePresidencias: [],
-    vicePresidencia: 0,
-    gerencia: 0,
+    vicePresidencia: "0",
+    gerencia: "0",
     listaIndicadoresMostrar: [],
     listaIndicadores: [],
     datosIndicador1: [],
@@ -75,7 +75,7 @@ const MyIndicators = (props) => {
         
         if (response.Estatus === 1) {
             const { ListaIndicadores, ListaIndicadoresMostrar } = response
-            handleGetGrafics(1, ListaIndicadoresMostrar[0].id_indicador)
+            handleGetGrafics(1, parseInt(ListaIndicadoresMostrar[0].id_indicador))
             handleGetGrafics(2, ListaIndicadoresMostrar[1].id_indicador)
             handleGetGrafics(3, ListaIndicadoresMostrar[2].id_indicador)
             handleGetGrafics(4, ListaIndicadoresMostrar[3].id_indicador)
@@ -108,7 +108,7 @@ const MyIndicators = (props) => {
         if (response.Estatus === 1) {
             const { DatosIndicador } = response;
             DatosIndicador.map((item) => {
-                const aux = auxDataInd
+                let aux = auxDataInd
                 auxDataInd = aux.concat(item)
             })
         } else {
@@ -120,7 +120,7 @@ const MyIndicators = (props) => {
         }
 
         let auxLIM = state.listaIndicadoresMostrar
-        if (auxLIM.length > 0 && auxLIM[grafica - 1]?.id_indicador !== id_indicador) {
+        if (auxLIM.length > 0 && auxLIM[grafica - 1]?.id_indicador != id_indicador) {
             auxLIM[grafica - 1].id_indicador = id_indicador
             setState((prevState) => ({
                 ...prevState,
@@ -163,14 +163,14 @@ const MyIndicators = (props) => {
     const handleChangueVicePresidencia = (id) => {
         const { listaGerencias } = state;
         let auxListaGerencias = listaGerencias.filter((item) =>
-            parseInt(item.id_vice_presidencia) === parseInt(id)
+            item.id_vice_presidencia === id
         )
 
         setState((prevState) => ({
             ...prevState,
-            vicePresidencia: id,
-            auxListaGerencias,
-            gerencia: 0,
+            vicePresidencia: id? id: "0",
+            auxListaGerencias: id? auxListaGerencias: [],
+            gerencia: "0",
             listaIndicadoresMostrar: [],
             listaIndicadores: [],
             datosIndicador1: [],
@@ -183,9 +183,11 @@ const MyIndicators = (props) => {
     const handleChangueGerencia = (id) => {
         setState((prevState) => ({
             ...prevState,
-            gerencia: id
+            gerencia: id,
+            listaIndicadoresMostrar: [],
+            listaIndicadores: []
         }))
-        handleGetListaGraficosGerencia(id)
+        parseInt(id) >= 1 && handleGetListaGraficosGerencia(id)
     }
 
     useEffect(() => {
@@ -207,10 +209,10 @@ const MyIndicators = (props) => {
                                             onChange={(value) => handleChangueVicePresidencia(value)}
                                             style={{ width: "100%" }}
                                         >
-                                            <Option value={0} key="0">Seleccione</Option>
+                                            <Option value="0" key="vp-0">Seleccione</Option>
                                             {
                                                 state.listaVicePresidencias && state.listaVicePresidencias.map((item) => (
-                                                    <Option value={parseInt(item.id_vice_presidencia)} key={item.id_vice_presidencia}>{item.nb_vicepresidencia}</Option>
+                                                    <Option value={item.id_vice_presidencia} key={`vp-${item.id_vice_presidencia}`}>{item.nb_vicepresidencia}</Option>
                                                 ))
                                             }
                                         </Select>
@@ -221,13 +223,13 @@ const MyIndicators = (props) => {
                                         <Select
                                             value={state.gerencia}
                                             style={{ width: "100%" }}
-                                            disabled={!state.vicePresidencia}
+                                            disabled={state.vicePresidencia === "0"}
                                             onChange={(value) => handleChangueGerencia(value)}
                                         >
-                                            <Option value={0} key="0">Seleccione</Option>
+                                            <Option value="0" key="ge-0">Seleccione</Option>
                                             {
                                                 state.auxListaGerencias && state.auxListaGerencias.map((item) => (
-                                                    <Option value={parseInt(item.id_gerencia)} key={item.id_gerencia}>{item.nb_gerencia}</Option>
+                                                    <Option value={item.id_gerencia} key={`ge-${item.id_gerencia}`}>{item.nb_gerencia}</Option>
                                                 ))
                                             }
                                         </Select>
@@ -247,7 +249,6 @@ const MyIndicators = (props) => {
                                                     defaultValue={state.listaIndicadoresMostrar[0]?.id_indicador}
                                                     onChange={(value) => handleGetGrafics(1, value)}
                                                     style={{ width: "100%" }}>
-                                                    <Option value={0}>Seleccione</Option>
                                                     {
                                                         state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
                                                             <Option value={item.id_indicador} key={item.id_indicador}>{item.nb_indicador}</Option>
@@ -278,7 +279,6 @@ const MyIndicators = (props) => {
                                                     defaultValue={state.listaIndicadoresMostrar[1]?.id_indicador}
                                                     onChange={(value) => handleGetGrafics(2, value)}
                                                     style={{ width: "100%" }}>
-                                                    <Option value={0}>Seleccione</Option>
                                                     {
                                                         state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
                                                             <Option value={item.id_indicador} key={item.id_indicador}>{item.nb_indicador}</Option>
@@ -306,10 +306,9 @@ const MyIndicators = (props) => {
                                         <Row gutter={[24, 24]} justify="end">
                                             <Col span={10} >
                                                 <Select
-                                                    defaultValue={state.listaIndicadoresMostrar[2]?.id_indicador}
+                                                    defaultValue={parseInt(state.listaIndicadoresMostrar[2]?.id_indicador)}
                                                     onChange={(value) => handleGetGrafics(3, value)}
                                                     style={{ width: "100%" }}>
-                                                    <Option value={0}>Seleccione</Option>
                                                     {
                                                         state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
                                                             <Option value={item.id_indicador} key={item.id_indicador}>{item.nb_indicador}</Option>
@@ -340,7 +339,6 @@ const MyIndicators = (props) => {
                                                     defaultValue={state.listaIndicadoresMostrar[3]?.id_indicador}
                                                     onChange={(value) => handleGetGrafics(4, value)}
                                                     style={{ width: "100%" }}>
-                                                    <Option value={0}>Seleccione</Option>
                                                     {
                                                         state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
                                                             <Option value={item.id_indicador} key={item.id_indicador}>{item.nb_indicador}</Option>
