@@ -68,13 +68,20 @@ const DataIndicators = () => {
                         </Col>
                         <Col span={8}>
                             {record.permiso === "2" && (
-                                <Tag
-                                    icon={<EditOutlined />}
-                                    color="processing"
-                                    className="tag-table"
+                                <Link
+                                    key={2}
+                                    href="/indicator_data/goals/[idIndicador]"
+                                    as={`/indicator_data/goals/${record.id_indicador}`}
+                                    passHref
                                 >
-                                    Meta
-                                </Tag>
+                                    <Tag
+                                        icon={<EditOutlined />}
+                                        color="processing"
+                                        className="tag-table"
+                                    >
+                                        Meta
+                                    </Tag>
+                                </Link>
                             )}
                         </Col>
                         <Col span={8}>

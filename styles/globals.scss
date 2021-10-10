@@ -93,3 +93,13 @@
     background: #1890ff80;
     border-color: #1890ff;
 }
+
+.div-list-metas {
+    padding: 8px;
+    // border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0; 
+}
+    
+.div-list-metas:hover {
+    background: rgb(240 240 240 / 25%);
+}

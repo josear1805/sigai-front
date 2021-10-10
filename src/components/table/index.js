@@ -3,7 +3,7 @@ import { Table, Input, Button, Row, Col, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 
 const TableComponent = (props) => {
-    const { columns, data, loading } = props;
+    const { columns, data, loading, position="bottomCenter", pageSize=10 } = props;
     const [sourceColumns, setSourceColumns] = useState(columns);
 
     const getColumnSearchProps = (item) => ({
@@ -94,7 +94,7 @@ const TableComponent = (props) => {
                     size="small"
                     loading={loading}
                     scroll={{ x: "auto" }}
-                    pagination={{ position: ["bottomCenter"] }}
+                    pagination={{ position: [position], pageSize: pageSize }}
                     className="text-color-secondary"
                 />
             </Col>
