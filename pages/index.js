@@ -74,14 +74,14 @@ const Home = (props) => {
             method: "POST",
             path: "/indican/infoindicadorgra.php",
             body: {
-                idindicador: id_indicador,
+                idIndicador: id_indicador,
                 anio: anio,
             },
         });
 
-        if (response.Estatus === 1) {
-            const { DatosIndicador } = response;
-            DatosIndicador.map((item) => {
+        if (response.estatus === 1) {
+            const { datosIndicador } = response;
+            datosIndicador.map((item) => {
                 const aux = auxDataInd;
                 auxDataInd = aux.concat(item);
             });
