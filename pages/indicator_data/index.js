@@ -79,7 +79,7 @@ const DataIndicators = () => {
                                         color="processing"
                                         className="tag-table"
                                     >
-                                        Meta
+                                        M. F. planificada
                                     </Tag>
                                 </Link>
                             )}
@@ -91,7 +91,7 @@ const DataIndicators = () => {
                                     color="processing"
                                     className="tag-table"
                                 >
-                                    Resultados
+                                    M. F. ejecutada
                                 </Tag>
                             )}
                         </Col>
@@ -164,7 +164,7 @@ const DataIndicators = () => {
                             <Card>
                                 <Row gutter={[24, 24]} justify="start">
                                     <Col span={6}>
-                                        <label>Vice Presidencia</label>
+                                        <label>Unidad organizativa</label>
                                         <Select
                                             value={state.idVicePresidencia}
                                             onChange={

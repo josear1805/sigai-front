@@ -24,23 +24,23 @@ const ChartDetails = () => {
     const [datosIndicador, setDatosIndicador] = useState([]);
     const [nombreIndicador, setNombreIndicador] = useState("");
 
-    const handleGetGrafics = async (idindicador) => {
+    const handleGetGrafics = async () => {
         let auxDataInd = [];
         const response = await makeRequest({
             method: "POST",
             path: "/indican/infoindicadorgra.php",
             body: {
-                idindicador,
+                idIndicador,
                 anio: 2021,
             },
         });
 
-        if (response.Estatus === 1) {
-            response.DatosIndicador.map((item) => {
+        if (response.estatus === 1) {
+            response.datosIndicador.map((item) => {
                 let aux = auxDataInd;
                 auxDataInd = aux.concat(item);
             });
-            setNombreIndicador(response.nb_indicador);
+            setNombreIndicador(response.nbIndicador);
             auxDataInd.map(
                 (item) => (item.valor = item.valor ? parseInt(item.valor) : 0)
             );
@@ -55,7 +55,7 @@ const ChartDetails = () => {
     };
 
     useEffect(() => {
-        handleGetGrafics(idIndicador);
+        idIndicador && handleGetGrafics();
     }, [idIndicador]);
 
     return (
