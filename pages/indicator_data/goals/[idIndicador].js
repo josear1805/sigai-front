@@ -30,7 +30,7 @@ const GoalsEdit = (props) => {
 
     const [generalData, setGeneralData] = useState({});
     const [listMetas, setListMetas] = useState([]);
-    const [disabled, setDisabled] = useState(true);
+    const [disableddasd, setDisabled] = useState(true);
 
     const navigation = [
         {
@@ -76,10 +76,10 @@ const GoalsEdit = (props) => {
         let auxListMetas = listMetas;
         let fechaModDatos = generalData.fechaModDatos? generalData.fechaModDatos <= dateNow: true;
         let disabled =  generalData.fechaMaxIngresoDatos <= dateNow ? fechaModDatos : false;
-        let mes = generalData.fechaModDatos? moment(generalData.fechaModDatos, "YYYY-MM-DD").format("M") : 6;
+        let mes = generalData.fechaModDatos? moment(generalData.fechaModDatos, "YYYY-MM-DD").format("M") : 0;
 
         auxListMetas.map((meta) => {
-            meta.disabled = meta.idMes >= parseInt(mes)? false: true
+            meta.disabled = meta.idMes >= parseInt(mes)? disabled: true
         })
         console.log("auxListMetas", auxListMetas)
         setDisabled(false)
