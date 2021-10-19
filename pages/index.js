@@ -151,7 +151,7 @@ const Home = (props) => {
                         <Col xs={24} sm={24} md={12}>
                             <Card className="box-shadow">
                                 <Row gutter={[24, 24]} justify="end">
-                                    <Col span={10}>
+                                    <Col xs={18} lg={10}>
                                         <Select
                                             defaultValue={
                                                 state.ListaIndicadoresMostrar[0]
@@ -183,7 +183,7 @@ const Home = (props) => {
                                                 )}
                                         </Select>
                                     </Col>
-                                    <Col span={2}>
+                                    <Col>
                                         <Link
                                             key={1}
                                             href="/charts/[idIndicador]"
@@ -211,7 +211,7 @@ const Home = (props) => {
                         <Col xs={24} sm={24} md={12}>
                             <Card className="box-shadow">
                                 <Row gutter={[24, 24]} justify="end">
-                                    <Col span={10}>
+                                    <Col xs={18} lg={10}>
                                         <Select
                                             defaultValue={
                                                 state.ListaIndicadoresMostrar[1]
@@ -243,7 +243,7 @@ const Home = (props) => {
                                                 )}
                                         </Select>
                                     </Col>
-                                    <Col span={2}>
+                                    <Col>
                                         <Link
                                             key={2}
                                             href="/charts/[idIndicador]"
@@ -269,7 +269,7 @@ const Home = (props) => {
                         <Col xs={24} sm={24} md={12}>
                             <Card className="box-shadow">
                                 <Row gutter={[24, 24]} justify="end">
-                                    <Col span={10}>
+                                    <Col xs={18} lg={10}>
                                         <Select
                                             defaultValue={
                                                 state.ListaIndicadoresMostrar[2]
@@ -301,7 +301,7 @@ const Home = (props) => {
                                                 )}
                                         </Select>
                                     </Col>
-                                    <Col span={2}>
+                                    <Col>
                                         <Link
                                             key={1}
                                             href="/charts/[idIndicador]"
@@ -327,7 +327,7 @@ const Home = (props) => {
                         <Col xs={24} sm={24} md={12}>
                             <Card className="box-shadow">
                                 <Row gutter={[24, 24]} justify="end">
-                                    <Col span={10}>
+                                    <Col xs={18} lg={10}>
                                         <Select
                                             defaultValue={
                                                 state.ListaIndicadoresMostrar[3]
@@ -357,7 +357,7 @@ const Home = (props) => {
                                                 )}
                                         </Select>
                                     </Col>
-                                    <Col span={2}>
+                                    <Col>
                                         <Link
                                             key={1}
                                             href="/charts/[idIndicador]"

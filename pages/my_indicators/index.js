@@ -5,6 +5,9 @@ import { Row, Col, Card, Select, Spin, Button, Tooltip, notification } from 'ant
 import { EyeOutlined } from '@ant-design/icons';
 import Link from 'next/link'
 import { makeRequest } from 'src/helpers';
+import { PageHeaderComponent } from '@components';
+
+const { Option } = Select;
 
 const ChartColumn = dynamic(() => import('src/components/charts/column'), { ssr: false })
 
@@ -26,6 +29,9 @@ const initialState = {
 const MyIndicators = (props) => {
     const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
 
+    const [state, setState] = useState(initialState);
+    const [loading, setLoading] = useState(false);
+
     const navigation = [
         {
             key: '1',
@@ -34,9 +40,8 @@ const MyIndicators = (props) => {
         }
     ]
 
-    const [state, setState] = useState(initialState);
-
     const handleGetListaVPGerencia = async () => {
+        setLoading(true)
         const response = await makeRequest({
             method: "POST",
             path: "/indican/listavpgerencia.php",
@@ -50,19 +55,21 @@ const MyIndicators = (props) => {
             const { ListaGerencias, ListaVicePresidencias } = response
             setState((prevState) => ({
                 ...prevState,
-                loading: false,
                 listaGerencias: ListaGerencias,
                 listaVicePresidencias: ListaVicePresidencias,
             }))
+            setLoading(false)
         } else {
             notification.error({
                 message: 'Ha ocurrido un error interno, por favor intente nuevamente!',
                 placement: 'bottomRight',
             });
+            setLoading(false)
         }
     }
 
     const handleGetListaGraficosGerencia = async (id_gerencia) => {
+        setLoading(true)
         const response = await makeRequest({
             method: "POST",
             path: "/indican/listagraficosgerencia.php",
@@ -74,28 +81,23 @@ const MyIndicators = (props) => {
         })
         
         if (response.estatus === 1) {
-
             const { listaIndicadores, listaIndicadoresMostrar } = response
-
             listaIndicadoresMostrar.map((item, index) => {
                 handleGetGrafics(index + 1, item.idIndicador)
             })
 
-            // handleGetGrafics(1, parseInt(listaIndicadoresMostrar[0].idIndicador))
-            // handleGetGrafics(2, listaIndicadoresMostrar[1].idIndicador)
-            // handleGetGrafics(3, listaIndicadoresMostrar[2].idIndicador)
-            // handleGetGrafics(4, listaIndicadoresMostrar[3].idIndicador)
             setState((prevState) => ({
                 ...prevState,
-                loading: false,
                 listaIndicadores,
                 listaIndicadoresMostrar,
             }))
+            setLoading(false)
         } else {
             notification.error({
                 message: 'Ha ocurrido un error interno, por favor intente nuevamente!',
                 placement: 'bottomRight',
             });
+            setLoading(false)
         }
 
     }
@@ -118,8 +120,8 @@ const MyIndicators = (props) => {
                 auxDataInd = aux.concat(item)
             })
         } else {
-            notification.error({
-                message: 'Ha ocurrido un error interno, por favor intente nuevamente!',
+            notification.warning({
+                message: 'Indicador sin data!',
                 placement: 'bottomRight',
             });
             return
@@ -201,189 +203,196 @@ const MyIndicators = (props) => {
     }, [])
 
     return (
-        <LayoutApp navigation={navigation}>
-            <Spin tip="Cargando..." spinning={state.loading}>
-                {!state.loading &&
-                    <Row gutter={[24, 24]}>
-                        <Col span={24} >
-                            <Card >
-                                <Row gutter={[24, 24]} justify="start">
-                                    <Col span={6} >
-                                        <label>Unidad organizativa</label>
-                                        <Select
-                                            value={state.vicePresidencia}
-                                            onChange={(value) => handleChangueVicePresidencia(value)}
-                                            style={{ width: "100%" }}
-                                        >
-                                            <Option value="0" key="vp-0">Seleccione</Option>
-                                            {
-                                                state.listaVicePresidencias && state.listaVicePresidencias.map((item) => (
-                                                    <Option value={item.id_vice_presidencia} key={`vp-${item.id_vice_presidencia}`}>{item.nb_vicepresidencia}</Option>
-                                                ))
-                                            }
-                                        </Select>
-                                    </Col>
+        <LayoutApp>
+            <PageHeaderComponent
+                title="Mis Indicadores"
+                reload={true}
+                handleReload={handleGetListaVPGerencia}
+                button={false}
+                loading={loading}
+                navigation={navigation}
+            />
 
-                                    <Col span={6} >
-                                        <label>Gerencia</label>
-                                        <Select
-                                            value={state.gerencia}
-                                            style={{ width: "100%" }}
-                                            disabled={state.vicePresidencia === "0"}
-                                            onChange={(value) => handleChangueGerencia(value)}
-                                        >
-                                            <Option value="0" key="ge-0">Seleccione</Option>
-                                            {
-                                                state.auxListaGerencias && state.auxListaGerencias.map((item) => (
-                                                    <Option value={item.id_gerencia} key={`ge-${item.id_gerencia}`}>{item.nb_gerencia}</Option>
-                                                ))
-                                            }
-                                        </Select>
-                                    </Col>
-
-                                </Row>
-                            </Card>
+            <Spin tip="Cargando..." spinning={loading}>
+                <Card >
+                    <Row gutter={[24, 24]} justify="start">
+                        <Col xs={24} md={12} lg={6} >
+                            <label>Unidad organizativa</label>
+                            <Select
+                                value={state.vicePresidencia}
+                                onChange={(value) => handleChangueVicePresidencia(value)}
+                                style={{ width: "100%" }}
+                            >
+                                <Option value="0" key="vp-0">Seleccione</Option>
+                                {
+                                    state.listaVicePresidencias && state.listaVicePresidencias.map((item) => (
+                                        <Option value={item.id_vice_presidencia} key={`vp-${item.id_vice_presidencia}`}>{item.nb_vicepresidencia}</Option>
+                                    ))
+                                }
+                            </Select>
                         </Col>
 
-                        {state.listaIndicadoresMostrar[0] &&
-                            <>
-                                <Col xs={24} sm={24} md={12} >
-                                    <Card className="box-shadow">
-                                        <Row gutter={[24, 24]} justify="end">
-                                            <Col span={10} >
-                                                <Select
-                                                    defaultValue={state.listaIndicadoresMostrar[0]?.idIndicador}
-                                                    onChange={(value) => handleGetGrafics(1, value)}
-                                                    style={{ width: "100%" }}>
-                                                    {
-                                                        state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
-                                                            <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </Col>
-                                            <Col span={2}>
-                                                <Link key={1} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[0]?.idIndicador}`} passHref>
-                                                    <Tooltip title="Ver gráfica">
-                                                        <Button
-                                                            icon={<EyeOutlined />}
-                                                        />
-                                                    </Tooltip>
-                                                </Link>
-                                            </Col>
-                                            <Col span={24}>
-                                                <ChartColumn data={state.datosIndicador1} height={200} />
-                                            </Col>
-                                        </Row>
-                                    </Card>
-                                </Col>
-                            </>
-                        }
-                        {state.listaIndicadoresMostrar[1] &&
-                            <>
-                                <Col xs={24} sm={24} md={12} >
-                                    <Card className="box-shadow">
-                                        <Row gutter={[24, 24]} justify="end">
-                                            <Col span={10} >
-                                                <Select
-                                                    defaultValue={state.listaIndicadoresMostrar[1]?.idIndicador}
-                                                    onChange={(value) => handleGetGrafics(2, value)}
-                                                    style={{ width: "100%" }}>
-                                                    {
-                                                        state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
-                                                            <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </Col>
-                                            <Col span={2}>
-                                                <Link key={2} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[1]?.idIndicador}`} passHref>
-                                                    <Tooltip title="Ver gráfica">
-                                                        <Button
-                                                            icon={<EyeOutlined />}
-                                                        />
-                                                    </Tooltip>
-                                                </Link>
-                                            </Col>
-                                            <Col span={24}>
-                                                <ChartColumn data={state.datosIndicador2} height={200} />
-                                            </Col>
-                                        </Row>
-                                    </Card>
-                                </Col>
-                            </>
-                        }
-                        {state.listaIndicadoresMostrar[2] &&
-                            <>
-                                <Col xs={24} sm={24} md={12} >
-                                    <Card className="box-shadow">
-                                        <Row gutter={[24, 24]} justify="end">
-                                            <Col span={10} >
-                                                <Select
-                                                    defaultValue={parseInt(state.listaIndicadoresMostrar[2]?.idIndicador)}
-                                                    onChange={(value) => handleGetGrafics(3, value)}
-                                                    style={{ width: "100%" }}>
-                                                    {
-                                                        state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
-                                                            <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </Col>
-                                            <Col span={2}>
-                                                <Link key={1} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[2]?.idIndicador}`} passHref>
-                                                    <Tooltip title="Ver gráfica">
-                                                        <Button
-                                                            icon={<EyeOutlined />}
-                                                        />
-                                                    </Tooltip>
-                                                </Link>
-                                            </Col>
-                                            <Col span={24}>
-                                                <ChartColumn data={state.datosIndicador3} height={200} />
-                                            </Col>
-                                        </Row>
-                                    </Card>
-                                </Col>
-                            </>
-                        }
-                        {state.listaIndicadoresMostrar[3] &&
-                            <>
-                                <Col xs={24} sm={24} md={12} >
-                                    <Card className="box-shadow">
-                                        <Row gutter={[24, 24]} justify="end">
-                                            <Col span={10} >
-                                                <Select
-                                                    defaultValue={state.listaIndicadoresMostrar[3]?.idIndicador}
-                                                    onChange={(value) => handleGetGrafics(4, value)}
-                                                    style={{ width: "100%" }}>
-                                                    {
-                                                        state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
-                                                            <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </Col>
-                                            <Col span={2}>
-                                                <Link key={1} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[3]?.idIndicador}`} passHref>
-                                                    <Tooltip title="Ver gráfica">
-                                                        <Button
-                                                            icon={<EyeOutlined />}
-                                                        />
-                                                    </Tooltip>
-                                                </Link>
-                                            </Col>
-                                            <Col span={24}>
-                                                <ChartColumn data={state.datosIndicador4} height={200} />
-                                            </Col>
-                                        </Row>
-                                    </Card>
-                                </Col>
-                            </>
-                        }
+                        <Col xs={24} md={12} lg={6} >
+                            <label>Gerencia</label>
+                            <Select
+                                value={state.gerencia}
+                                style={{ width: "100%" }}
+                                disabled={state.vicePresidencia === "0"}
+                                onChange={(value) => handleChangueGerencia(value)}
+                            >
+                                <Option value="0" key="ge-0">Seleccione</Option>
+                                {
+                                    state.auxListaGerencias && state.auxListaGerencias.map((item) => (
+                                        <Option value={item.id_gerencia} key={`ge-${item.id_gerencia}`}>{item.nb_gerencia}</Option>
+                                    ))
+                                }
+                            </Select>
+                        </Col>
+
+                        <Col span={24}>
+                            <Row gutter={[24, 24]}>
+                                {state.listaIndicadoresMostrar[0] &&
+                                    <>
+                                        <Col xs={24} sm={24} md={12} >
+                                            <Card className="box-shadow">
+                                                <Row gutter={[24, 24]} justify="end">
+                                                    <Col xs={18} lg={10} >
+                                                        <Select
+                                                            defaultValue={state.listaIndicadoresMostrar[0]?.idIndicador}
+                                                            onChange={(value) => handleGetGrafics(1, value)}
+                                                            style={{ width: "100%" }}>
+                                                            {
+                                                                state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
+                                                                    <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
+                                                                ))
+                                                            }
+                                                        </Select>
+                                                    </Col>
+                                                    <Col>
+                                                        <Link key={1} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[0]?.idIndicador}`} passHref>
+                                                            <Tooltip title="Ver gráfica">
+                                                                <Button
+                                                                    icon={<EyeOutlined />}
+                                                                />
+                                                            </Tooltip>
+                                                        </Link>
+                                                    </Col>
+                                                    <Col span={24}>
+                                                        <ChartColumn data={state.datosIndicador1} height={200} />
+                                                    </Col>
+                                                </Row>
+                                            </Card>
+                                        </Col>
+                                    </>
+                                }
+                                {state.listaIndicadoresMostrar[1] &&
+                                    <>
+                                        <Col xs={24} sm={24} md={12} >
+                                            <Card className="box-shadow">
+                                                <Row gutter={[24, 24]} justify="end">
+                                                    <Col xs={18} lg={10} >
+                                                        <Select
+                                                            defaultValue={state.listaIndicadoresMostrar[1]?.idIndicador}
+                                                            onChange={(value) => handleGetGrafics(2, value)}
+                                                            style={{ width: "100%" }}>
+                                                            {
+                                                                state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
+                                                                    <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
+                                                                ))
+                                                            }
+                                                        </Select>
+                                                    </Col>
+                                                    <Col>
+                                                        <Link key={2} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[1]?.idIndicador}`} passHref>
+                                                            <Tooltip title="Ver gráfica">
+                                                                <Button
+                                                                    icon={<EyeOutlined />}
+                                                                />
+                                                            </Tooltip>
+                                                        </Link>
+                                                    </Col>
+                                                    <Col span={24}>
+                                                        <ChartColumn data={state.datosIndicador2} height={200} />
+                                                    </Col>
+                                                </Row>
+                                            </Card>
+                                        </Col>
+                                    </>
+                                }
+                                {state.listaIndicadoresMostrar[2] &&
+                                    <>
+                                        <Col xs={24} sm={24} md={12} >
+                                            <Card className="box-shadow">
+                                                <Row gutter={[24, 24]} justify="end">
+                                                    <Col xs={18} lg={10} >
+                                                        <Select
+                                                            defaultValue={parseInt(state.listaIndicadoresMostrar[2]?.idIndicador)}
+                                                            onChange={(value) => handleGetGrafics(3, value)}
+                                                            style={{ width: "100%" }}>
+                                                            {
+                                                                state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
+                                                                    <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
+                                                                ))
+                                                            }
+                                                        </Select>
+                                                    </Col>
+                                                    <Col>
+                                                        <Link key={1} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[2]?.idIndicador}`} passHref>
+                                                            <Tooltip title="Ver gráfica">
+                                                                <Button
+                                                                    icon={<EyeOutlined />}
+                                                                />
+                                                            </Tooltip>
+                                                        </Link>
+                                                    </Col>
+                                                    <Col span={24}>
+                                                        <ChartColumn data={state.datosIndicador3} height={200} />
+                                                    </Col>
+                                                </Row>
+                                            </Card>
+                                        </Col>
+                                    </>
+                                }
+                                {state.listaIndicadoresMostrar[3] &&
+                                    <>
+                                        <Col xs={24} sm={24} md={12} >
+                                            <Card className="box-shadow">
+                                                <Row gutter={[24, 24]} justify="end">
+                                                    <Col xs={18} lg={10} >
+                                                        <Select
+                                                            defaultValue={state.listaIndicadoresMostrar[3]?.idIndicador}
+                                                            onChange={(value) => handleGetGrafics(4, value)}
+                                                            style={{ width: "100%" }}>
+                                                            {
+                                                                state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
+                                                                    <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
+                                                                ))
+                                                            }
+                                                        </Select>
+                                                    </Col>
+                                                    <Col>
+                                                        <Link key={1} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[3]?.idIndicador}`} passHref>
+                                                            <Tooltip title="Ver gráfica">
+                                                                <Button
+                                                                    icon={<EyeOutlined />}
+                                                                />
+                                                            </Tooltip>
+                                                        </Link>
+                                                    </Col>
+                                                    <Col span={24}>
+                                                        <ChartColumn data={state.datosIndicador4} height={200} />
+                                                    </Col>
+                                                </Row>
+                                            </Card>
+                                        </Col>
+                                    </>
+                                }
+                            </Row>
+                        </Col>
 
                     </Row>
-                }
+                </Card>
+
             </Spin>
         </LayoutApp>
     );

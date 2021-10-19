@@ -95,7 +95,6 @@ const TableComponent = (props) => {
                     loading={loading}
                     scroll={{ x: "auto" }}
                     pagination={{ position: [position], pageSize: pageSize }}
-                    className="text-color-secondary"
                 />
             </Col>
         </Row>

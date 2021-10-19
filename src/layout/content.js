@@ -1,4 +1,4 @@
-import { Layout, Breadcrumb } from 'antd';
+import { Layout, Breadcrumb, Row, Col } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 
 import Link from 'next/link';
@@ -9,8 +9,8 @@ const ContentApp = (props) => {
     const { navigation, children } = props;
 
     return (
-        <Content style={{ margin: '0 16px' }}>
-            <Breadcrumb style={{ margin: '16px 0' }}>
+        <Content className="p-3">
+            {/* <Breadcrumb style={{ margin: '16px 0' }}>
                 <Breadcrumb.Item key='001'>
                     <Link href="/">
                         <a>
@@ -29,10 +29,13 @@ const ContentApp = (props) => {
                             </Breadcrumb.Item>
                         );
                     })}
-            </Breadcrumb>
-            <div className="site-layout-background" style={{ padding: 24, minHeight: "75vh" }}>
-                {children}
-            </div>
+            </Breadcrumb> */}
+            {/* <div className="site-layout-background" style={{ padding: 24, minHeight: "75vh" }}> */}
+                {/* {children} */}
+            {/* </div> */}
+            <Row>
+                <Col span={24}>{children}</Col>
+            </Row>
             
         </Content>
     );

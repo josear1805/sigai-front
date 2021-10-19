@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import LayoutApp from "src/layout";
-import { Row, Col, notification } from "antd";
+import { Spin, Card, notification } from "antd";
 import { makeRequest } from "src/helpers";
+import { PageHeaderComponent } from "@components";
 
 const ChartColumn = dynamic(() => import("src/components/charts/column"), {
     ssr: false,
@@ -12,6 +13,15 @@ const ChartColumn = dynamic(() => import("src/components/charts/column"), {
 const ChartDetails = () => {
     const router = useRouter();
     const { idIndicador } = router.query;
+    const [loading, setLoading] = useState(false)
+
+    const buttonsHeader = [
+        {
+            href: "/",
+            type: "secundary",
+            name: "Inicio",
+        },
+    ];
 
     const navigation = [
         {
@@ -25,6 +35,7 @@ const ChartDetails = () => {
     const [nombreIndicador, setNombreIndicador] = useState("");
 
     const handleGetGrafics = async () => {
+        setLoading(true)
         let auxDataInd = [];
         const response = await makeRequest({
             method: "POST",
@@ -45,12 +56,14 @@ const ChartDetails = () => {
                 (item) => (item.valor = item.valor ? parseInt(item.valor) : 0)
             );
             setDatosIndicador(auxDataInd);
+            setLoading(false)
         } else {
             notification.error({
                 message:
                     "Ha ocurrido un error interno, por favor intente nuevamente!",
                 placement: "bottomRight",
             });
+            setLoading(false)
         }
     };
 
@@ -59,16 +72,21 @@ const ChartDetails = () => {
     }, [idIndicador]);
 
     return (
-        <LayoutApp navigation={navigation}>
-            <Row gutter={[24, 24]}>
-                <Col>
-                    <h2>{nombreIndicador}</h2>
-                </Col>
-
-                <Col span={24}>
+        <LayoutApp>
+            <PageHeaderComponent
+                title={`Gráfica: ${nombreIndicador}`}
+                reload={true}
+                handleReload={handleGetGrafics}
+                button={true}
+                dataButton={buttonsHeader}
+                loading={loading}
+                navigation={navigation}
+            />
+            <Card>
+                <Spin tip="Cargando..." spinning={loading}>
                     <ChartColumn data={datosIndicador} height={400} />
-                </Col>
-            </Row>
+                </Spin>
+            </Card>
         </LayoutApp>
     );
 };

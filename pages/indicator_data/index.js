@@ -4,11 +4,10 @@ import LayoutApp from "src/layout";
 import { Row, Col, Card, Select, Spin, Tag } from "antd";
 import { EyeOutlined, EditOutlined } from "@ant-design/icons";
 import { makeRequest } from "src/helpers";
-import { TableComponent } from "@components";
+import { TableComponent, PageHeaderComponent } from "@components";
 import Link from 'next/link'
 
 const initialState = {
-    loading: true,
     listaVicePresidencias: [],
     idVicePresidencia: 0,
     listaGerencias: [],
@@ -22,6 +21,7 @@ const DataIndicators = () => {
     const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
 
     const [state, setState] = useState(initialState);
+    const [loading, setLoading] = useState(true);
 
     const navigation = [
         {
@@ -102,6 +102,7 @@ const DataIndicators = () => {
     ];
 
     const handleGetData = async () => {
+        setLoading(true)
         const { id_usuario, id_perfil } = dataUser;
         const response = await makeRequest({
             method: "POST",
@@ -115,11 +116,11 @@ const DataIndicators = () => {
         if (response.Estatus) {
             setState((prevState) => ({
                 ...prevState,
-                loading: false,
                 listaIndicadores: response.Indicadores,
                 listaGerencias: response.ListaGerencias,
                 listaVicePresidencias: response.ListaVicePresidencias,
             }));
+            setLoading(false)
         }
     };
 
@@ -157,84 +158,86 @@ const DataIndicators = () => {
 
     return (
         <LayoutApp navigation={navigation}>
-            <Spin tip="Cargando..." spinning={state.loading}>
-                {!state.loading && (
-                    <Row gutter={[24, 24]}>
-                        <Col span={24}>
-                            <Card>
-                                <Row gutter={[24, 24]} justify="start">
-                                    <Col span={6}>
-                                        <label>Unidad organizativa</label>
-                                        <Select
-                                            value={state.idVicePresidencia}
-                                            onChange={
-                                                handleChangueVicePresidencia
-                                            }
-                                            style={{ width: "100%" }}
-                                        >
-                                            <Option value={0} key={999}>
-                                                Seleccione
-                                            </Option>
-                                            {state.listaVicePresidencias &&
-                                                state.listaVicePresidencias.map(
-                                                    (item, index) => (
-                                                        <Option
-                                                            value={parseInt(
-                                                                item.id_vice_presidencia
-                                                            )}
-                                                            key={index}
-                                                        >
-                                                            {
-                                                                item.nb_vicepresidencia
-                                                            }
-                                                        </Option>
-                                                    )
-                                                )}
-                                        </Select>
-                                    </Col>
+            <PageHeaderComponent
+                title="Datos de indicadores"
+                reload={true}
+                handleReload={handleGetData}
+                button={false}
+                // dataButton={buttonsHeader}
+                loading={loading}
+                navigation={navigation}
+            />
 
-                                    <Col span={6}>
-                                        <label>Gerencia</label>
-                                        <Select
-                                            value={state.idGerencia}
-                                            style={{ width: "100%" }}
-                                            disabled={!state.idVicePresidencia}
-                                            onChange={(value) =>
-                                                handleChangueGerencia(value)
-                                            }
-                                        >
-                                            <Option value={0} key={999}>
-                                                Seleccione
-                                            </Option>
-                                            {state.listaGerenciasMostrar &&
-                                                state.listaGerenciasMostrar.map(
-                                                    (item, index) => (
-                                                        <Option
-                                                            value={parseInt(
-                                                                item.id_gerencia
-                                                            )}
-                                                            key={index}
-                                                        >
-                                                            {item.nb_gerencia}
-                                                        </Option>
-                                                    )
-                                                )}
-                                        </Select>
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
+            <Spin tip="Cargando..." spinning={loading}>
+                {!loading && (
+                    <Card>
+                        <Row gutter={[24, 24]} justify="start" className="mb-3">
+                            <Col xs={24} md={12} lg={6}>
+                                <label>Unidad organizativa</label>
+                                <Select
+                                    value={state.idVicePresidencia}
+                                    onChange={
+                                        handleChangueVicePresidencia
+                                    }
+                                    style={{ width: "100%" }}
+                                >
+                                    <Option value={0} key={999}>
+                                        Seleccione
+                                    </Option>
+                                    {state.listaVicePresidencias &&
+                                        state.listaVicePresidencias.map(
+                                            (item, index) => (
+                                                <Option
+                                                    value={parseInt(
+                                                        item.id_vice_presidencia
+                                                    )}
+                                                    key={index}
+                                                >
+                                                    {
+                                                        item.nb_vicepresidencia
+                                                    }
+                                                </Option>
+                                            )
+                                        )}
+                                </Select>
+                            </Col>
 
-                        <Col span={24}>
-                            <Card>
-                                <TableComponent
-                                    columns={columns}
-                                    data={state.listaIndicadoresMostrar}
-                                    loading={false}
-                                />
-                            </Card>
-                        </Col>
-                    </Row>
+                            <Col xs={24} md={12} lg={6}>
+                                <label>Gerencia</label>
+                                <Select
+                                    value={state.idGerencia}
+                                    style={{ width: "100%" }}
+                                    disabled={!state.idVicePresidencia}
+                                    onChange={(value) =>
+                                        handleChangueGerencia(value)
+                                    }
+                                >
+                                    <Option value={0} key={999}>
+                                        Seleccione
+                                    </Option>
+                                    {state.listaGerenciasMostrar &&
+                                        state.listaGerenciasMostrar.map(
+                                            (item, index) => (
+                                                <Option
+                                                    value={parseInt(
+                                                        item.id_gerencia
+                                                    )}
+                                                    key={index}
+                                                >
+                                                    {item.nb_gerencia}
+                                                </Option>
+                                            )
+                                        )}
+                                </Select>
+                            </Col>
+                        </Row>
+                        
+                        <TableComponent
+                            columns={columns}
+                            data={state.listaIndicadoresMostrar}
+                            loading={false}
+                        />
+                    </Card>
                 )}
             </Spin>
         </LayoutApp>

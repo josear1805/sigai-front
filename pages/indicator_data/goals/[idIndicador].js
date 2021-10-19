@@ -10,27 +10,43 @@ import {
     Descriptions,
     Typography,
     notification,
-    Button
+    Button,
+    Card,
+    Space,
+    Tag,
+    Form
 } from "antd";
 import { makeRequest } from "src/helpers";
 import { useSelector } from "react-redux";
+import { EyeOutlined, EditOutlined } from "@ant-design/icons";
 
 import moment from "moment";
 
-import { TableComponent } from "@components";
+import { TableComponent, PageHeaderComponent, ButtonComponent, ModalComponet } from "@components";
 
 const { Text, Link } = Typography;
 
+const initialStateModalMonth = {
+    show: false,
+    loading: false,
+    monthId: null,
+};
+
 const GoalsEdit = (props) => {
     const dateNow = moment().format("YYYY-MM-DD");
+    const monthNumber =  parseInt(moment().format("M"));
     const router = useRouter();
+    const [formMonth] = Form.useForm();
     const { idIndicador } = router.query;
     const { dataUser } = useSelector((stateData) => stateData.global);
     // const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
 
     const [generalData, setGeneralData] = useState({});
     const [listMetas, setListMetas] = useState([]);
-    const [disableddasd, setDisabled] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [disabledButton, serDisabledButton] = useState(true)
+    const [buttonsHeader, setButtonsHeader] = useState([]);
+    const [stateModalMonth, setStateModalMonth] = useState(initialStateModalMonth);
 
     const navigation = [
         {
@@ -46,6 +62,7 @@ const GoalsEdit = (props) => {
     ];
 
     const handleGetMetas = async (id) => {
+        setLoading(true)
         const response = await makeRequest({
             method: "POST",
             path: "/indican/datosmetasindicador.php",
@@ -57,38 +74,99 @@ const GoalsEdit = (props) => {
 
         if (response.estatus === 1) {
             const { datosGenerales, listaMetas } = response;
+            let everyMonth = datosGenerales.fechaMaxIngresoDatos >= dateNow;
+            let currentMonth = datosGenerales.fechaModViva && datosGenerales.fechaModDatos !== null;
+
+            if (!everyMonth && !datosGenerales.fechaModViva && datosGenerales.fechaModDatos === null) {
+                buttonsHeader.push({
+                    onclick: () => console.log("Solicitar Modificación"),
+                    type: "primary",
+                    name: "Solicitar Modificación",
+                })
+                setButtonsHeader([...buttonsHeader])
+            }
+
             listaMetas.map((meta) => {
-                meta.disabled = true
+                if (everyMonth) {
+                    meta.modify = everyMonth
+                } else {
+                    meta.modify = currentMonth? meta.idMes >= monthNumber: false
+                }
             })
+
             setGeneralData(datosGenerales);
             setListMetas(listaMetas);
+            setLoading(false)
         } else {
             notification.error({
                 message:
-                    "Ha ocurrido un error interno, por favor intente nuevamente!",
+                "Ha ocurrido un error interno, por favor intente nuevamente!",
                 placement: "bottomRight",
             });
+            setLoading(false)
         }
     };
 
-    const onChangeCasa = () => {
-        console.log("dasdasd")
-        let auxListMetas = listMetas;
-        let fechaModDatos = generalData.fechaModDatos? generalData.fechaModDatos <= dateNow: true;
-        let disabled =  generalData.fechaMaxIngresoDatos <= dateNow ? fechaModDatos : false;
-        let mes = generalData.fechaModDatos? moment(generalData.fechaModDatos, "YYYY-MM-DD").format("M") : 0;
-
-        auxListMetas.map((meta) => {
-            meta.disabled = meta.idMes >= parseInt(mes)? disabled: true
-        })
-        console.log("auxListMetas", auxListMetas)
-        setDisabled(false)
-        setListMetas(auxListMetas);
+    const handleOpenModalMonth = (month) => {
+        setStateModalMonth((prevState) => ({
+            ...prevState,
+            show: true,
+            loading: false,
+            monthId: month.idMes
+        }));
+        formMonth.setFieldsValue(month);
     }
 
-    const onChangeValue = (e, record) => {
-        let { value } = e.target;
-        console.log("value", value, record);
+    const handleSetMonth = (values) => {
+        listMetas.map((meta) => {
+            if (meta.idMes === stateModalMonth.monthId) {
+                meta.observacion = values.observacion;
+                meta.valor = values.valor;
+            }
+        })
+        setListMetas([...listMetas]);
+        serDisabledButton(false);
+        handleCloseModalMonth();
+    };
+
+    const handleCloseModalMonth = () => {
+        formMonth.resetFields();
+        setStateModalMonth(initialStateModalMonth);
+    };
+
+    const handleSaveMeta = () => {
+        setLoading(true);
+        let values = {
+            idUsuario: dataUser.id_usuario,
+            idIndicador,
+            datos: listMetas
+        }
+        console.log(values)
+
+        makeRequest({
+            path: "/indican/inclumodmetas.php",
+            method: "POST",
+            body: values,
+        }).then((response) => {
+            console.log("response", response)
+            if (response.estatus === 1) {
+                notification.success({
+                    message:"Meta editada con Exito!",
+                    placement: "bottomRight",
+                });
+                setTimeout(() => {
+                    router.push("/business");
+                }, 1000);
+                setLoading(false);
+            } else {
+                notification.error({
+                    message:
+                    "Ha ocurrido un error interno, por favor intente nuevamente!",
+                    placement: "bottomRight",
+                });
+                setLoading(false);
+            }
+        });
     };
 
     const columns = [
@@ -103,30 +181,34 @@ const GoalsEdit = (props) => {
             dataIndex: "valor",
             key: "valor",
             width: "150px",
-            render: (text, record) => {
-                console.log(text, record)
-                return (
-                    <Input
-                        placeholder="Valor"
-                        defaultValue={record.valor}
-                        onChange={(e) => onChangeValue(e, record)}
-                        disabled={record.disabled}
-                    />
-                );
-            },
         },
         {
             title: "Observación",
             dataIndex: "observacion",
             key: "observacion",
+        },
+        {
+            title: "Acción",
+            dataIndex: "id_indicador",
+            key: "id_indicador",
+            width: "100px",
             render: (text, record) => {
                 return (
-                    <Input
-                        placeholder="Observación"
-                        defaultValue={record.observacion}
-                        onChange={(e) => onChangeValue(e, record)}
-                        disabled={record.disabled}
-                    />
+                    <Row gutter={[4, 0]} justify="space-around" align="middle">
+                        <Col span={24}>
+                            {
+                                <Tag
+                                    icon={<EditOutlined />}
+                                    color={record.modify? "success": "default"}
+                                    disabled={!record.modify}
+                                    onClick={record.modify? () => handleOpenModalMonth(record): null}
+                                    className="tag-table"
+                                >
+                                    Editar
+                                </Tag>
+                            }
+                        </Col>
+                    </Row>
                 );
             },
         },
@@ -138,72 +220,127 @@ const GoalsEdit = (props) => {
 
     return (
         <LayoutApp navigation={navigation}>
-            <Row>
-                <Col>
-                    <PageHeader style={{ padding: "0px" }}>
-                        <Descriptions size="small" column={3}>
-                            <Descriptions.Item label="Vicepresidencia">{ generalData.vicePesidencia }</Descriptions.Item>
-                            <Descriptions.Item label="Gerencia">{ generalData.gerencia }</Descriptions.Item>
-                            <Descriptions.Item label="Indicador">{ generalData.nombreIndicador }</Descriptions.Item>
-                        </Descriptions>
-                    </PageHeader>
-                </Col>
-                <Divider />
+            <PageHeaderComponent
+                title="Meta física planificada"
+                reload={true}
+                handleReload={() => handleGetMetas(idIndicador)}
+                button={true}
+                dataButton={buttonsHeader}
+                loading={loading}
+                navigation={navigation}
+            />
 
-                <Col span={24}>
-                    <Row gutter={[16, 16]} style={{ padding: "8px 6px", background: "#f5f5f5" }}>
-                        <Col span={6}>
-                            <b>Mes</b>
+            <Card>
+                <Row gutter={[16, 16]} justify="space-around">
+                    <Col span={24} >
+                        <Space direction="vertical">
+                            <Text><b>Vicepresidencia: </b> { generalData?.vicePresidencia }</Text>
+                            <Text><b>Gerencia: </b> { generalData?.gerencia }</Text>
+                            <Text><b>Indicador: </b> { generalData?.nombreIndicador }</Text>
+                        </Space>
+                    </Col>
+                    <Divider className="mb-1" />
+                    <Col span={24}>
+                        <TableComponent
+                            columns={columns}
+                            data={listMetas}
+                            loading={false}
+                            position="none"
+                            pageSize={12}
+                        />
+                    </Col>
+                    <Divider className="mb-1" />
+                    <Col xs={24} sm={12} md={6}>
+                        <ButtonComponent
+                            type="primary"
+                            title="Editar"
+                            onClick={handleSaveMeta}
+                            disabled={disabledButton}
+                            block
+                            className="ant-btn-success"
+                        />
+                    </Col>
+                    <Col xs={24} sm={12} md={6}>
+                        <ButtonComponent
+                            type="primary"
+                            title="Cancelar"
+                            path="/indicator_data"
+                            block
+                            className="ant-btn-danger"
+                        />
+                    </Col>
+                </Row>
+            </Card>
+
+            <ModalComponet
+                show={stateModalMonth.show}
+                title="Editar meta"
+                width={400}
+                loading={false}
+                confirmButton={false}
+                cancelButton={false}
+                handleCancel={handleCloseModalMonth}
+            >
+                <Form
+                    layout="vertical"
+                    name="product"
+                    form={formMonth}
+                    onFinish={handleSetMonth}
+                    style={{ margin: "0px -12px" }}
+                >
+                    <Row gutter={[24, 0]} justify="left" className="pl-4 pr-4">
+                        <Col span={24}>
+                            <Form.Item
+                                label={"Valor"}
+                                name={"valor"}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Valor requerido",
+                                    },
+                                ]}
+                            >
+                                <Input
+                                    placeholder={"Valor"}
+                                    type={"number"}
+                                />
+                            </Form.Item>
                         </Col>
-                        <Col span={6}>
-                            <b>Meta física planificada</b>
-                        </Col>
-                        <Col span={12}>
-                            <b>Observación</b>
+
+                        <Col span={24}>
+                            <Form.Item label={"Observación"} name={"observacion"}>
+                                <Input.TextArea
+                                    placeholder={"Observación"}
+                                    type={"text"}
+                                    rows={1}
+                                />
+                            </Form.Item>
                         </Col>
                     </Row>
-                    {
-                        listMetas && listMetas.map((item) => (
-                            <Row gutter={[16, 16]} className="div-list-metas">
-                                <Col span={6}>
-                                    {item.nbMes}
-                                </Col>
-                                <Col span={6}>
-                                    <Input
-                                        placeholder="Valor"
-                                        defaultValue={item.valor}
-                                        // onChange={(e) => onChangeValue(e, item)&}
-                                        disabled={item.disabled}
-                                    />
-                                </Col>
-                                <Col span={12}>
-                                    <Input
-                                        placeholder="Observación"
-                                        defaultValue={item.observacion}
-                                        onChange={(e) => onChangeValue(e, item)}
-                                        disabled={item.disabled}
-                                    />
-                                </Col>
-                            </Row>
-                        ))
-                    }
-                </Col>
-            </Row>
-                    {/* <TableComponent
-                        columns={columns}
-                        data={listMetas}
-                        loading={false}
-                        position="none"
-                        pageSize={12}
-                    /> */}
-            <Row gutter={[16, 16]}>
-                <Divider />
-                <Col span={6}>
-                    <Button onClick={onChangeCasa}>
-                        Modificar
-                    </Button>
-                </Col>
-            </Row>
+
+                    <Row gutter={[16, 16]} justify="space-around">
+                        <Col xs={24} sm={12} md={12}>
+                            <ButtonComponent
+                                type="primary"
+                                title="Editar"
+                                htmlType="submit"
+                                block
+                                className="ant-btn-success"
+                            />
+                        </Col>
+                        <Col xs={24} sm={12} md={12}>
+                            <ButtonComponent
+                                type="primary"
+                                title="Cancelar"
+                                onClick={handleCloseModalMonth}
+                                block
+                                className="ant-btn-danger"
+                            />
+                        </Col>
+                    </Row>
+                </Form>
+            </ModalComponet>
+
         </LayoutApp>
     );
 };

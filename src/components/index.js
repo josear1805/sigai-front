@@ -1,9 +1,17 @@
-import dynamic from 'next/dynamic'
-import TableComponent from './table'
+import dynamic from "next/dynamic";
+import TableComponent from "./table";
+import PageHeaderComponent from "./page-header";
+import ButtonComponent from "./button";
+import ModalComponet from "./modal";
 
-const ChartColumn = dynamic(() => import('src/components/charts/column'), { ssr: false })
+const ChartColumn = dynamic(() => import("src/components/charts/column"), {
+    ssr: false,
+});
 
 export {
     TableComponent,
-    ChartColumn
-}
+    ChartColumn,
+    PageHeaderComponent,
+    ButtonComponent,
+    ModalComponet,
+};
