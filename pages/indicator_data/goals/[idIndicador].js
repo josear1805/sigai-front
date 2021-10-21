@@ -155,7 +155,7 @@ const GoalsEdit = (props) => {
                     placement: "bottomRight",
                 });
                 setTimeout(() => {
-                    router.push("/business");
+                    router.push("/indicator_data");
                 }, 1000);
                 setLoading(false);
             } else {
