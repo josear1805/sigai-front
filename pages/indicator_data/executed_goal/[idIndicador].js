@@ -24,17 +24,19 @@ import moment from "moment";
 
 import { TableComponent, PageHeaderComponent, ButtonComponent, ModalComponet } from "@components";
 
-const { Text, Link } = Typography;
+const { Text, Title } = Typography;
+
 
 const initialStateModalMonth = {
     show: false,
     loading: false,
     monthId: null,
+    monthName: ""
 };
 
 const GoalsEdit = (props) => {
     const dateNow = moment().format("YYYY-MM-DD");
-    const monthNumber =  parseInt(moment().format("M"));
+    const monthNumber =  parseInt(moment().subtract(1, 'months').format("M"));
     const router = useRouter();
     const [formMonth] = Form.useForm();
     const { idIndicador } = router.query;
@@ -44,9 +46,16 @@ const GoalsEdit = (props) => {
     const [generalData, setGeneralData] = useState({});
     const [listMetas, setListMetas] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [disabledButton, serDisabledButton] = useState(true)
-    const [buttonsHeader, setButtonsHeader] = useState([]);
     const [stateModalMonth, setStateModalMonth] = useState(initialStateModalMonth);
+
+    const buttonsHeader = [
+        {
+            href: "/indicator_data",
+            type: "primary",
+            name: "Volver",
+            className: "ant-btn-danger"
+        },
+    ];
 
     const navigation = [
         {
@@ -61,41 +70,27 @@ const GoalsEdit = (props) => {
         },
     ];
 
-    const handleGetMetas = async (id) => {
+    const handleExecutedGoals = async () => {
         setLoading(true)
         const response = await makeRequest({
             method: "POST",
-            path: "/indican/datosmetasindicador.php",
+            path: "/indican/datosresulrealindicador.php",
             body: {
-                idIndicador: id,
+                idIndicador,
                 idUsuario: dataUser.id_usuario,
+                tabla: "Resultados"
             },
         });
 
         if (response.estatus === 1) {
-            const { datosGenerales, listaMetas } = response;
-            let everyMonth = datosGenerales.fechaMaxIngresoDatos >= dateNow;
-            let currentMonth = datosGenerales.fechaModViva && datosGenerales.fechaModDatos !== null;
+            const { datosGenerales, listaResultadosIndicadores } = response;
 
-            if (!everyMonth && !datosGenerales.fechaModViva && datosGenerales.fechaModDatos === null) {
-                buttonsHeader.push({
-                    onclick: () => console.log("Solicitar Modificación"),
-                    type: "primary",
-                    name: "Solicitar Modificación",
-                })
-                setButtonsHeader([...buttonsHeader])
-            }
-
-            listaMetas.map((meta) => {
-                if (everyMonth) {
-                    meta.modify = everyMonth
-                } else {
-                    meta.modify = currentMonth? meta.idMes >= monthNumber: false
-                }
+            listaResultadosIndicadores.map((meta) => {
+                meta.modify =  dateNow <= datosGenerales.fechaMaxIngresoDatos? meta.idMes === monthNumber: false
             })
 
             setGeneralData(datosGenerales);
-            setListMetas(listaMetas);
+            setListMetas(listaResultadosIndicadores);
             setLoading(false)
         } else {
             notification.error({
@@ -112,52 +107,45 @@ const GoalsEdit = (props) => {
             ...prevState,
             show: true,
             loading: false,
-            monthId: month.idMes
+            monthId: month.idMes,
+            monthName: month.nbMes
         }));
         formMonth.setFieldsValue(month);
     }
 
     const handleSetMonth = (values) => {
+        setLoading(true);
+
         listMetas.map((meta) => {
             if (meta.idMes === stateModalMonth.monthId) {
                 meta.observacion = values.observacion;
                 meta.valor = values.valor;
             }
         })
-        setListMetas([...listMetas]);
-        serDisabledButton(false);
-        handleCloseModalMonth();
-    };
 
-    const handleCloseModalMonth = () => {
-        formMonth.resetFields();
-        setStateModalMonth(initialStateModalMonth);
-    };
-
-    const handleSaveMeta = () => {
-        setLoading(true);
-        let values = {
+        let parameters = {
             idUsuario: dataUser.id_usuario,
             idIndicador,
-            datos: listMetas
+            datos: [listMetas.find((meta) => meta.idMes === stateModalMonth.monthId)]
         }
-        console.log(values)
 
         makeRequest({
-            path: "/indican/inclumodmetas.php",
+            path: "/indican/inclumodresulreal.php",
             method: "POST",
-            body: values,
+            body: parameters,
         }).then((response) => {
             console.log("response", response)
             if (response.estatus === 1) {
-                notification.success({
-                    message:"Meta editada con Exito!",
-                    placement: "bottomRight",
-                });
-                setTimeout(() => {
-                    router.push("/indicator_data");
-                }, 1000);
-                setLoading(false);
+                // notification.success({
+                //     message:"Meta editada con Exito!",
+                //     placement: "bottomRight",
+                // });
+                // setTimeout(() => {
+                //     router.push("/indicator_data");
+                // }, 1000);
+                // setLoading(false);
+                // setListMetas([...listMetas]);
+                // handleCloseModalMonth();
             } else {
                 notification.error({
                     message:
@@ -167,6 +155,13 @@ const GoalsEdit = (props) => {
                 setLoading(false);
             }
         });
+
+        
+    };
+
+    const handleCloseModalMonth = () => {
+        formMonth.resetFields();
+        setStateModalMonth(initialStateModalMonth);
     };
 
     const columns = [
@@ -215,15 +210,15 @@ const GoalsEdit = (props) => {
     ];
 
     useEffect(() => {
-        idIndicador && handleGetMetas(idIndicador);
+        idIndicador && handleExecutedGoals();
     }, [idIndicador]);
 
     return (
         <LayoutApp navigation={navigation}>
             <PageHeaderComponent
-                title="Meta física planificada"
+                title="Meta física ejecutada"
                 reload={true}
-                handleReload={() => handleGetMetas(idIndicador)}
+                handleReload={() => handleExecutedGoals()}
                 button={true}
                 dataButton={buttonsHeader}
                 loading={loading}
@@ -249,26 +244,6 @@ const GoalsEdit = (props) => {
                             pageSize={12}
                         />
                     </Col>
-                    <Divider className="mb-1" />
-                    <Col xs={24} sm={12} md={6}>
-                        <ButtonComponent
-                            type="primary"
-                            title="Editar"
-                            onClick={handleSaveMeta}
-                            disabled={disabledButton}
-                            block
-                            className="ant-btn-success"
-                        />
-                    </Col>
-                    <Col xs={24} sm={12} md={6}>
-                        <ButtonComponent
-                            type="primary"
-                            title="Cancelar"
-                            path="/indicator_data"
-                            block
-                            className="ant-btn-danger"
-                        />
-                    </Col>
                 </Row>
             </Card>
 
@@ -289,6 +264,11 @@ const GoalsEdit = (props) => {
                     style={{ margin: "0px -12px" }}
                 >
                     <Row gutter={[24, 0]} justify="left" className="pl-4 pr-4">
+                        <Col span={24}>
+                            <Title level={5}>
+                                {`Del mes de:  ${stateModalMonth.monthName}`}
+                            </Title>
+                        </Col>
                         <Col span={24}>
                             <Form.Item
                                 label={"Valor"}

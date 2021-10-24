@@ -47,7 +47,7 @@ const PageHeaderComponent = (props) => {
                             key={key}
                             type={item.type}
                             title={item.name}
-                            onClick={item.onClick}
+                            onClick={() => props.handleOnClick(item.identifier)}
                             className={item.className}
                             loading={props.loading}
                             disabled={item.disabled || props.loading}

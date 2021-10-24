@@ -70,8 +70,8 @@ const DataIndicators = () => {
                             {record.permiso === "2" && (
                                 <Link
                                     key={2}
-                                    href="/indicator_data/goals/[idIndicador]"
-                                    as={`/indicator_data/goals/${record.id_indicador}`}
+                                    href="/indicator_data/planned_goal/[idIndicador]"
+                                    as={`/indicator_data/planned_goal/${record.id_indicador}`}
                                     passHref
                                 >
                                     <Tag
@@ -86,13 +86,20 @@ const DataIndicators = () => {
                         </Col>
                         <Col span={8}>
                             {record.permiso === "2" && (
-                                <Tag
-                                    icon={<EditOutlined />}
-                                    color="processing"
-                                    className="tag-table"
+                                <Link
+                                    key={3}
+                                    href="/indicator_data/executed_goal/[idIndicador]"
+                                    as={`/indicator_data/executed_goal/${record.id_indicador}`}
+                                    passHref
                                 >
-                                    M. F. ejecutada
-                                </Tag>
+                                    <Tag
+                                        icon={<EditOutlined />}
+                                        color="processing"
+                                        className="tag-table"
+                                    >
+                                        M. F. ejecutada
+                                    </Tag>
+                                </Link>
                             )}
                         </Col>
                     </Row>
