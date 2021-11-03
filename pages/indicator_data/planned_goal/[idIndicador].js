@@ -32,11 +32,18 @@ const initialStateModalMonth = {
     monthId: null,
 };
 
+const initialStateModalRequest = {
+    show: false,
+    loading: false,
+    monthId: null,
+};
+
 const GoalsEdit = (props) => {
     const dateNow = moment().format("YYYY-MM-DD");
+    const year = moment().format("YYYY");
     const monthNumber =  parseInt(moment().format("M"));
     const router = useRouter();
-    const [formMonth] = Form.useForm();
+    const [formMonth, formRequestModification] = Form.useForm();
     const { idIndicador } = router.query;
     const { dataUser } = useSelector((stateData) => stateData.global);
     // const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
@@ -45,12 +52,9 @@ const GoalsEdit = (props) => {
     const [listMetas, setListMetas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [disabledButton, serDisabledButton] = useState(true)
-    const [buttonsHeader, setButtonsHeader] = useState([{
-        identifier: "request_modification",
-        type: "primary",
-        name: "Solicitar Modificación",
-    }]);
+    const [buttonsHeader, setButtonsHeader] = useState([]);
     const [stateModalMonth, setStateModalMonth] = useState(initialStateModalMonth);
+    const [stateModalRequest, setStateModalRequest] = useState(initialStateModalRequest);
 
     const navigation = [
         {
@@ -73,6 +77,8 @@ const GoalsEdit = (props) => {
             body: {
                 idIndicador: id,
                 idUsuario: dataUser.id_usuario,
+                tipo: 1,
+                anio: year
             },
         });
 
@@ -82,12 +88,14 @@ const GoalsEdit = (props) => {
             let currentMonth = datosGenerales.fechaModViva && datosGenerales.fechaModDatos !== null;
 
             if (!everyMonth && !datosGenerales.fechaModViva && datosGenerales.fechaModDatos === null) {
-                // buttonsHeader.push({
-                //     identifier: "request_modification",
-                //     type: "primary",
-                //     name: "Solicitar Modificación",
-                // })
-                // setButtonsHeader([...buttonsHeader])
+                if (buttonsHeader.length === 0 ) {
+                    buttonsHeader.push({
+                        identifier: "request_modification",
+                        type: "primary",
+                        name: "Solicitar Modificación",
+                    })
+                    setButtonsHeader([...buttonsHeader])
+                }
             }
 
             listaMetas.map((meta) => {
@@ -112,7 +120,12 @@ const GoalsEdit = (props) => {
     };
 
     const handleClickButtonsHeader = (identifier) => {
-        console.log("ESTO ES UNA PRUEBA", identifier)
+        if (identifier === "request_modification") {
+            setStateModalRequest((prevState) => ({
+                ...prevState,
+                show: true,
+            }));
+        }
     }
 
     const handleOpenModalMonth = (month) => {
@@ -137,10 +150,44 @@ const GoalsEdit = (props) => {
         handleCloseModalMonth();
     };
 
+    const handleSendRequest = (values) => {
+        setLoading(true);
+        values.idUsuario = dataUser.id_usuario
+        values.idIndicador = idIndicador
+        values.tipo = 1
+
+        makeRequest({
+            path: "/indican/solicitudes.php",
+            method: "POST",
+            body: values,
+        }).then((response) => {
+            if (response.estatus === 1) {
+                notification.success({
+                    message:"Solicitud de modificación realizada con exito!",
+                    placement: "bottomRight",
+                });
+                handleGetMetas(idIndicador);
+                setLoading(false);
+            } else {
+                notification.error({
+                    message:
+                    "Ha ocurrido un error interno, por favor intente nuevamente!",
+                    placement: "bottomRight",
+                });
+                setLoading(false);
+            }
+        });
+    }
+
     const handleCloseModalMonth = () => {
         formMonth.resetFields();
         setStateModalMonth(initialStateModalMonth);
     };
+
+    const handleCloseModalRequest = () => {
+        formRequestModification?.resetFields();
+        setStateModalRequest(initialStateModalRequest);
+    }
 
     const handleSaveMeta = () => {
         setLoading(true);
@@ -149,14 +196,12 @@ const GoalsEdit = (props) => {
             idIndicador,
             datos: listMetas
         }
-        console.log(values)
 
         makeRequest({
             path: "/indican/inclumodmetas.php",
             method: "POST",
             body: values,
         }).then((response) => {
-            console.log("response", response)
             if (response.estatus === 1) {
                 notification.success({
                     message:"Meta editada con Exito!",
@@ -344,6 +389,67 @@ const GoalsEdit = (props) => {
                                 onClick={handleCloseModalMonth}
                                 block
                                 className="ant-btn-danger"
+                            />
+                        </Col>
+                    </Row>
+                </Form>
+            </ModalComponet>
+
+            <ModalComponet
+                show={stateModalRequest.show}
+                title="Solicitud de edición"
+                width={400}
+                loading={loading}
+                confirmButton={false}
+                cancelButton={false}
+                handleCancel={handleCloseModalRequest}
+            >
+                <Form
+                    layout="vertical"
+                    name="product"
+                    form={formRequestModification}
+                    onFinish={handleSendRequest}
+                    style={{ margin: "0px -12px" }}
+                >
+                    <Row gutter={[24, 0]} justify="left" className="pl-4 pr-4">
+                        <Col span={24}>
+                            <Form.Item label={"Descripción de la solicitud"} name={"observacion"}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Descripción requerido",
+                                    },
+                                ]}
+                            >
+                                <Input.TextArea
+                                    placeholder={"Descripción de la solicitud"}
+                                    type={"text"}
+                                    disabled={loading}
+                                    rows={2}
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row gutter={[16, 16]} justify="space-around">
+                        <Col xs={24} sm={12} md={12}>
+                            <ButtonComponent
+                                type="primary"
+                                title="Solicitar"
+                                htmlType="submit"
+                                block
+                                className="ant-btn-success"
+                                loading={loading}
+                            />
+                        </Col>
+                        <Col xs={24} sm={12} md={12}>
+                            <ButtonComponent
+                                type="primary"
+                                title="Cancelar"
+                                onClick={handleCloseModalRequest}
+                                block
+                                className="ant-btn-danger"
+                                loading={loading}
                             />
                         </Col>
                     </Row>
