@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import LayoutApp from "src/layout";
-import { Row, Col, Card, Select, Spin, Tag } from "antd";
-import { EyeOutlined, EditOutlined } from "@ant-design/icons";
+import { Row, Col, Card, Select, Spin, Tag, Tooltip } from "antd";
+import { 
+    EyeOutlined, 
+    EditOutlined,
+    BarChartOutlined,
+    LineChartOutlined,
+    AreaChartOutlined
+} from "@ant-design/icons";
 import { makeRequest } from "src/helpers";
 import { TableComponent, PageHeaderComponent } from "@components";
 import Link from 'next/link'
+import { setIndicatorData } from "src/redux/actions/indicatorDataActions";
 
 const initialState = {
     listaVicePresidencias: [],
@@ -18,6 +25,8 @@ const initialState = {
 };
 
 const DataIndicators = () => {
+    const dispatch = useDispatch();
+    const { indicatorData } = useSelector((stateData) => stateData);
     const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
 
     const [state, setState] = useState(initialState);
@@ -43,64 +52,111 @@ const DataIndicators = () => {
             dataIndex: "id_indicador",
             key: "id_indicador",
             search: false,
-            width: "400px",
+            // width: "400px",
             render: (text, record) => {
                 return (
                     <Row gutter={[4, 0]} justify="space-around" align="middle">
-                        <Col span={8}>
-                            {(record.permiso === "1" ||
-                                record.permiso === "2") && (
+                        <Col span={4}>
+                            {(record.permiso === "1" || record.permiso === "2") && (
                                 <Link
                                     key={1}
-                                    href="/charts/[idIndicador]"
-                                    as={`/charts/${record.id_indicador}`}
-                                    passHref
+                                    href={`/charts/${record.id_indicador}`}
                                 >
-                                    <Tag
-                                        icon={<EyeOutlined />}
-                                        color="success"
-                                        className="tag-table"
+                                    <Tooltip
+                                        title="Ver detalles de indicador"
                                     >
-                                        Ver
-                                    </Tag>
+                                        <Tag
+                                            icon={<EyeOutlined />}
+                                            color="success"
+                                            className="tag-table"
+                                        />
+                                    </Tooltip>
                                 </Link>
                             )}
                         </Col>
-                        <Col span={8}>
+                        <Col span={4}>
                             {record.permiso === "2" && (
                                 <Link
                                     key={2}
-                                    href="/indicator_data/planned_goal/[idIndicador]"
-                                    as={`/indicator_data/planned_goal/${record.id_indicador}`}
-                                    passHref
+                                    href={`/indicator_data/meta_fisica_planificada/${record.id_indicador}`}
                                 >
-                                    <Tag
-                                        icon={<EditOutlined />}
-                                        color="processing"
-                                        className="tag-table"
+                                    <Tooltip
+                                        title="Editar meta física planificada"
                                     >
-                                        M. F. planificada
-                                    </Tag>
+                                        <Tag
+                                            icon={<BarChartOutlined />}
+                                            color="processing"
+                                            className="tag-table"
+                                        />
+                                    </Tooltip>
                                 </Link>
                             )}
                         </Col>
-                        <Col span={8}>
+                        <Col span={4}>
                             {record.permiso === "2" && (
                                 <Link
                                     key={3}
-                                    href="/indicator_data/executed_goal/[idIndicador]"
-                                    as={`/indicator_data/executed_goal/${record.id_indicador}`}
-                                    passHref
+                                    href={`/indicator_data/meta_fisica_ejecutada/${record.id_indicador}`}
                                 >
-                                    <Tag
-                                        icon={<EditOutlined />}
-                                        color="processing"
-                                        className="tag-table"
+                                    <Tooltip
+                                        title="Editar meta física ejecutada"
                                     >
-                                        M. F. ejecutada
-                                    </Tag>
+                                        <Tag
+                                            icon={<LineChartOutlined />}
+                                            color="processing"
+                                            className="tag-table"
+                                        />
+                                    </Tooltip>
                                 </Link>
                             )}
+                        </Col>
+                        <Col span={4}>
+                            <Link
+                                key={1}
+                                href={`/indicator_data/presupuesto_planificado/${record.id_indicador}`}
+                            >
+                                <Tooltip
+                                    title="Editar presupuesto planificado"
+                                >
+                                    <Tag
+                                        icon={<BarChartOutlined />}
+                                        color="processing"
+                                        className="tag-table"
+                                    />
+                                </Tooltip>
+                            </Link>
+                        </Col>
+                        <Col span={4}>
+                            <Link
+                                key={2}
+                                href={`/indicator_data/presupuesto_ejecutado/${record.id_indicador}`}
+                            >
+                                <Tooltip
+                                    title="Editar presupuesto ejecutado"
+                                >
+                                    <Tag
+                                        icon={<LineChartOutlined />}
+                                        color="processing"
+                                        className="tag-table"
+                                    />
+                                </Tooltip>
+                            </Link>
+                        </Col>
+                        <Col span={4}>
+                            <Link
+                                key={3}
+                                href={`/indicator_data/real/${record.id_indicador}`}
+                            >
+                                <Tooltip
+                                    title="Editar valor reales"
+                                >
+                                    <Tag
+                                        icon={<AreaChartOutlined />}
+                                        color="processing"
+                                        className="tag-table"
+                                    />
+                                </Tooltip>
+                            </Link>
                         </Col>
                     </Row>
                 );
@@ -119,19 +175,23 @@ const DataIndicators = () => {
                 idPerfil: id_perfil,
             },
         });
+        console.log("RESPONSE", response, indicatorData)
 
-        if (response.Estatus) {
+        if (response.Estatus == 1) {
             setState((prevState) => ({
                 ...prevState,
-                listaIndicadores: response.Indicadores,
-                listaGerencias: response.ListaGerencias,
-                listaVicePresidencias: response.ListaVicePresidencias,
+                listaIndicadores: [...response.Indicadores],
+                listaGerencias: [...response.ListaGerencias],
+                listaVicePresidencias: [...response.ListaVicePresidencias],
             }));
+
             setLoading(false)
         }
+        
     };
 
-    const handleChangueVicePresidencia = (idVP) => {
+    const handleChangueVicePresidencia = (idVP, setGerencia = true) => {
+        console.log("handleChangueVicePresidencia", state);
         const { listaGerencias } = state;
         let listaGerenciasMostrar = listaGerencias.filter(
             (item, index) => item.id_vice_presidencia == idVP
@@ -144,9 +204,18 @@ const DataIndicators = () => {
             idGerencia: 0,
             listaIndicadoresMostrar: [],
         }));
+
+        dispatch(setIndicatorData({
+            listaVicePresidencias: state.listaVicePresidencias,
+            idVicePresidencia: idVP,
+            listaGerenciasMostrar,
+            idGerencia: 0,
+            listaIndicadoresMostrar: [],
+        }));
     };
 
     const handleChangueGerencia = (idGerencia) => {
+        console.log("handleChangueGerencia", state);
         const { listaIndicadores } = state;
         let listaIndicadoresMostrar = listaIndicadores.filter(
             (item, index) => item.id_gerencia == idGerencia
@@ -157,10 +226,29 @@ const DataIndicators = () => {
             idGerencia,
             listaIndicadoresMostrar,
         }));
+
+        dispatch(setIndicatorData({
+            idGerencia,
+            listaIndicadoresMostrar,
+        }));
     };
 
     useEffect(() => {
-        dataUser && handleGetData();
+        if (dataUser) {
+            if (indicatorData.idVicePresidencia > 0 && indicatorData.idGerencia > 0) {
+                setState((prevState) => ({
+                    ...prevState,
+                    listaVicePresidencias: indicatorData.listaVicePresidencias,
+                    idVicePresidencia: indicatorData.idVicePresidencia,
+                    listaGerenciasMostrar: indicatorData.listaGerenciasMostrar,
+                    idGerencia: indicatorData.idGerencia,
+                    listaIndicadoresMostrar: indicatorData.listaIndicadoresMostrar,
+                }));
+                setLoading(false)
+            } else {
+                handleGetData();
+            }
+        } 
     }, []);
 
     return (
