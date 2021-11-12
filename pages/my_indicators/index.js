@@ -46,17 +46,17 @@ const MyIndicators = (props) => {
             method: "POST",
             path: "/indican/listavpgerencia.php",
             body: { 
-                idusuario: dataUser.id_usuario, 
-                idperfil: dataUser.id_perfil 
+                idUsuario: dataUser.id_usuario, 
+                idPerfil: dataUser.id_perfil 
             }
         })
 
-        if (response.Estatus === 1) {
-            const { ListaGerencias, ListaVicePresidencias } = response
+        if (response.estatus === 1) {
+            const { listaGerencias, listaVicePresidencias } = response
             setState((prevState) => ({
                 ...prevState,
-                listaGerencias: ListaGerencias,
-                listaVicePresidencias: ListaVicePresidencias,
+                listaGerencias,
+                listaVicePresidencias,
             }))
             setLoading(false)
         } else {
@@ -171,7 +171,7 @@ const MyIndicators = (props) => {
     const handleChangueVicePresidencia = (id) => {
         const { listaGerencias } = state;
         let auxListaGerencias = listaGerencias.filter((item) =>
-            item.id_vice_presidencia === id
+            item.idVicePresidencia === id
         )
 
         setState((prevState) => ({
@@ -226,7 +226,7 @@ const MyIndicators = (props) => {
                                 <Option value="0" key="vp-0">Seleccione</Option>
                                 {
                                     state.listaVicePresidencias && state.listaVicePresidencias.map((item) => (
-                                        <Option value={item.id_vice_presidencia} key={`vp-${item.id_vice_presidencia}`}>{item.nb_vicepresidencia}</Option>
+                                        <Option value={item.idVicePresidencia} key={`vp-${item.idVicePresidencia}`}>{item.nbVicePresidencia}</Option>
                                     ))
                                 }
                             </Select>
@@ -243,7 +243,7 @@ const MyIndicators = (props) => {
                                 <Option value="0" key="ge-0">Seleccione</Option>
                                 {
                                     state.auxListaGerencias && state.auxListaGerencias.map((item) => (
-                                        <Option value={item.id_gerencia} key={`ge-${item.id_gerencia}`}>{item.nb_gerencia}</Option>
+                                        <Option value={item.idGerencia} key={`ge-${item.idGerencia}`}>{item.nbGerencia}</Option>
                                     ))
                                 }
                             </Select>
