@@ -5,7 +5,7 @@ import { Row, Col, Card, Select, Spin, Button, Tooltip, notification } from 'ant
 import { EyeOutlined } from '@ant-design/icons';
 import Link from 'next/link'
 import { makeRequest } from 'src/helpers';
-import { PageHeaderComponent } from '@components';
+import { PageHeaderComponent, SelectCategoriasComponent } from '@components';
 
 const { Option } = Select;
 
@@ -211,7 +211,13 @@ const MyIndicators = (props) => {
                 button={false}
                 loading={loading}
                 navigation={navigation}
-            />
+            >
+                <Row gutter={[24, 24]}>
+                    <Col xs={24} md={12} lg={6}>
+                        <SelectCategoriasComponent />
+                    </Col>
+                </Row>
+            </PageHeaderComponent>
 
             <Spin tip="Cargando..." spinning={loading}>
                 <Card >

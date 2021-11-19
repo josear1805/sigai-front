@@ -78,19 +78,20 @@ const GoalsEdit = (props) => {
             body: {
                 idIndicador,
                 idUsuario: dataUser.id_usuario,
-                tabla: "Resultados"
+                tipo: 5,
+                anio: "2021",
             },
         });
 
         if (response.estatus === 1) {
-            const { datosGenerales, listaResultadosIndicadores } = response;
+            const { datosGenerales, listaMetas } = response;
 
-            listaResultadosIndicadores.map((meta) => {
+            listaMetas.map((meta) => {
                 meta.modify =  dateNow <= datosGenerales.fechaMaxIngresoDatos? meta.idMes === monthNumber: false
             })
 
             setGeneralData(datosGenerales);
-            setListMetas(listaResultadosIndicadores);
+            setListMetas(listaMetas);
             setLoading(false)
         } else {
             notification.error({
@@ -126,6 +127,8 @@ const GoalsEdit = (props) => {
         let parameters = {
             idUsuario: dataUser.id_usuario,
             idIndicador,
+            idTipo: 5,
+            anio: "2021",
             datos: [listMetas.find((meta) => meta.idMes === stateModalMonth.monthId)]
         }
 
@@ -136,16 +139,16 @@ const GoalsEdit = (props) => {
         }).then((response) => {
             console.log("response", response)
             if (response.estatus === 1) {
-                // notification.success({
-                //     message:"Meta editada con Exito!",
-                //     placement: "bottomRight",
-                // });
+                notification.success({
+                    message:"Meta editada con Exito!",
+                    placement: "bottomRight",
+                });
                 // setTimeout(() => {
                 //     router.push("/indicator_data");
                 // }, 1000);
-                // setLoading(false);
-                // setListMetas([...listMetas]);
-                // handleCloseModalMonth();
+                setLoading(false);
+                setListMetas([...listMetas]);
+                handleCloseModalMonth();
             } else {
                 notification.error({
                     message:

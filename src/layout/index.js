@@ -7,7 +7,8 @@ import FooterApp from "./footer";
 import ContentApp from "./content";
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector, connect } from 'react-redux';
-import { setUser, logout } from "src/redux/actions/globalActions";
+import { setUser, logout, getListadosCategorias } from "src/redux/actions/globalActions";
+
 
 const LayoutApp = (props) => {
     const router = useRouter();
@@ -18,6 +19,7 @@ const LayoutApp = (props) => {
     useEffect(() => {
         !user && router.push("/login");
         !dataUser?.nombres && dispatch(setUser(user))
+        dispatch(getListadosCategorias())
     }, [])
 
     return (

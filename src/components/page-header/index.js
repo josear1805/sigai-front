@@ -85,6 +85,7 @@ const PageHeaderComponent = (props) => {
                 subTitle={props.subTitle || null}
                 extra={handleGetExtra()}
             />
+            {props.children}
         </Card>
     );
 };

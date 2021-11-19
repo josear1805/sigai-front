@@ -10,9 +10,11 @@ import {
     AreaChartOutlined
 } from "@ant-design/icons";
 import { makeRequest } from "src/helpers";
-import { TableComponent, PageHeaderComponent } from "@components";
+import { TableComponent, PageHeaderComponent, SelectCategoriasComponent } from "@components";
 import Link from 'next/link'
 import { setIndicatorData } from "src/redux/actions/indicatorDataActions";
+
+const { Option } = Select;
 
 const initialState = {
     listaVicePresidencias: [],
@@ -261,7 +263,13 @@ const DataIndicators = () => {
                 // dataButton={buttonsHeader}
                 loading={loading}
                 navigation={navigation}
-            />
+            >
+                <Row gutter={[24, 24]}>
+                    <Col xs={24} md={12} lg={6}>
+                        <SelectCategoriasComponent />
+                    </Col>
+                </Row>
+            </PageHeaderComponent>
 
             <Spin tip="Cargando..." spinning={loading}>
                 {!loading && (
