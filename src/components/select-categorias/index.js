@@ -1,13 +1,16 @@
-import { useSelector } from 'react-redux';
-import { Select } from "antd";
+import { useSelector, useDispatch } from 'react-redux';
+import { Select, notification } from "antd";
 import { makeRequest } from 'src/helpers';
+import { setUser } from "src/redux/reducers/globalSlice";
 
 const { Option } = Select;
 
 const SelectCategoriasComponent = () => {
-    const { listaCategorias } = useSelector((stateData) => stateData.global)
+    const dispatch = useDispatch();
+
+    const { dataUser, listaCategorias } = useSelector((stateData) => stateData.global)
     
-    function onChange(value) {
+    function handleChangeCategory(value) {
         console.log(`selected ${value}`);
         makeRequest({
             method: "POST",
@@ -17,27 +20,22 @@ const SelectCategoriasComponent = () => {
                 id: value
             }
         }).then(response => {
-            console.log("CASA", response);
-            // if (response.estatus == 1) {
-            //     dispatch({
-            //         type: types.setListaCategorias,
-            //         payload: response.categorias
-            //     })
-    
-            // }
+            if (response.estatus == 1) {
+                notification.success({
+                    message: response.mensaje,
+                    placement: "bottomRight",
+                });
+                if (process.browser) {
+                    const token = JSON.parse(localStorage.getItem("token_sigai"))
+                    dispatch(setUser(token))
+                }
+            } else {
+                notification.error({
+                    message: response.mensaje,
+                    placement: "bottomRight",
+                });
+            }
         })
-    }
-    
-    function onBlur() {
-        console.log('blur');
-    }
-    
-    function onFocus() {
-        console.log('focus');
-    }
-    
-    function onSearch(val) {
-        console.log('search:', val);
     }
 
     return (
@@ -46,10 +44,8 @@ const SelectCategoriasComponent = () => {
             style={{ width: "100%" }}
             placeholder="Selecione una categoría"
             optionFilterProp="children"
-            onChange={onChange}
-            // onFocus={onFocus}
-            // onBlur={onBlur}
-            // onSearch={onSearch}
+            onChange={handleChangeCategory}
+            value={dataUser.idCategoria? dataUser.idCategoria: 0}
             filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }

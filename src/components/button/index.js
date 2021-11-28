@@ -18,7 +18,7 @@ const ButtonComponent = ({
     shape
 }) => {
     return path ? (
-        <Link href={path} passHref>
+        <Link href={path}>
             <Button
                 type={type}
                 icon={icon}

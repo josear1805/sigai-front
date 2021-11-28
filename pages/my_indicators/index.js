@@ -6,6 +6,7 @@ import { EyeOutlined } from '@ant-design/icons';
 import Link from 'next/link'
 import { makeRequest } from 'src/helpers';
 import { PageHeaderComponent, SelectCategoriasComponent } from '@components';
+import { useDispatch, useSelector } from "react-redux";
 
 const { Option } = Select;
 
@@ -27,7 +28,7 @@ const initialState = {
 }
 
 const MyIndicators = (props) => {
-    const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
+    const { dataUser, loadingGeneral } = useSelector((stateData) => stateData.global)
 
     const [state, setState] = useState(initialState);
     const [loading, setLoading] = useState(false);
@@ -46,8 +47,8 @@ const MyIndicators = (props) => {
             method: "POST",
             path: "/indican/listavpgerencia.php",
             body: { 
-                idUsuario: dataUser.id_usuario, 
-                idPerfil: dataUser.id_perfil 
+                idUsuario: dataUser.idUsuario, 
+                idPerfil: dataUser.idPerfil 
             }
         })
 
@@ -74,8 +75,8 @@ const MyIndicators = (props) => {
             method: "POST",
             path: "/indican/listagraficosgerencia.php",
             body: { 
-                idUsuario: dataUser.id_usuario, 
-                idPerfil: dataUser.id_perfil,
+                idUsuario: dataUser.idUsuario, 
+                idPerfil: dataUser.idPerfil,
                 idGerencia: id_gerencia
             }
         })
@@ -199,8 +200,12 @@ const MyIndicators = (props) => {
     }
 
     useEffect(() => {
-        dataUser && handleGetListaVPGerencia()
+        !loadingGeneral && dataUser.idUsuario && handleGetListaVPGerencia()
     }, [])
+
+    useEffect(() => {
+        !loadingGeneral && dataUser.idUsuario && handleGetListaVPGerencia()
+    }, [loadingGeneral])
 
     return (
         <LayoutApp>
@@ -275,7 +280,7 @@ const MyIndicators = (props) => {
                                                         </Select>
                                                     </Col>
                                                     <Col>
-                                                        <Link key={1} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[0]?.idIndicador}`} passHref>
+                                                        <Link key={1} href={`/charts/${state.listaIndicadoresMostrar[0]?.idIndicador}`}>
                                                             <Tooltip title="Ver gráfica">
                                                                 <Button
                                                                     icon={<EyeOutlined />}
@@ -309,7 +314,7 @@ const MyIndicators = (props) => {
                                                         </Select>
                                                     </Col>
                                                     <Col>
-                                                        <Link key={2} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[1]?.idIndicador}`} passHref>
+                                                        <Link key={2} href={`/charts/${state.listaIndicadoresMostrar[1]?.idIndicador}`}>
                                                             <Tooltip title="Ver gráfica">
                                                                 <Button
                                                                     icon={<EyeOutlined />}
@@ -343,7 +348,7 @@ const MyIndicators = (props) => {
                                                         </Select>
                                                     </Col>
                                                     <Col>
-                                                        <Link key={1} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[2]?.idIndicador}`} passHref>
+                                                        <Link key={1} href={`/charts/${state.listaIndicadoresMostrar[2]?.idIndicador}`}>
                                                             <Tooltip title="Ver gráfica">
                                                                 <Button
                                                                     icon={<EyeOutlined />}
@@ -377,7 +382,7 @@ const MyIndicators = (props) => {
                                                         </Select>
                                                     </Col>
                                                     <Col>
-                                                        <Link key={1} href="/charts/[idIndicador]" as={`/charts/${state.listaIndicadoresMostrar[3]?.idIndicador}`} passHref>
+                                                        <Link key={1} href={`/charts/${state.listaIndicadoresMostrar[3]?.idIndicador}`}>
                                                             <Tooltip title="Ver gráfica">
                                                                 <Button
                                                                     icon={<EyeOutlined />}

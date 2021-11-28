@@ -41,20 +41,27 @@ const initialStateModalRequest = {
 const GoalsEdit = (props) => {
     const dateNow = moment().format("YYYY-MM-DD");
     const year = moment().format("YYYY");
+    const tipoIndicador = 1;
     const monthNumber =  parseInt(moment().format("M"));
     const router = useRouter();
     const [formMonth, formRequestModification] = Form.useForm();
     const { idIndicador } = router.query;
-    const { dataUser } = useSelector((stateData) => stateData.global);
-    // const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
+    const { dataUser, loadingGeneral } = useSelector((stateData) => stateData.global);
 
     const [generalData, setGeneralData] = useState({});
     const [listMetas, setListMetas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [disabledButton, serDisabledButton] = useState(true)
-    const [buttonsHeader, setButtonsHeader] = useState([]);
     const [stateModalMonth, setStateModalMonth] = useState(initialStateModalMonth);
     const [stateModalRequest, setStateModalRequest] = useState(initialStateModalRequest);
+    const [buttonsHeader, setButtonsHeader] = useState([
+        {
+            type: "primary",
+            name: "Volver",
+            href: "/indicator_data",
+            className: "ant-btn-danger" 
+        }
+    ]);
 
     const navigation = [
         {
@@ -76,8 +83,8 @@ const GoalsEdit = (props) => {
             path: "/indican/datosmetasindicador.php",
             body: {
                 idIndicador: id,
-                idUsuario: dataUser.id_usuario,
-                tipo: 1,
+                idUsuario: dataUser.idUsuario,
+                tipo: tipoIndicador,
                 anio: year
             },
         });
@@ -89,7 +96,7 @@ const GoalsEdit = (props) => {
 
             if (!everyMonth && !datosGenerales.fechaModViva && datosGenerales.fechaModDatos === null) {
                 if (buttonsHeader.length === 0 ) {
-                    buttonsHeader.push({
+                    buttonsHeader.unshift({
                         identifier: "request_modification",
                         type: "primary",
                         name: "Solicitar Modificación",
@@ -111,8 +118,7 @@ const GoalsEdit = (props) => {
             setLoading(false)
         } else {
             notification.error({
-                message:
-                "Ha ocurrido un error interno, por favor intente nuevamente!",
+                message: response.mensaje,
                 placement: "bottomRight",
             });
             setLoading(false)
@@ -152,9 +158,9 @@ const GoalsEdit = (props) => {
 
     const handleSendRequest = (values) => {
         setLoading(true);
-        values.idUsuario = dataUser.id_usuario
+        values.idUsuario = dataUser.idUsuario
         values.idIndicador = idIndicador
-        values.tipo = 1
+        values.tipo = tipoIndicador
 
         makeRequest({
             path: "/indican/solicitudes.php",
@@ -170,8 +176,7 @@ const GoalsEdit = (props) => {
                 setLoading(false);
             } else {
                 notification.error({
-                    message:
-                    "Ha ocurrido un error interno, por favor intente nuevamente!",
+                    message: response.mensaje,
                     placement: "bottomRight",
                 });
                 setLoading(false);
@@ -192,9 +197,10 @@ const GoalsEdit = (props) => {
     const handleSaveMeta = () => {
         setLoading(true);
         let values = {
-            idUsuario: dataUser.id_usuario,
+            idUsuario: dataUser.idUsuario,
             idIndicador,
-            datos: listMetas
+            datos: listMetas,
+            tipo: tipoIndicador
         }
 
         makeRequest({
@@ -213,8 +219,7 @@ const GoalsEdit = (props) => {
                 setLoading(false);
             } else {
                 notification.error({
-                    message:
-                    "Ha ocurrido un error interno, por favor intente nuevamente!",
+                    message: response.mensaje,
                     placement: "bottomRight",
                 });
                 setLoading(false);
@@ -268,8 +273,12 @@ const GoalsEdit = (props) => {
     ];
 
     useEffect(() => {
-        idIndicador && handleGetMetas(idIndicador);
-    }, [idIndicador]);
+        idIndicador && dataUser.idUsuario && handleGetMetas(idIndicador);
+    }, []);
+
+    useEffect(() => {
+        !loadingGeneral && dataUser.idUsuario && handleGetMetas(idIndicador);
+    }, [loadingGeneral]);
 
     return (
         <LayoutApp navigation={navigation}>

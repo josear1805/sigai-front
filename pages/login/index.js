@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { makeRequest } from "src/helpers";
 
-
 const { Header, Footer } = Layout;
 
 const Signin = () => {
@@ -18,13 +17,13 @@ const Signin = () => {
 
         const response = await makeRequest({
             method: "POST",
-            path: "/indican/validarUsuario.php",
-            body: {usuario, clave}
+            path: "/indican/login.php",
+            body: {usuario, clave},
+            withToken: false
         })
 
-        if (response.Estatus === 1) {
-            const { DatosUsuario } = response;
-            localStorage.setItem("user", JSON.stringify(DatosUsuario));
+        if (response.estatus === 1) {
+            localStorage.setItem("token_sigai", JSON.stringify(response.token))
             notification.success({
                 message: 'Inicio de Sesión Exitoso!!',
                 placement: 'bottomRight',
@@ -32,15 +31,14 @@ const Signin = () => {
             setTimeout(() => {
                 setLoading(false)
                 router.push("/");
-            }, 100);
+            }, 1000);
         } else {
             notification.error({
-                message: 'Error con los datos Ingresados!!',
+                message: response.mensaje,
                 placement: 'bottomRight',
             });
-            setTimeout(() => { setLoading(false) }, 100);
+            setTimeout(() => { setLoading(false) }, 1000);
         }
-
     };
 
     return (

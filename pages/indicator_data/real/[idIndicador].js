@@ -36,12 +36,12 @@ const initialStateModalMonth = {
 
 const GoalsEdit = (props) => {
     const dateNow = moment().format("YYYY-MM-DD");
+    const tipoIndicador = 5;
     const monthNumber =  parseInt(moment().subtract(1, 'months').format("M"));
     const router = useRouter();
     const [formMonth] = Form.useForm();
     const { idIndicador } = router.query;
-    const { dataUser } = useSelector((stateData) => stateData.global);
-    // const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
+    const { dataUser, loadingGeneral } = useSelector((stateData) => stateData.global);
 
     const [generalData, setGeneralData] = useState({});
     const [listMetas, setListMetas] = useState([]);
@@ -50,9 +50,9 @@ const GoalsEdit = (props) => {
 
     const buttonsHeader = [
         {
-            href: "/indicator_data",
             type: "primary",
             name: "Volver",
+            onClick: () => router.back(),
             className: "ant-btn-danger"
         },
     ];
@@ -77,8 +77,8 @@ const GoalsEdit = (props) => {
             path: "/indican/datosresulrealindicador.php",
             body: {
                 idIndicador,
-                idUsuario: dataUser.id_usuario,
-                tipo: 5,
+                idUsuario: dataUser.idUsuario,
+                tipo: tipoIndicador,
                 anio: "2021",
             },
         });
@@ -95,8 +95,7 @@ const GoalsEdit = (props) => {
             setLoading(false)
         } else {
             notification.error({
-                message:
-                "Ha ocurrido un error interno, por favor intente nuevamente!",
+                message: response.mensaje,
                 placement: "bottomRight",
             });
             setLoading(false)
@@ -125,9 +124,9 @@ const GoalsEdit = (props) => {
         })
 
         let parameters = {
-            idUsuario: dataUser.id_usuario,
+            idUsuario: dataUser.idUsuario,
             idIndicador,
-            idTipo: 5,
+            idTipo: tipoIndicador,
             anio: "2021",
             datos: [listMetas.find((meta) => meta.idMes === stateModalMonth.monthId)]
         }
@@ -137,7 +136,6 @@ const GoalsEdit = (props) => {
             method: "POST",
             body: parameters,
         }).then((response) => {
-            console.log("response", response)
             if (response.estatus === 1) {
                 notification.success({
                     message:"Meta editada con Exito!",
@@ -151,8 +149,7 @@ const GoalsEdit = (props) => {
                 handleCloseModalMonth();
             } else {
                 notification.error({
-                    message:
-                    "Ha ocurrido un error interno, por favor intente nuevamente!",
+                    message: response.mensaje,
                     placement: "bottomRight",
                 });
                 setLoading(false);
@@ -213,8 +210,12 @@ const GoalsEdit = (props) => {
     ];
 
     useEffect(() => {
-        idIndicador && handleExecutedGoals();
-    }, [idIndicador]);
+        idIndicador && dataUser.idUsuario && handleExecutedGoals();
+    }, []);
+
+    useEffect(() => {
+        !loadingGeneral && dataUser.idUsuario && handleExecutedGoals();
+    }, [loadingGeneral]);
 
     return (
         <LayoutApp navigation={navigation}>

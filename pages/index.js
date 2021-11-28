@@ -14,6 +14,7 @@ import {
 } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { makeRequest } from "src/helpers";
+import { useSelector } from "react-redux";
 
 const ChartColumn = dynamic(() => import("src/components/charts/column"), {
     ssr: false,
@@ -32,17 +33,17 @@ const initialState = {
 };
 
 const Home = (props) => {
-    const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
+    const { dataUser, loadingGeneral } = useSelector((stateData) => stateData.global)
     const [state, setState] = useState(initialState);
     
     const handleGetListaIndicadores = async () => {
-        const { id_usuario, id_perfil } = dataUser;
+        const { idUsuario, idPerfil } = dataUser;
         const response = await makeRequest({
             method: "POST",
             path: "/indican/listagraficosasociados.php",
             body: {
-                idusuario: id_usuario,
-                idperfil: id_perfil,
+                idusuario: idUsuario,
+                idperfil: idPerfil,
             },
         });
 
@@ -140,8 +141,12 @@ const Home = (props) => {
     };
 
     useEffect(() => {
-        dataUser && handleGetListaIndicadores();
+        !loadingGeneral && dataUser.idUsuario && handleGetListaIndicadores();
     }, []);
+
+    useEffect(() => {
+        !loadingGeneral && dataUser.idUsuario && handleGetListaIndicadores();
+    }, [loadingGeneral]);
 
     return (
         <LayoutApp {...props}>
@@ -186,17 +191,13 @@ const Home = (props) => {
                                     <Col>
                                         <Link
                                             key={1}
-                                            href="/charts/[idIndicador]"
-                                            as={`/charts/${state.ListaIndicadoresMostrar[0]?.id_indicador}`}
-                                            passHref
+                                            href={`/charts/${state.ListaIndicadoresMostrar[0]?.id_indicador}`}
                                         >
-                                            <a>
-                                                <Tooltip title="Ver gráfica">
-                                                    <Button
-                                                        icon={<EyeOutlined />}
-                                                    />
-                                                </Tooltip>
-                                            </a>
+                                            <Tooltip title="Ver gráfica">
+                                                <Button
+                                                    icon={<EyeOutlined />}
+                                                />
+                                            </Tooltip>
                                         </Link>
                                     </Col>
                                     <Col span={24}>
@@ -246,9 +247,7 @@ const Home = (props) => {
                                     <Col>
                                         <Link
                                             key={2}
-                                            href="/charts/[idIndicador]"
-                                            as={`/charts/${state.ListaIndicadoresMostrar[1]?.id_indicador}`}
-                                            passHref
+                                            href={`/charts/${state.ListaIndicadoresMostrar[1]?.id_indicador}`}
                                         >
                                             <Tooltip title="Ver gráfica">
                                                 <Button
@@ -304,9 +303,7 @@ const Home = (props) => {
                                     <Col>
                                         <Link
                                             key={1}
-                                            href="/charts/[idIndicador]"
-                                            as={`/charts/${state.ListaIndicadoresMostrar[2]?.id_indicador}`}
-                                            passHref
+                                            href={`/charts/${state.ListaIndicadoresMostrar[2]?.id_indicador}`}
                                         >
                                             <Tooltip title="Ver gráfica">
                                                 <Button
@@ -360,9 +357,7 @@ const Home = (props) => {
                                     <Col>
                                         <Link
                                             key={1}
-                                            href="/charts/[idIndicador]"
-                                            as={`/charts/${state.ListaIndicadoresMostrar[3]?.id_indicador}`}
-                                            passHref
+                                            href={`/charts/${state.ListaIndicadoresMostrar[3]?.id_indicador}`}
                                         >
                                             <Tooltip title="Ver gráfica">
                                                 <Button

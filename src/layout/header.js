@@ -1,22 +1,17 @@
-import React, { useEffect } from "react";
-import { Layout, Menu, Dropdown } from "antd";
-import { useDispatch, useSelector, connect } from 'react-redux';
-
+import React from "react";
 import { useRouter } from "next/router";
+import { Layout, Menu, Dropdown } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
-import { setUser, logout } from "src/redux/actions/globalActions";
 
 const { Header } = Layout;
 
 const HeaderApp = (props) => {
     const { dataUser } = props.state.global;
     const router = useRouter();
-    const dispatch = useDispatch();
 
     const handleLogout = () => {
-        dispatch(logout());
         if (process.browser) {
-            localStorage.removeItem("user");
+            localStorage.removeItem("token_sigai");
             router.push("/login");
         }
     };
@@ -36,9 +31,7 @@ const HeaderApp = (props) => {
                     className="ant-dropdown-link"
                     onClick={(e) => e.preventDefault()}
                 >
-                    {
-                        `${dataUser?.nombres} ${dataUser?.apellidos}`
-                    }
+                    { `${dataUser?.nombres} ${dataUser?.apellidos}` }
                 </a>
             </Dropdown>
         </Header>

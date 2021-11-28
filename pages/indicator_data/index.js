@@ -4,7 +4,6 @@ import LayoutApp from "src/layout";
 import { Row, Col, Card, Select, Spin, Tag, Tooltip } from "antd";
 import { 
     EyeOutlined, 
-    EditOutlined,
     BarChartOutlined,
     LineChartOutlined,
     AreaChartOutlined
@@ -12,7 +11,7 @@ import {
 import { makeRequest } from "src/helpers";
 import { TableComponent, PageHeaderComponent, SelectCategoriasComponent } from "@components";
 import Link from 'next/link'
-import { setIndicatorData } from "src/redux/actions/indicatorDataActions";
+import { setIndicatorData } from "src/redux/reducers/datosIndicadorSlice";
 
 const { Option } = Select;
 
@@ -28,8 +27,8 @@ const initialState = {
 
 const DataIndicators = () => {
     const dispatch = useDispatch();
-    const { indicatorData } = useSelector((stateData) => stateData);
-    const dataUser = process.browser && JSON.parse(localStorage.getItem("user"));
+    const { dataUser, loadingGeneral } = useSelector((stateData) => stateData.global)
+    const { datosIndicador } = useSelector((stateData) => stateData);
 
     const [state, setState] = useState(initialState);
     const [loading, setLoading] = useState(true);
@@ -54,7 +53,6 @@ const DataIndicators = () => {
             dataIndex: "id_indicador",
             key: "id_indicador",
             search: false,
-            // width: "400px",
             render: (text, record) => {
                 return (
                     <Row gutter={[4, 0]} justify="space-around" align="middle">
@@ -168,16 +166,15 @@ const DataIndicators = () => {
 
     const handleGetData = async () => {
         setLoading(true)
-        const { id_usuario, id_perfil } = dataUser;
+        const { idUsuario, idPerfil } = dataUser;
         const response = await makeRequest({
             method: "POST",
             path: "/indican/listavpgmetaresul.php",
             body: {
-                idUsuario: id_usuario,
-                idPerfil: id_perfil,
+                idUsuario,
+                idPerfil,
             },
         });
-        console.log("RESPONSE", response, indicatorData)
 
         if (response.Estatus == 1) {
             setState((prevState) => ({
@@ -186,17 +183,14 @@ const DataIndicators = () => {
                 listaGerencias: [...response.ListaGerencias],
                 listaVicePresidencias: [...response.ListaVicePresidencias],
             }));
-
             setLoading(false)
         }
-        
     };
 
     const handleChangueVicePresidencia = (idVP, setGerencia = true) => {
-        console.log("handleChangueVicePresidencia", state);
         const { listaGerencias } = state;
         let listaGerenciasMostrar = listaGerencias.filter(
-            (item, index) => item.id_vice_presidencia == idVP
+            (item) => item.id_vice_presidencia == idVP
         );
 
         setState((prevState) => ({
@@ -206,8 +200,9 @@ const DataIndicators = () => {
             idGerencia: 0,
             listaIndicadoresMostrar: [],
         }));
-
         dispatch(setIndicatorData({
+            listaIndicadores: state.listaIndicadores,
+            listaGerencias: state.listaGerencias,
             listaVicePresidencias: state.listaVicePresidencias,
             idVicePresidencia: idVP,
             listaGerenciasMostrar,
@@ -217,10 +212,9 @@ const DataIndicators = () => {
     };
 
     const handleChangueGerencia = (idGerencia) => {
-        console.log("handleChangueGerencia", state);
         const { listaIndicadores } = state;
         let listaIndicadoresMostrar = listaIndicadores.filter(
-            (item, index) => item.id_gerencia == idGerencia
+            (item) => item.id_gerencia == idGerencia
         );
 
         setState((prevState) => ({
@@ -230,28 +224,41 @@ const DataIndicators = () => {
         }));
 
         dispatch(setIndicatorData({
+            listaIndicadores: state.listaIndicadores,
+            listaGerencias: state.listaGerencias,
+            listaVicePresidencias: state.listaVicePresidencias,
+            idVicePresidencia: state.idVicePresidencia,
+            listaGerenciasMostrar: state.listaGerenciasMostrar,
             idGerencia,
             listaIndicadoresMostrar,
         }));
     };
 
+    const handleSetInit = () => {
+        if (datosIndicador.idVicePresidencia > 0 && datosIndicador.idGerencia > 0) {
+            setState((prevState) => ({
+                ...prevState,
+                listaIndicadores: datosIndicador.listaIndicadores,
+                listaGerencias: datosIndicador.listaGerencias,
+                listaVicePresidencias: datosIndicador.listaVicePresidencias,
+                idVicePresidencia: datosIndicador.idVicePresidencia,
+                listaGerenciasMostrar: datosIndicador.listaGerenciasMostrar,
+                idGerencia: datosIndicador.idGerencia,
+                listaIndicadoresMostrar: datosIndicador.listaIndicadoresMostrar,
+            }));
+            setLoading(false)
+        } else {
+            handleGetData();
+        }
+    }
+
     useEffect(() => {
-        if (dataUser) {
-            if (indicatorData.idVicePresidencia > 0 && indicatorData.idGerencia > 0) {
-                setState((prevState) => ({
-                    ...prevState,
-                    listaVicePresidencias: indicatorData.listaVicePresidencias,
-                    idVicePresidencia: indicatorData.idVicePresidencia,
-                    listaGerenciasMostrar: indicatorData.listaGerenciasMostrar,
-                    idGerencia: indicatorData.idGerencia,
-                    listaIndicadoresMostrar: indicatorData.listaIndicadoresMostrar,
-                }));
-                setLoading(false)
-            } else {
-                handleGetData();
-            }
-        } 
+        handleSetInit();
     }, []);
+
+    useEffect(() => {
+        !loadingGeneral && handleSetInit();
+    }, [loadingGeneral]);
 
     return (
         <LayoutApp navigation={navigation}>

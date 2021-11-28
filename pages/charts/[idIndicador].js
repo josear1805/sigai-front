@@ -17,9 +17,10 @@ const ChartDetails = () => {
 
     const buttonsHeader = [
         {
-            href: "/",
-            type: "secundary",
-            name: "Inicio",
+            type: "primary",
+            name: "Volver",
+            onClick: () => router.back(),
+            className: "ant-btn-danger"
         },
     ];
 

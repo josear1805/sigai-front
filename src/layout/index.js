@@ -7,20 +7,32 @@ import FooterApp from "./footer";
 import ContentApp from "./content";
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector, connect } from 'react-redux';
-import { setUser, logout, getListadosCategorias } from "src/redux/actions/globalActions";
+import { setUser, setListadosCategorias } from "src/redux/reducers/globalSlice";
+import SkeletonApp from "./skeleton";
 
 
 const LayoutApp = (props) => {
     const router = useRouter();
     const dispatch = useDispatch();
-    const user = process.browser && JSON.parse(localStorage.getItem("user"))
-    const { dataUser } = useSelector((stateData) => stateData.global)
+    const token = process.browser && JSON.parse(localStorage.getItem("token_sigai"))
+    const { dataUser, loadingGeneral, error } = useSelector((stateData) => stateData.global)
+
+    const validationUser = () => {
+        !token && router.push("/login");
+
+        if (token && dataUser.token !== token) {
+            dispatch(setUser(token))
+            dispatch(setListadosCategorias())
+        }
+    }
 
     useEffect(() => {
-        !user && router.push("/login");
-        !dataUser?.nombres && dispatch(setUser(user))
-        dispatch(getListadosCategorias())
-    }, [])
+        validationUser();
+    }, []);
+
+    useEffect(() => {
+        error.dataUser && validationUser();
+    }, [error.dataUser]);
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
@@ -30,12 +42,18 @@ const LayoutApp = (props) => {
                 <meta httpEquiv="Content-Security-Policy: default-src *://66.23.226.204" content="upgrade-insecure-requests" />
                 <title>SIGAI</title>
             </Head>
-            <SidebarApp />
-            <Layout className="site-layout">
-                <HeaderApp {...props}/>
-                <ContentApp {...props}/>
-                <FooterApp />
-            </Layout>
+            {loadingGeneral || !token ? (
+                <SkeletonApp />
+            ) : (
+                <>
+                    <SidebarApp />
+                    <Layout className="site-layout">
+                        <HeaderApp {...props}/>
+                        <ContentApp {...props}/>
+                        <FooterApp />
+                    </Layout>
+                </>
+            )}
         </Layout>
     );
 }
@@ -45,7 +63,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-    logout,
+    // logout,
 };
 
 export default connect(
