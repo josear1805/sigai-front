@@ -93,6 +93,10 @@ $spacer: 24px;
     background: rgb(240 240 240 / 25%);
 }
 
+.ant-form-item-label {
+    padding: 0 !important;
+}
+
 /* TAGS TABLE */
 .tag-table {
     width: 100%;

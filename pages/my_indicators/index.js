@@ -288,7 +288,7 @@ const MyIndicators = (props) => {
                                                             </Tooltip>
                                                         </Link>
                                                     </Col>
-                                                    <Col span={24}>
+                                                    <Col span={24} style={{ minHeight: 200 }}>
                                                         <ChartColumn data={state.datosIndicador1} height={200} />
                                                     </Col>
                                                 </Row>
@@ -322,7 +322,7 @@ const MyIndicators = (props) => {
                                                             </Tooltip>
                                                         </Link>
                                                     </Col>
-                                                    <Col span={24}>
+                                                    <Col span={24} style={{ minHeight: 200 }}>
                                                         <ChartColumn data={state.datosIndicador2} height={200} />
                                                     </Col>
                                                 </Row>
@@ -356,7 +356,7 @@ const MyIndicators = (props) => {
                                                             </Tooltip>
                                                         </Link>
                                                     </Col>
-                                                    <Col span={24}>
+                                                    <Col span={24} style={{ minHeight: 200 }}>
                                                         <ChartColumn data={state.datosIndicador3} height={200} />
                                                     </Col>
                                                 </Row>
@@ -390,7 +390,7 @@ const MyIndicators = (props) => {
                                                             </Tooltip>
                                                         </Link>
                                                     </Col>
-                                                    <Col span={24}>
+                                                    <Col span={24} style={{ minHeight: 200 }}>
                                                         <ChartColumn data={state.datosIndicador4} height={200} />
                                                     </Col>
                                                 </Row>

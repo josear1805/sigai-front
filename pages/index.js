@@ -200,7 +200,7 @@ const Home = (props) => {
                                             </Tooltip>
                                         </Link>
                                     </Col>
-                                    <Col span={24}>
+                                    <Col span={24} style={{ minHeight: 200 }}>
                                         <ChartColumn
                                             data={state.DatosIndicador1}
                                             height={200}
@@ -256,7 +256,7 @@ const Home = (props) => {
                                             </Tooltip>
                                         </Link>
                                     </Col>
-                                    <Col span={24}>
+                                    <Col span={24} style={{ minHeight: 200 }}>
                                         <ChartColumn
                                             data={state.DatosIndicador2}
                                             height={200}
@@ -312,7 +312,7 @@ const Home = (props) => {
                                             </Tooltip>
                                         </Link>
                                     </Col>
-                                    <Col span={24}>
+                                    <Col span={24} style={{ minHeight: 200 }}>
                                         <ChartColumn
                                             data={state.DatosIndicador3}
                                             height={200}
@@ -366,7 +366,7 @@ const Home = (props) => {
                                             </Tooltip>
                                         </Link>
                                     </Col>
-                                    <Col span={24}>
+                                    <Col span={24} style={{ minHeight: 200 }}>
                                         <ChartColumn
                                             data={state.DatosIndicador4}
                                             height={200}
