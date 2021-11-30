@@ -40,7 +40,7 @@ const ChartColumn = (props) => {
     }, [props])
 
     return (
-        <Spin tip="Cargando gráfica..." spinning={loading} style={{ height: config.height }}>
+        <Spin tip="Cargando gráfica...  " spinning={loading} style={{ height: config.height }}>
             {
                 !loading && (
                     <Column
