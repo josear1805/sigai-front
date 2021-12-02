@@ -22,6 +22,18 @@ export const makeRequest = ({path, method, body = null, withToken = true}) => {
 
     return new Promise((resolve, reject) => {
         fetch(url, config)
+            .then((response) => {
+                if(response.status === 401){
+                    notification.error({
+                        message: response.mensaje,
+                        placement: "bottomRight",
+                    });
+                    localStorage.removeItem("token_sigai");
+                    window.location.replace(`${window.location.origin}/login`);
+                    reject(response.message);
+                }
+                return response;
+            })
             .then((response) => response.json())
             .then((response) => {
                 if (response.estatus === 401) {
