@@ -204,7 +204,7 @@ const GoalsEdit = (props) => {
             idUsuario: dataUser.idUsuario,
             idIndicador,
             datos: listMetas,
-            tipo: tipoIndicador
+            idTipo: tipoIndicador
         }
 
         makeRequest({
@@ -276,9 +276,9 @@ const GoalsEdit = (props) => {
         },
     ];
 
-    useEffect(() => {
-        idIndicador && dataUser.idUsuario && handleGetMetas(idIndicador);
-    }, []);
+    // useEffect(() => {
+    //     idIndicador && dataUser.idUsuario && handleGetMetas(idIndicador);
+    // }, [idIndicador]);
 
     useEffect(() => {
         !loadingGeneral && dataUser.idUsuario && handleGetMetas(idIndicador);

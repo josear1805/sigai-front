@@ -53,7 +53,7 @@ const SelectCategoriasComponent = () => {
             {
                 listaCategorias.length >= 1 && listaCategorias.map((item) => (
                     <Option 
-                        value={item.idCategoria}
+                        value={parseInt(item.idCategoria)}
                         key={item.idCategoria}
                     >
                         {item.nbCategoria}

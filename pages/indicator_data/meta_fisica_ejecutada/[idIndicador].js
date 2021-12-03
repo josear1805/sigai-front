@@ -78,7 +78,7 @@ const GoalsEdit = (props) => {
             body: {
                 idIndicador,
                 idUsuario: dataUser.idUsuario,
-                tipo: tipoIndicador,
+                idTipo: tipoIndicador,
                 anio: "2021",
             },
         });
@@ -208,10 +208,6 @@ const GoalsEdit = (props) => {
             },
         },
     ];
-
-    useEffect(() => {
-        idIndicador && dataUser.idUsuario && handleExecutedGoals();
-    }, []);
 
     useEffect(() => {
         !loadingGeneral && dataUser.idUsuario && handleExecutedGoals();

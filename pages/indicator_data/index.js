@@ -253,10 +253,6 @@ const DataIndicators = () => {
     }
 
     useEffect(() => {
-        handleSetInit();
-    }, []);
-
-    useEffect(() => {
         !loadingGeneral && handleSetInit();
     }, [loadingGeneral]);
 
