@@ -9,16 +9,18 @@ const initialConfig = {
     xField: 'mes',
     yField: 'valor',
     seriesField: 'nombre',
-    dodgePadding: 2,
+    dodgePadding: 1,
+    // label: false,
     label: {
-        //   position: 'middle',
+        position: 'middle',
+        // rotate: 5,
         layout: [
             { type: 'interval-adjust-position' },
             { type: 'interval-hide-overlap' },
             { type: 'adjust-color' },
         ]
     },
-    scrollbar: { type: 'horizontal' }
+    scrollbar: { type: 'horizontal' },
 };
 
 const ChartColumn = (props) => {
@@ -36,7 +38,7 @@ const ChartColumn = (props) => {
         }))
         setTimeout(() => {
             setLoading(false);
-        }, 1000);
+        }, 200);
     }, [props])
 
     return (
