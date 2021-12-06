@@ -177,12 +177,15 @@ const DataIndicators = () => {
         });
 
         if (response.Estatus == 1) {
-            setState((prevState) => ({
-                ...prevState,
-                listaIndicadores: [...response.Indicadores],
-                listaGerencias: [...response.ListaGerencias],
+            setState({
                 listaVicePresidencias: [...response.ListaVicePresidencias],
-            }));
+                idVicePresidencia: 0,
+                listaGerencias: [...response.ListaGerencias],
+                listaGerenciasMostrar: [],
+                idGerencia: 0,
+                listaIndicadores: [...response.Indicadores],
+                listaIndicadoresMostrar: [],
+            });
             setLoading(false)
         }
     };
@@ -269,7 +272,7 @@ const DataIndicators = () => {
             >
                 <Row gutter={[24, 24]}>
                     <Col xs={24} md={12} lg={6}>
-                        <SelectCategoriasComponent />
+                        <SelectCategoriasComponent handleSuccess={handleGetData} />
                     </Col>
                 </Row>
             </PageHeaderComponent>

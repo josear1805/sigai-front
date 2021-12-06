@@ -13,7 +13,6 @@ const { Option } = Select;
 const ChartColumn = dynamic(() => import('src/components/charts/column'), { ssr: false })
 
 const initialState = {
-    loading: true,
     listaGerencias: [],
     auxListaGerencias: [],
     listaVicePresidencias: [],
@@ -54,11 +53,19 @@ const MyIndicators = (props) => {
 
         if (response.estatus === 1) {
             const { listaGerencias, listaVicePresidencias } = response
-            setState((prevState) => ({
-                ...prevState,
+            setState({
                 listaGerencias,
+                auxListaGerencias: [],
                 listaVicePresidencias,
-            }))
+                vicePresidencia: "0",
+                gerencia: "0",
+                listaIndicadoresMostrar: [],
+                listaIndicadores: [],
+                datosIndicador1: [],
+                datosIndicador2: [],
+                datosIndicador3: [],
+                datosIndicador4: [],
+            })
             setLoading(false)
         } else {
             notification.error({
@@ -199,9 +206,9 @@ const MyIndicators = (props) => {
         parseInt(id) >= 1 && handleGetListaGraficosGerencia(id)
     }
 
-    useEffect(() => {
-        !loadingGeneral && dataUser.idUsuario && handleGetListaVPGerencia()
-    }, [])
+    // useEffect(() => {
+    //     !loadingGeneral && dataUser.idUsuario && handleGetListaVPGerencia()
+    // }, [])
 
     useEffect(() => {
         !loadingGeneral && dataUser.idUsuario && handleGetListaVPGerencia()
@@ -219,7 +226,7 @@ const MyIndicators = (props) => {
             >
                 <Row gutter={[24, 24]}>
                     <Col xs={24} md={12} lg={6}>
-                        <SelectCategoriasComponent />
+                        <SelectCategoriasComponent handleSuccess={handleGetListaVPGerencia} />
                     </Col>
                 </Row>
             </PageHeaderComponent>

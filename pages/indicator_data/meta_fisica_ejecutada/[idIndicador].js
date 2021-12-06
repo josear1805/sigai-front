@@ -211,6 +211,7 @@ const GoalsEdit = (props) => {
 
     useEffect(() => {
         !loadingGeneral && dataUser.idUsuario && handleExecutedGoals();
+        console.log("CASA GRANDE ENTRA USEEFFECT")
     }, [loadingGeneral]);
 
     return (

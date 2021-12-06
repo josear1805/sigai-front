@@ -2,22 +2,22 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Select, notification } from "antd";
 import { makeRequest } from 'src/helpers';
 import { setUser } from "src/redux/reducers/globalSlice";
+import { useRouter } from 'next/router';
 
 const { Option } = Select;
 
-const SelectCategoriasComponent = () => {
+const SelectCategoriasComponent = (props) => {
+    const router = useRouter();
     const dispatch = useDispatch();
 
     const { dataUser, listaCategorias } = useSelector((stateData) => stateData.global)
     
     function handleChangeCategory(value) {
-        console.log(`selected ${value}`);
         makeRequest({
             method: "POST",
             path: "/indican/modcategoriasindicadores.php",
             body: {
-                token: 1234,
-                id: value
+                idCategoria: value
             }
         }).then(response => {
             if (response.estatus == 1) {
@@ -27,7 +27,8 @@ const SelectCategoriasComponent = () => {
                 });
                 if (process.browser) {
                     const token = JSON.parse(localStorage.getItem("token_sigai"))
-                    dispatch(setUser(token))
+                    dispatch(setUser(token));
+                    props.handleSuccess();
                 }
             } else {
                 notification.error({
