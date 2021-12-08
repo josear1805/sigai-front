@@ -4,6 +4,7 @@ import PageHeaderComponent from "./page-header";
 import ButtonComponent from "./button";
 import ModalComponet from "./modal";
 import SelectCategoriasComponent from "./select-categorias";
+import ChartCardComponent from "./chart-card";
 
 const ChartColumn = dynamic(() => import("src/components/charts/column"), {
     ssr: false,
@@ -16,4 +17,5 @@ export {
     ButtonComponent,
     ModalComponet,
     SelectCategoriasComponent,
+    ChartCardComponent
 };
