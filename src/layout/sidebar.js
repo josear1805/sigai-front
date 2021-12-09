@@ -77,6 +77,11 @@ const SidebarApp = (props) => {
                         <a>Datos de Indicadores</a>
                     </Link>
                 </Menu.Item>
+                <Menu.Item key="ficha_indicador" icon={<BarChartOutlined />}>
+                    <Link href="/ficha_indicador">
+                        <a>Ficha Indicador</a>
+                    </Link>
+                </Menu.Item>
             </Menu>
         </Sider>
     );

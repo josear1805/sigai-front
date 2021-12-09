@@ -10,6 +10,10 @@ const ChartColumn = dynamic(() => import("src/components/charts/column"), {
     ssr: false,
 });
 
+const ChartColumnLine = dynamic(() => import("src/components/charts/column_line"), {
+    ssr: false,
+});
+
 export {
     TableComponent,
     ChartColumn,
@@ -17,5 +21,6 @@ export {
     ButtonComponent,
     ModalComponet,
     SelectCategoriasComponent,
-    ChartCardComponent
+    ChartCardComponent,
+    ChartColumnLine
 };

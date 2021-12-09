@@ -4,7 +4,8 @@ import dynamic from "next/dynamic";
 import LayoutApp from "src/layout";
 import { Spin, Card, notification, Row, Col, Select, Form } from "antd";
 import { makeRequest } from "src/helpers";
-import { PageHeaderComponent, ButtonComponent } from "@components";
+import { PageHeaderComponent, ButtonComponent, ChartColumnLine } from "@components";
+
 
 const { Option } = Select;
 
@@ -297,15 +298,19 @@ const ChartDetails = () => {
                                 </Col>
                             )
                         }
+                        <Col span={24}>
+                            <Card className="box-shadow">
+                                <Row gutter={[24, 24]} justify="center">
+                                    <Col span={24} style={{ minHeight: state.compare ? 200: 400 }}>
+                                        <ChartColumnLine />
+                                    </Col>
+                                </Row>
+                            </Card>
+                        </Col>
                     </Row>
                 )}
             </Spin>
 
-            {/* <Card className="mb-3" style={{ minHeight: state.compare ? 200: 400 }}>
-                <ChartColumn data={datosIndicadorOne} height={state.compare ? 200: 400} />
-            </Card> */}
-
-           
         </LayoutApp>
     );
 };
