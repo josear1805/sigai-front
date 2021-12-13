@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LayoutApp from "src/layout";
-import { Row, Col, Card, Select, Spin, Tag, Tooltip } from "antd";
-import { 
-    EyeOutlined, 
-    BarChartOutlined,
-    LineChartOutlined,
-    AreaChartOutlined
-} from "@ant-design/icons";
+import { Row, Col, Card, Select, Spin, Tag } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import { makeRequest } from "src/helpers";
 import { TableComponent, PageHeaderComponent, SelectCategoriasComponent } from "@components";
 import Link from 'next/link'
-import { setIndicatorData } from "src/redux/reducers/datosIndicadorSlice";
+import { setFichaIndicador } from "src/redux/reducers/fichaIndicadorSlice";
 
 const { Option } = Select;
 
@@ -28,10 +23,18 @@ const initialState = {
 const FichaIndicador = () => {
     const dispatch = useDispatch();
     const { dataUser, loadingGeneral } = useSelector((stateData) => stateData.global)
-    const { datosIndicador } = useSelector((stateData) => stateData);
+    const { fichaIndicador } = useSelector((stateData) => stateData);
 
     const [state, setState] = useState(initialState);
     const [loading, setLoading] = useState(true);
+
+    const buttonsHeader = [
+        {
+            href: "/ficha_indicador/agregar",
+            type: "primary",
+            name: "Nueva Ficha",
+        },
+    ];
 
     const navigation = [
         {
@@ -44,146 +47,55 @@ const FichaIndicador = () => {
     const columns = [
         {
             title: "Nombre",
-            dataIndex: "nb_indicador",
-            key: "nb_idindicador",
+            dataIndex: "nombreInd",
+            key: "nombreInd",
             search: true,
         },
         {
             title: "Acción",
-            dataIndex: "id_indicador",
-            key: "id_indicador",
+            dataIndex: "idIndicador",
+            key: "idIndicador",
             search: false,
-            render: (text, record) => {
-                return (
-                    <Row gutter={[4, 0]} justify="space-around" align="middle">
-                        <Col span={4}>
-                            {(record.permiso === "1" || record.permiso === "2") && (
-                                <Link
-                                    key={1}
-                                    href={`/charts/${record.id_indicador}`}
-                                >
-                                    <Tooltip
-                                        title="Ver detalles de indicador"
-                                    >
-                                        <Tag
-                                            icon={<EyeOutlined />}
-                                            color="success"
-                                            className="tag-table"
-                                        />
-                                    </Tooltip>
-                                </Link>
-                            )}
-                        </Col>
-                        <Col span={4}>
-                            {record.permiso === "2" && (
-                                <Link
-                                    key={2}
-                                    href={`/indicator_data/meta_fisica_planificada/${record.id_indicador}`}
-                                >
-                                    <Tooltip
-                                        title="Editar meta física planificada"
-                                    >
-                                        <Tag
-                                            icon={<BarChartOutlined />}
-                                            color="processing"
-                                            className="tag-table"
-                                        />
-                                    </Tooltip>
-                                </Link>
-                            )}
-                        </Col>
-                        <Col span={4}>
-                            {record.permiso === "2" && (
-                                <Link
-                                    key={3}
-                                    href={`/indicator_data/meta_fisica_ejecutada/${record.id_indicador}`}
-                                >
-                                    <Tooltip
-                                        title="Editar meta física ejecutada"
-                                    >
-                                        <Tag
-                                            icon={<LineChartOutlined />}
-                                            color="processing"
-                                            className="tag-table"
-                                        />
-                                    </Tooltip>
-                                </Link>
-                            )}
-                        </Col>
-                        <Col span={4}>
-                            <Link
-                                key={1}
-                                href={`/indicator_data/presupuesto_planificado/${record.id_indicador}`}
+            width: "75px",
+            render: (text, record) => (
+                // <Row gutter={[4, 0]} justify="end" align="middle">
+                    <Col style={{ width: "75px" }}>
+                        {/* <Link
+                            key={1}
+                            href={`/charts/${record.idIndicador}`}
+                        > */}
+                            <Tag
+                                icon={<EditOutlined />}
+                                color="success"
+                                className="tag-table"
                             >
-                                <Tooltip
-                                    title="Editar presupuesto planificado"
-                                >
-                                    <Tag
-                                        icon={<BarChartOutlined />}
-                                        color="processing"
-                                        className="tag-table"
-                                    />
-                                </Tooltip>
-                            </Link>
-                        </Col>
-                        <Col span={4}>
-                            <Link
-                                key={2}
-                                href={`/indicator_data/presupuesto_ejecutado/${record.id_indicador}`}
-                            >
-                                <Tooltip
-                                    title="Editar presupuesto ejecutado"
-                                >
-                                    <Tag
-                                        icon={<LineChartOutlined />}
-                                        color="processing"
-                                        className="tag-table"
-                                    />
-                                </Tooltip>
-                            </Link>
-                        </Col>
-                        <Col span={4}>
-                            <Link
-                                key={3}
-                                href={`/indicator_data/real/${record.id_indicador}`}
-                            >
-                                <Tooltip
-                                    title="Editar valor reales"
-                                >
-                                    <Tag
-                                        icon={<AreaChartOutlined />}
-                                        color="processing"
-                                        className="tag-table"
-                                    />
-                                </Tooltip>
-                            </Link>
-                        </Col>
-                    </Row>
-                );
-            },
+                                Editar
+                            </Tag>
+                        {/* </Link> */}
+                    </Col>
+                // </Row>
+            )
         },
     ];
 
     const handleGetData = async () => {
         setLoading(true);
-        const { idUsuario, idPerfil } = dataUser;
         const response = await makeRequest({
             method: "POST",
-            path: "/indican/listavpgmetaresul.php",
+            path: "/indican/listafichaindicador.php",
             body: {
-                idUsuario,
-                idPerfil,
+                idCategoria: 1
             },
         });
 
-        if (response.Estatus == 1) {
+        if (response.estatus == 1) {
             setState({
-                listaVicePresidencias: [...response.ListaVicePresidencias],
+                listaVicePresidencias: [...response.listaVicePresidencias],
                 idVicePresidencia: 0,
-                listaGerencias: [...response.ListaGerencias],
+                listaGerencias: [...response.listaGerencias],
                 listaGerenciasMostrar: [],
                 idGerencia: 0,
-                listaIndicadores: [...response.Indicadores],
+                listaIndicadores: [...response.indicadores],
                 listaIndicadoresMostrar: [],
             });
             setLoading(false);
@@ -195,7 +107,7 @@ const FichaIndicador = () => {
     const handleChangueVicePresidencia = (idVP, setGerencia = true) => {
         const { listaGerencias } = state;
         let listaGerenciasMostrar = listaGerencias.filter(
-            (item) => item.id_vice_presidencia == idVP
+            (item) => item.idVicePresidencia == idVP
         );
 
         setState((prevState) => ({
@@ -205,7 +117,8 @@ const FichaIndicador = () => {
             idGerencia: 0,
             listaIndicadoresMostrar: [],
         }));
-        dispatch(setIndicatorData({
+        
+        dispatch(setFichaIndicador({
             listaIndicadores: state.listaIndicadores,
             listaGerencias: state.listaGerencias,
             listaVicePresidencias: state.listaVicePresidencias,
@@ -219,7 +132,7 @@ const FichaIndicador = () => {
     const handleChangueGerencia = (idGerencia) => {
         const { listaIndicadores } = state;
         let listaIndicadoresMostrar = listaIndicadores.filter(
-            (item) => item.id_gerencia == idGerencia
+            (item) => item.idGerencia == idGerencia
         );
 
         setState((prevState) => ({
@@ -228,7 +141,7 @@ const FichaIndicador = () => {
             listaIndicadoresMostrar,
         }));
 
-        dispatch(setIndicatorData({
+        dispatch(setFichaIndicador({
             listaIndicadores: state.listaIndicadores,
             listaGerencias: state.listaGerencias,
             listaVicePresidencias: state.listaVicePresidencias,
@@ -240,16 +153,17 @@ const FichaIndicador = () => {
     };
 
     const handleSetInit = () => {
-        if (datosIndicador.idVicePresidencia > 0 && datosIndicador.idGerencia > 0) {
+        setLoading(true);
+        if (fichaIndicador.idVicePresidencia > 0 && fichaIndicador.idGerencia > 0) {
             setState((prevState) => ({
                 ...prevState,
-                listaIndicadores: datosIndicador.listaIndicadores,
-                listaGerencias: datosIndicador.listaGerencias,
-                listaVicePresidencias: datosIndicador.listaVicePresidencias,
-                idVicePresidencia: datosIndicador.idVicePresidencia,
-                listaGerenciasMostrar: datosIndicador.listaGerenciasMostrar,
-                idGerencia: datosIndicador.idGerencia,
-                listaIndicadoresMostrar: datosIndicador.listaIndicadoresMostrar,
+                listaIndicadores: fichaIndicador.listaIndicadores,
+                listaGerencias: fichaIndicador.listaGerencias,
+                listaVicePresidencias: fichaIndicador.listaVicePresidencias,
+                idVicePresidencia: fichaIndicador.idVicePresidencia,
+                listaGerenciasMostrar: fichaIndicador.listaGerenciasMostrar,
+                idGerencia: fichaIndicador.idGerencia,
+                listaIndicadoresMostrar: fichaIndicador.listaIndicadoresMostrar,
             }));
             setLoading(false)
         } else {
@@ -257,8 +171,8 @@ const FichaIndicador = () => {
         }
     }
 
-    useEffect(() => {
-        !loadingGeneral && handleGetData();
+    useEffect(async () => {
+        !loadingGeneral && handleSetInit();
     }, [loadingGeneral]);
 
     return (
@@ -267,8 +181,8 @@ const FichaIndicador = () => {
                 title="Fichas de indicadores"
                 reload={true}
                 handleReload={handleGetData}
-                button={false}
-                // dataButton={buttonsHeader}
+                button={true}
+                dataButton={buttonsHeader}
                 loading={loading}
                 navigation={navigation}
             >
@@ -300,12 +214,12 @@ const FichaIndicador = () => {
                                             (item, index) => (
                                                 <Option
                                                     value={parseInt(
-                                                        item.id_vice_presidencia
+                                                        item.idVicePresidencia
                                                     )}
                                                     key={index}
                                                 >
                                                     {
-                                                        item.nb_vicepresidencia
+                                                        item.nbVicePresidencia
                                                     }
                                                 </Option>
                                             )
@@ -331,11 +245,11 @@ const FichaIndicador = () => {
                                             (item, index) => (
                                                 <Option
                                                     value={parseInt(
-                                                        item.id_gerencia
+                                                        item.idGerencia
                                                     )}
                                                     key={index}
                                                 >
-                                                    {item.nb_gerencia}
+                                                    {item.nbGerencia}
                                                 </Option>
                                             )
                                         )}
@@ -343,11 +257,11 @@ const FichaIndicador = () => {
                             </Col>
                         </Row>
                         
-                        {/* <TableComponent
+                        <TableComponent
                             columns={columns}
                             data={state.listaIndicadoresMostrar}
                             loading={false}
-                        /> */}
+                        />
                     </Card>
                 )}
             </Spin>
