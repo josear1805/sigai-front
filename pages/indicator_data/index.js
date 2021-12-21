@@ -44,14 +44,14 @@ const DataIndicators = () => {
     const columns = [
         {
             title: "Nombre",
-            dataIndex: "nb_indicador",
-            key: "nb_idindicador",
+            dataIndex: "nombreInd",
+            key: "idIndicador",
             search: true,
         },
         {
             title: "Acción",
-            dataIndex: "id_indicador",
-            key: "id_indicador",
+            dataIndex: "idIndicador",
+            key: "idIndicador",
             search: false,
             render: (text, record) => {
                 return (
@@ -60,7 +60,7 @@ const DataIndicators = () => {
                             {(record.permiso === "1" || record.permiso === "2") && (
                                 <Link
                                     key={1}
-                                    href={`/charts/${record.id_indicador}`}
+                                    href={`/charts/${record.idIndicador}`}
                                 >
                                     <Tooltip
                                         title="Ver detalles de indicador"
@@ -78,7 +78,7 @@ const DataIndicators = () => {
                             {record.permiso === "2" && (
                                 <Link
                                     key={2}
-                                    href={`/indicator_data/meta_fisica_planificada/${record.id_indicador}`}
+                                    href={`/indicator_data/meta_fisica_planificada/${record.idIndicador}`}
                                 >
                                     <Tooltip
                                         title="Editar meta física planificada"
@@ -96,7 +96,7 @@ const DataIndicators = () => {
                             {record.permiso === "2" && (
                                 <Link
                                     key={3}
-                                    href={`/indicator_data/meta_fisica_ejecutada/${record.id_indicador}`}
+                                    href={`/indicator_data/meta_fisica_ejecutada/${record.idIndicador}`}
                                 >
                                     <Tooltip
                                         title="Editar meta física ejecutada"
@@ -113,7 +113,7 @@ const DataIndicators = () => {
                         <Col span={4}>
                             <Link
                                 key={1}
-                                href={`/indicator_data/presupuesto_planificado/${record.id_indicador}`}
+                                href={`/indicator_data/presupuesto_planificado/${record.idIndicador}`}
                             >
                                 <Tooltip
                                     title="Editar presupuesto planificado"
@@ -129,7 +129,7 @@ const DataIndicators = () => {
                         <Col span={4}>
                             <Link
                                 key={2}
-                                href={`/indicator_data/presupuesto_ejecutado/${record.id_indicador}`}
+                                href={`/indicator_data/presupuesto_ejecutado/${record.idIndicador}`}
                             >
                                 <Tooltip
                                     title="Editar presupuesto ejecutado"
@@ -145,7 +145,7 @@ const DataIndicators = () => {
                         <Col span={4}>
                             <Link
                                 key={3}
-                                href={`/indicator_data/real/${record.id_indicador}`}
+                                href={`/indicator_data/real/${record.idIndicador}`}
                             >
                                 <Tooltip
                                     title="Editar valor reales"
@@ -176,14 +176,14 @@ const DataIndicators = () => {
             },
         });
 
-        if (response.Estatus == 1) {
+        if (response.estatus == 1) {
             setState({
-                listaVicePresidencias: [...response.ListaVicePresidencias],
+                listaVicePresidencias: [...response.listaVicePresidencias],
                 idVicePresidencia: 0,
-                listaGerencias: [...response.ListaGerencias],
+                listaGerencias: [...response.listaGerencias],
                 listaGerenciasMostrar: [],
                 idGerencia: 0,
-                listaIndicadores: [...response.Indicadores],
+                listaIndicadores: [...response.indicadores],
                 listaIndicadoresMostrar: [],
             });
             setLoading(false)
@@ -193,7 +193,7 @@ const DataIndicators = () => {
     const handleChangueVicePresidencia = (idVP, setGerencia = true) => {
         const { listaGerencias } = state;
         let listaGerenciasMostrar = listaGerencias.filter(
-            (item) => item.id_vice_presidencia == idVP
+            (item) => item.idVicePresidencia == idVP
         );
 
         setState((prevState) => ({
@@ -217,7 +217,7 @@ const DataIndicators = () => {
     const handleChangueGerencia = (idGerencia) => {
         const { listaIndicadores } = state;
         let listaIndicadoresMostrar = listaIndicadores.filter(
-            (item) => item.id_gerencia == idGerencia
+            (item) => item.idGerencia == idGerencia
         );
 
         setState((prevState) => ({
@@ -298,12 +298,12 @@ const DataIndicators = () => {
                                             (item, index) => (
                                                 <Option
                                                     value={parseInt(
-                                                        item.id_vice_presidencia
+                                                        item.idVicePresidencia
                                                     )}
                                                     key={index}
                                                 >
                                                     {
-                                                        item.nb_vicepresidencia
+                                                        item.nbVicePresidencia
                                                     }
                                                 </Option>
                                             )
@@ -329,11 +329,11 @@ const DataIndicators = () => {
                                             (item, index) => (
                                                 <Option
                                                     value={parseInt(
-                                                        item.id_gerencia
+                                                        item.idGerencia
                                                     )}
                                                     key={index}
                                                 >
-                                                    {item.nb_gerencia}
+                                                    {item.nbGerencia}
                                                 </Option>
                                             )
                                         )}
