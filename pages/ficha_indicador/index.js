@@ -30,7 +30,7 @@ const FichaIndicador = () => {
 
     const buttonsHeader = [
         {
-            href: "/ficha_indicador/agregar",
+            href: "/ficha_indicador/crear",
             type: "primary",
             name: "Nueva Ficha",
         },
