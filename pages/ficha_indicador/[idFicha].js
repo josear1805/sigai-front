@@ -1,9 +1,14 @@
 import { useState } from "react";
 import LayoutApp from "src/layout";
+import { useRouter } from "next/router";
 import { PageHeaderComponent } from "@components";
 import { Spin } from "antd";
+import FormFichaIndicador from "src/components/ficha_indicador/form";
 
-const AgregarFicha = () => {
+const EditarFicha = () => {
+    const router = useRouter();
+    const { idFicha } = router.query;
+
     const [loading, setLoading] = useState(true);
 
     const buttonsHeader = [
@@ -17,7 +22,7 @@ const AgregarFicha = () => {
     return (
         <LayoutApp>
             <PageHeaderComponent
-                title="Nueva Ficha de Indicador"
+                title="Editar Ficha de Indicador"
                 reload={false}
                 button={true}
                 dataButton={buttonsHeader}
@@ -25,10 +30,10 @@ const AgregarFicha = () => {
             />
 
             <Spin tip="Cargando datos..." spinning={loading}>
-                <FormFichaIndicador idFicha={0} loading={loading} setLoading={setLoading}/>
+                <FormFichaIndicador idFicha={idFicha} loading={loading} setLoading={setLoading}/>
             </Spin>
         </LayoutApp>
     );
 };
 
-export default AgregarFicha;
+export default EditarFicha;

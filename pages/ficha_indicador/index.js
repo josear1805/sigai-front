@@ -60,10 +60,10 @@ const FichaIndicador = () => {
             render: (text, record) => (
                 // <Row gutter={[4, 0]} justify="end" align="middle">
                     <Col style={{ width: "75px" }}>
-                        {/* <Link
-                            key={1}
-                            href={`/charts/${record.idIndicador}`}
-                        > */}
+                        <Link
+                            key={record.idIndicador}
+                            href={`/ficha_indicador/${record.idIndicador}`}
+                        >
                             <Tag
                                 icon={<EditOutlined />}
                                 color="success"
@@ -71,7 +71,7 @@ const FichaIndicador = () => {
                             >
                                 Editar
                             </Tag>
-                        {/* </Link> */}
+                        </Link>
                     </Col>
                 // </Row>
             )
