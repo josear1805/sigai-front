@@ -2,6 +2,7 @@ import { useState } from "react";
 import LayoutApp from "src/layout";
 import { PageHeaderComponent } from "@components";
 import { Spin } from "antd";
+import FormFichaIndicador from "src/components/ficha_indicador/form";
 
 const AgregarFicha = () => {
     const [loading, setLoading] = useState(true);
