@@ -5,7 +5,7 @@ import LayoutApp from "src/layout";
 import { Spin, Card, notification, Row, Col, Select, Form } from "antd";
 import { makeRequest } from "src/helpers";
 import { PageHeaderComponent, ButtonComponent, ChartColumnLine } from "@components";
-
+import moment from "moment";
 
 const { Option } = Select;
 
@@ -17,12 +17,21 @@ const ChartDetails = () => {
     const router = useRouter();
     const { idIndicador } = router.query;
 
+    const currentYear = moment().format("YYYY");
+
     const [loading, setLoading] = useState(false);
     const [datosIndicadorOne, setDatosIndicadorOne] = useState([]);
     const [datosIndicadorTwo, setDatosIndicadorTwo] = useState([]);
+    const [years, setYears] = useState([]);
     const [nombreIndicador, setNombreIndicador] = useState("");
     const [state, setState] = useState({
-        compare: false
+        compare: false,
+        filterOne: {
+            year: currentYear
+        },
+        filterTwo: {
+            year: currentYear
+        }
     })
 
     const buttonsHeader = [
@@ -62,7 +71,7 @@ const ChartDetails = () => {
             path: "/indican/infoindicadorgra.php",
             body: {
                 idIndicador,
-                anio: 2021,
+                anio: parseInt(currentYear),
             },
         });
 
@@ -77,7 +86,8 @@ const ChartDetails = () => {
             );
             setDatosIndicadorOne(auxDataInd);
             setDatosIndicadorTwo(auxDataInd);
-            setLoading(false)
+            handleGetList();
+            setLoading(false);
         } else {
             notification.error({
                 message: response.mensaje,
@@ -86,6 +96,48 @@ const ChartDetails = () => {
             setLoading(false)
         }
     };
+
+    const handleGetList = async () => {
+        const response = await makeRequest({
+            method: "POST",
+            path: "/indican/listaanios.php",
+            body: {
+                idIndicador,
+            },
+        });
+
+        response.estatus && setYears(response.listaAnios);
+    }
+
+    const handleGraphicFilter = async (values, chart) => {
+        const response = await makeRequest({
+            method: "POST",
+            path: "/indican/infoindicadorgra.php",
+            body: {
+                idIndicador: values.idIndicador? values.idIndicador: idIndicador,
+                anio: parseInt(values.anio),
+            },
+        });
+
+        if (response.estatus === 1) {
+            let auxDataInd = [];
+            response.datosIndicador.map((item) => {
+                let aux = auxDataInd;
+                auxDataInd = aux.concat(item);
+            });
+            auxDataInd.map(
+                (item) => (item.valor = item.valor ? parseInt(item.valor) : 0)
+            );
+
+            chart === "one" && setDatosIndicadorOne(auxDataInd);
+            chart === "two" && setDatosIndicadorTwo(auxDataInd);
+        } else {
+            notification.error({
+                message: response.mensaje,
+                placement: "bottomRight",
+            });
+        }
+    }
 
     useEffect(() => {
         idIndicador && handleGetGrafics();
@@ -114,7 +166,7 @@ const ChartDetails = () => {
                                     initialValues={{
                                         remember: true,
                                     }}
-                                    // onFinish={handleGraphicFilter}
+                                    onFinish={(values) => handleGraphicFilter(values, "one")}
                                 >
                                     <Row gutter={[24, 24]} justify="center">
                                         <Col xs={24} sm={12} md={3}>
@@ -124,17 +176,25 @@ const ChartDetails = () => {
                                                 className="mb-0"
                                             >
                                                 <Select
-                                                    defaultValue={0}
-                                                    onChange={(value) => console.log(value)}
+                                                    defaultValue={ state.filterOne.year }
+                                                    onChange={(value) => setState((prevState) => ({
+                                                        ...prevState,
+                                                        filterOne: {
+                                                            ...prevState.filterOne,
+                                                            year: value
+                                                        }
+                                                    }))}
                                                     style={{ width: "100%" }}
                                                 >
-                                                    <Option value={0}>
-                                                        Seleccione
-                                                    </Option>
+                                                    {years.length >= 1 && years.map((year) => (
+                                                        <Option value={year}>
+                                                            {year}
+                                                        </Option>
+                                                    ))}
                                                 </Select>
                                             </Form.Item>
                                         </Col>
-                                        <Col xs={24} sm={12} md={3}>
+                                        {/* <Col xs={24} sm={12} md={3}>
                                             <Form.Item
                                                 label={"Indicador"}
                                                 name={"indicador"}
@@ -150,7 +210,7 @@ const ChartDetails = () => {
                                                     </Option>
                                                 </Select>
                                             </Form.Item>
-                                        </Col>
+                                        </Col> */}
                                         <Col xs={24} sm={12} md={3}>
                                             <Form.Item
                                                 label={"Periocidad"}
@@ -210,7 +270,7 @@ const ChartDetails = () => {
                                             initialValues={{
                                                 remember: true,
                                             }}
-                                            // onFinish={handleGraphicFilter}
+                                            onFinish={(values) => handleGraphicFilter(values, "two")}
                                         >
                                             <Row gutter={[24, 24]} justify="center">
                                                 <Col xs={24} sm={12} md={3}>
@@ -220,13 +280,21 @@ const ChartDetails = () => {
                                                         className="mb-0"
                                                     >
                                                         <Select
-                                                            defaultValue={0}
-                                                            onChange={(value) => console.log(value)}
+                                                            defaultValue={ state.filterTwo.year }
+                                                            onChange={(value) => setState((prevState) => ({
+                                                                ...prevState,
+                                                                filterTwo: {
+                                                                    ...prevState.filterTwo,
+                                                                    year: value
+                                                                }
+                                                            }))}
                                                             style={{ width: "100%" }}
                                                         >
-                                                            <Option value={0}>
-                                                                Seleccione
-                                                            </Option>
+                                                            {years.length >= 1 && years.map((year) => (
+                                                                <Option value={year}>
+                                                                    {year}
+                                                                </Option>
+                                                            ))}
                                                         </Select>
                                                     </Form.Item>
                                                 </Col>
