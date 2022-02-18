@@ -15,7 +15,7 @@ export const makeRequest = ({path, method, body = null, withToken = true}) => {
     if (withToken && token) {
         config.headers.Authorization = token;
     }
-    console.log("body", body)
+    
     if (body) {
         config.body = JSON.stringify(body);
     }

@@ -4,6 +4,7 @@ import { Row, Col, Card, Select, Tooltip, Button, Empty } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import dynamic from "next/dynamic";
 import { makeRequest } from "src/helpers";
+import moment from "moment";
 
 const { Option } = Select;
 
@@ -12,10 +13,11 @@ const ChartColumn = dynamic(() => import("../charts/column"), {
 });
 
 const ChartCardComponent = (props) => {
-    const { indicadorMostrar, listaIndicadores } = props;
+    const { indicadorMostrar, listaIndicadores, handleUpdate } = props;
+
+    const currentYear = moment().format("YYYY");
 
     const [loading, setLoading] = useState(false);
-    const [year, setYear] = useState(2021);
     const [datosIndicador, setDatosIndicador] = useState([]);
 
     const handleGetDatosIndicador = async (idIndicador, anio) => {
@@ -46,7 +48,7 @@ const ChartCardComponent = (props) => {
     };
 
     useEffect(() => {
-        handleGetDatosIndicador(indicadorMostrar.id_indicador, year);
+        handleGetDatosIndicador(indicadorMostrar.id_indicador, currentYear);
     }, []);
 
     return (
@@ -56,9 +58,10 @@ const ChartCardComponent = (props) => {
                     <Col xs={18} lg={10}>
                         <Select
                             defaultValue={indicadorMostrar.id_indicador}
-                            onChange={(value) =>
-                                handleGetDatosIndicador(value, year)
-                            }
+                            onChange={(value) => {
+                                handleGetDatosIndicador(value, currentYear)
+                                handleUpdate(indicadorMostrar.Posicion, value);
+                            }}
                             style={{ width: "100%" }}
                         >
                             <Option value={0}>Seleccione</Option>
