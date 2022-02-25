@@ -24,21 +24,14 @@ const Home = (props) => {
 
     const handleGetListaIndicadores = async () => {
         setLoading(true);
-        const { idUsuario, idPerfil } = dataUser;
-
         const response = await makeRequest({
             method: "POST",
             path: "/indican/listagraficosasociados.php",
-            body: {
-                idusuario: idUsuario,
-                idperfil: idPerfil,
-            },
         });
 
-        if (response.Estatus === 1) {
-            const { ListaIndicadoresMostrar, ListaIndicadores } = response;
-            setListaIndicadores(ListaIndicadores);
-            setListaIndicadoresMostrar(ListaIndicadoresMostrar);
+        if (response.estatus === 1) {
+            setListaIndicadores(response.listaIndicadores);
+            setListaIndicadoresMostrar(response.listaIndicadoresMostrar);
             setLoading(false);
         } else {
             notification.error({
@@ -53,8 +46,8 @@ const Home = (props) => {
         initialButtonsHeader[0].disabled = false;
         setButtonsHeader([...initialButtonsHeader]);
         listaIndicadoresMostrar.map((item) => {
-            if (item.Posicion == posicion) {
-                item.id_indicador = idIndicador;
+            if (item.posicion == posicion) {
+                item.idIndicador = idIndicador;
             }
         });
         setListaIndicadoresMostrar([...listaIndicadoresMostrar]);
@@ -63,21 +56,21 @@ const Home = (props) => {
     const handleCompartion = async () => {
         setLoading(true);
         const confIndicadorMostrar = listaIndicadoresMostrar.map((item) => ({
-            idNumCuadro: parseInt(item.Posicion),
-            idIndicador: parseInt(item.id_indicador)
+            idNumCuadro: parseInt(item.posicion),
+            idIndicador: parseInt(item.idIndicador)
         }));
 
         const response = await makeRequest({
             method: "POST",
             path: "/indican/configcuadro.php",
             body: {
-                idVistaMando: "2",
+                idVistaMando: "1",
                 idGerencia: dataUser.idGerencia,
                 confIndicadorMostrar
             },
         });
 
-        if (response.Estatus === 1) {
+        if (response.estatus === 1) {
             notification.success({
                 message: response.mensaje,
                 placement: "bottomRight",

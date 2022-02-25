@@ -34,12 +34,9 @@ const ChartCardComponent = (props) => {
         if (response.estatus === 1) {
             let auxDatosIndicador = [];
             response.datosIndicador.map((item) => {
-                let aux = auxDatosIndicador;
-                auxDatosIndicador = aux.concat(item);
+                auxDatosIndicador = auxDatosIndicador.concat(item);
             });
-            auxDatosIndicador.map(
-                (item) => (item.valor = item.valor ? parseInt(item.valor) : 0)
-            );
+            auxDatosIndicador.map((item) => (item.valor = item.valor ? parseInt(item.valor) : 0));
             setDatosIndicador(auxDatosIndicador);
             setLoading(false);
         } else {
@@ -48,7 +45,7 @@ const ChartCardComponent = (props) => {
     };
 
     useEffect(() => {
-        handleGetDatosIndicador(indicadorMostrar.id_indicador, currentYear);
+        handleGetDatosIndicador(indicadorMostrar.idIndicador, currentYear);
     }, []);
 
     return (
@@ -57,10 +54,10 @@ const ChartCardComponent = (props) => {
                 <Row gutter={[24, 24]} justify="end">
                     <Col xs={18} lg={10}>
                         <Select
-                            defaultValue={indicadorMostrar.id_indicador}
+                            defaultValue={indicadorMostrar.idIndicador}
                             onChange={(value) => {
                                 handleGetDatosIndicador(value, currentYear)
-                                handleUpdate(indicadorMostrar.Posicion, value);
+                                handleUpdate(indicadorMostrar.posicion, value);
                             }}
                             style={{ width: "100%" }}
                         >
@@ -68,10 +65,10 @@ const ChartCardComponent = (props) => {
                             {listaIndicadores.length > 0 &&
                                 listaIndicadores.map((item) => (
                                     <Option
-                                        value={item.id_indicador}
-                                        key={item.id_indicador}
+                                        value={item.idIndicador}
+                                        key={item.idIndicador}
                                     >
-                                        {item.nb_indicador}
+                                        {item.nbIndicador}
                                     </Option>
                             ))}
                         </Select>
@@ -79,7 +76,7 @@ const ChartCardComponent = (props) => {
                     <Col>
                         <Link
                             key={1}
-                            href={`/charts/${indicadorMostrar?.id_indicador}`}
+                            href={`/charts/${indicadorMostrar?.idIndicador}`}
                         >
                             <Tooltip title="Ver gráfica">
                                 <Button icon={<EyeOutlined />} />

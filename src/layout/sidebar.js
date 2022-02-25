@@ -68,7 +68,7 @@ const SidebarApp = (props) => {
                 </SubMenu> */}
 
                 <Menu.Item key="9" icon={<LineChartOutlined />}>
-                    <Link href="/my_indicators">
+                    <Link href="/mis_indicadores">
                         <a>Mis Indicadores</a>
                     </Link>
                 </Menu.Item>

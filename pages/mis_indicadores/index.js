@@ -6,7 +6,7 @@ import { EyeOutlined } from '@ant-design/icons';
 import Link from 'next/link'
 import { makeRequest } from 'src/helpers';
 import { PageHeaderComponent, SelectCategoriasComponent } from '@components';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const { Option } = Select;
 
@@ -35,7 +35,7 @@ const MyIndicators = (props) => {
     const navigation = [
         {
             key: '1',
-            path: `/my_indicators`,
+            path: `/mis_indicadores`,
             breadcrumbName: 'Mis Indicadores',
         }
     ]
@@ -122,10 +122,8 @@ const MyIndicators = (props) => {
         })
        
         if (response.estatus === 1) {
-            const { datosIndicador } = response;
-            datosIndicador.map((item) => {
-                let aux = auxDataInd
-                auxDataInd = aux.concat(item)
+            response.datosIndicador.map((item) => {
+                auxDataInd = auxDataInd.concat(item)
             })
         } else {
             notification.warning({
@@ -145,35 +143,10 @@ const MyIndicators = (props) => {
         }
         auxDataInd.map((item) => item.valor = item.valor ? parseInt(item.valor) : 0)
 
-        switch (grafica) {
-            case 1:
-                setState((prevState) => ({
-                    ...prevState,
-                    datosIndicador1: auxDataInd,
-                }))
-                break;
-
-            case 2:
-                setState((prevState) => ({
-                    ...prevState,
-                    datosIndicador2: auxDataInd,
-                }))
-                break;
-
-            case 3:
-                setState((prevState) => ({
-                    ...prevState,
-                    datosIndicador3: auxDataInd,
-                }))
-                break;
-
-            case 4:
-                setState((prevState) => ({
-                    ...prevState,
-                    datosIndicador4: auxDataInd,
-                }))
-                break;
-        }
+        setState((prevState) => ({
+            ...prevState,
+            [`datosIndicador${grafica}`]: auxDataInd,
+        }))
     };
 
     const handleChangueVicePresidencia = (id) => {
@@ -205,10 +178,6 @@ const MyIndicators = (props) => {
         }))
         parseInt(id) >= 1 && handleGetListaGraficosGerencia(id)
     }
-
-    // useEffect(() => {
-    //     !loadingGeneral && dataUser.idUsuario && handleGetListaVPGerencia()
-    // }, [])
 
     useEffect(() => {
         !loadingGeneral && dataUser.idUsuario && handleGetListaVPGerencia()
@@ -265,6 +234,20 @@ const MyIndicators = (props) => {
                                     ))
                                 }
                             </Select>
+                        </Col>
+
+                        <Col xs={24} md={12} lg={6} >
+                            <label>Gerencia</label>
+                            <ButtonComponent
+                                key={"dsds"}
+                                type="primary"
+                                title="Guardar Configuración"
+                                onClick={() =>console.log("SE ejecuto el botón")}
+                                // onClick={() => props.handleOnClick(item.identifier)}
+                                className={item.className}
+                                loading={props.loading}
+                                disabled={item.disabled || props.loading}
+                            />
                         </Col>
 
                         <Col span={24}>
