@@ -236,7 +236,7 @@ const MyIndicators = (props) => {
                             </Select>
                         </Col>
 
-                        <Col xs={24} md={12} lg={6} >
+                        {/* <Col xs={24} md={12} lg={6} >
                             <label>Gerencia</label>
                             <ButtonComponent
                                 key={"dsds"}
@@ -248,7 +248,7 @@ const MyIndicators = (props) => {
                                 loading={props.loading}
                                 disabled={item.disabled || props.loading}
                             />
-                        </Col>
+                        </Col> */}
 
                         <Col span={24}>
                             <Row gutter={[24, 24]}>
