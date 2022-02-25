@@ -57,7 +57,7 @@ const DataIndicators = () => {
                 return (
                     <Row gutter={[4, 0]} justify="space-around" align="middle">
                         <Col span={4}>
-                            {(record.permiso === "1" || record.permiso === "2") && (
+                            {(record.permiso === 1 || record.permiso === 2) && (
                                 <Link
                                     key={1}
                                     href={`/charts/${record.idIndicador}`}
@@ -75,7 +75,7 @@ const DataIndicators = () => {
                             )}
                         </Col>
                         <Col span={4}>
-                            {record.permiso === "2" && (
+                            {record.permiso === 2 && (
                                 <Link
                                     key={2}
                                     href={`/indicator_data/meta_fisica_planificada/${record.idIndicador}`}
@@ -93,7 +93,7 @@ const DataIndicators = () => {
                             )}
                         </Col>
                         <Col span={4}>
-                            {record.permiso === "2" && (
+                            {record.permiso === 2 && (
                                 <Link
                                     key={3}
                                     href={`/indicator_data/meta_fisica_ejecutada/${record.idIndicador}`}
@@ -111,52 +111,58 @@ const DataIndicators = () => {
                             )}
                         </Col>
                         <Col span={4}>
-                            <Link
-                                key={1}
-                                href={`/indicator_data/presupuesto_planificado/${record.idIndicador}`}
-                            >
-                                <Tooltip
-                                    title="Editar presupuesto planificado"
+                            {record.permiso === 2 && (
+                                <Link
+                                    key={1}
+                                    href={`/indicator_data/presupuesto_planificado/${record.idIndicador}`}
                                 >
-                                    <Tag
-                                        icon={<BarChartOutlined />}
-                                        color="processing"
-                                        className="tag-table"
-                                    />
-                                </Tooltip>
-                            </Link>
+                                    <Tooltip
+                                        title="Editar presupuesto planificado"
+                                    >
+                                        <Tag
+                                            icon={<BarChartOutlined />}
+                                            color="processing"
+                                            className="tag-table"
+                                        />
+                                    </Tooltip>
+                                </Link>
+                            )}
                         </Col>
                         <Col span={4}>
-                            <Link
-                                key={2}
-                                href={`/indicator_data/presupuesto_ejecutado/${record.idIndicador}`}
-                            >
-                                <Tooltip
-                                    title="Editar presupuesto ejecutado"
+                            {record.permiso === 2 && (
+                                <Link
+                                    key={2}
+                                    href={`/indicator_data/presupuesto_ejecutado/${record.idIndicador}`}
                                 >
-                                    <Tag
-                                        icon={<LineChartOutlined />}
-                                        color="processing"
-                                        className="tag-table"
-                                    />
-                                </Tooltip>
-                            </Link>
+                                    <Tooltip
+                                        title="Editar presupuesto ejecutado"
+                                    >
+                                        <Tag
+                                            icon={<LineChartOutlined />}
+                                            color="processing"
+                                            className="tag-table"
+                                        />
+                                    </Tooltip>
+                                </Link>
+                            )}
                         </Col>
                         <Col span={4}>
-                            <Link
-                                key={3}
-                                href={`/indicator_data/real/${record.idIndicador}`}
-                            >
-                                <Tooltip
-                                    title="Editar valor reales"
+                            {record.permiso === 2 && (
+                                <Link
+                                    key={3}
+                                    href={`/indicator_data/real/${record.idIndicador}`}
                                 >
-                                    <Tag
-                                        icon={<AreaChartOutlined />}
-                                        color="processing"
-                                        className="tag-table"
-                                    />
-                                </Tooltip>
-                            </Link>
+                                    <Tooltip
+                                        title="Editar valor reales"
+                                    >
+                                        <Tag
+                                            icon={<AreaChartOutlined />}
+                                            color="processing"
+                                            className="tag-table"
+                                        />
+                                    </Tooltip>
+                                </Link>
+                            )}
                         </Col>
                     </Row>
                 );
