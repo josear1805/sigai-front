@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import TableComponent from "./table";
+import EditableTableComponent from "./editable-table";
 import PageHeaderComponent from "./page-header";
 import ButtonComponent from "./button";
 import ModalComponet from "./modal";
@@ -16,6 +17,7 @@ const ChartColumnLine = dynamic(() => import("src/components/charts/column_line"
 
 export {
     TableComponent,
+    EditableTableComponent,
     ChartColumn,
     PageHeaderComponent,
     ButtonComponent,

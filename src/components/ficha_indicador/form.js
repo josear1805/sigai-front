@@ -27,6 +27,8 @@ const FormFichaIndicador = (props) => {
     } = props
     const [formFicha] = Form.useForm();
 
+    const year = moment().format("YYYY");
+
     const [categoriaIndicador, setCategoriaIndicador] = useState([]);
     const [escalasMediciones, setEscalasMediciones] = useState({});
     const [gerencia, setGerencia] = useState([]);
@@ -83,7 +85,7 @@ const FormFichaIndicador = (props) => {
                 idUsuario: "1",
                 idIndicador: idFicha,
                 idTipo: 1,
-                anio: "2021"
+                anio: year
             },
         });
 

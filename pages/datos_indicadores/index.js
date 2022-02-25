@@ -36,7 +36,7 @@ const DataIndicators = () => {
     const navigation = [
         {
             key: "1",
-            path: `/indicator_data`,
+            path: `/datos_indicadores`,
             breadcrumbName: "Datos de Indicadores",
         },
     ];
@@ -78,7 +78,7 @@ const DataIndicators = () => {
                             {record.permiso === 2 && (
                                 <Link
                                     key={2}
-                                    href={`/indicator_data/meta_fisica_planificada/${record.idIndicador}`}
+                                    href={`/datos_indicadores/meta_fisica_planificada/${record.idIndicador}`}
                                 >
                                     <Tooltip
                                         title="Editar meta física planificada"
@@ -96,7 +96,7 @@ const DataIndicators = () => {
                             {record.permiso === 2 && (
                                 <Link
                                     key={3}
-                                    href={`/indicator_data/meta_fisica_ejecutada/${record.idIndicador}`}
+                                    href={`/datos_indicadores/meta_fisica_ejecutada/${record.idIndicador}`}
                                 >
                                     <Tooltip
                                         title="Editar meta física ejecutada"
@@ -114,7 +114,7 @@ const DataIndicators = () => {
                             {record.permiso === 2 && (
                                 <Link
                                     key={1}
-                                    href={`/indicator_data/presupuesto_planificado/${record.idIndicador}`}
+                                    href={`/datos_indicadores/presupuesto_planificado/${record.idIndicador}`}
                                 >
                                     <Tooltip
                                         title="Editar presupuesto planificado"
@@ -132,7 +132,7 @@ const DataIndicators = () => {
                             {record.permiso === 2 && (
                                 <Link
                                     key={2}
-                                    href={`/indicator_data/presupuesto_ejecutado/${record.idIndicador}`}
+                                    href={`/datos_indicadores/presupuesto_ejecutado/${record.idIndicador}`}
                                 >
                                     <Tooltip
                                         title="Editar presupuesto ejecutado"
@@ -150,7 +150,7 @@ const DataIndicators = () => {
                             {record.permiso === 2 && (
                                 <Link
                                     key={3}
-                                    href={`/indicator_data/real/${record.idIndicador}`}
+                                    href={`/datos_indicadores/real/${record.idIndicador}`}
                                 >
                                     <Tooltip
                                         title="Editar valor reales"

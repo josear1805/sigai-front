@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import LayoutApp from 'src/layout';
-import dynamic from 'next/dynamic'
-import { Row, Col, Card, Select, Spin, Button, Tooltip, notification } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
-import Link from 'next/link'
-import { makeRequest } from 'src/helpers';
-import { PageHeaderComponent, SelectCategoriasComponent } from '@components';
 import { useSelector } from "react-redux";
+import { Row, Col, Card, Select, Spin, notification } from 'antd';
+import LayoutApp from 'src/layout';
+import { makeRequest } from 'src/helpers';
+import { PageHeaderComponent, SelectCategoriasComponent, ChartCardComponent, ButtonComponent } from '@components';
 
 const { Option } = Select;
-
-const ChartColumn = dynamic(() => import('src/components/charts/column'), { ssr: false })
 
 const initialState = {
     listaGerencias: [],
@@ -20,10 +15,6 @@ const initialState = {
     gerencia: "0",
     listaIndicadoresMostrar: [],
     listaIndicadores: [],
-    datosIndicador1: [],
-    datosIndicador2: [],
-    datosIndicador3: [],
-    datosIndicador4: [],
 }
 
 const MyIndicators = (props) => {
@@ -31,6 +22,7 @@ const MyIndicators = (props) => {
 
     const [state, setState] = useState(initialState);
     const [loading, setLoading] = useState(false);
+    const [showBtnComparation, setShowBtnComparation] = useState(false);
 
     const navigation = [
         {
@@ -41,7 +33,8 @@ const MyIndicators = (props) => {
     ]
 
     const handleGetListaVPGerencia = async () => {
-        setLoading(true)
+        setShowBtnComparation(false);
+        setLoading(true);
         const response = await makeRequest({
             method: "POST",
             path: "/indican/listavpgerencia.php",
@@ -61,19 +54,40 @@ const MyIndicators = (props) => {
                 gerencia: "0",
                 listaIndicadoresMostrar: [],
                 listaIndicadores: [],
-                datosIndicador1: [],
-                datosIndicador2: [],
-                datosIndicador3: [],
-                datosIndicador4: [],
             })
-            setLoading(false)
+            setLoading(false);
         } else {
             notification.error({
                 message: 'Ha ocurrido un error interno, por favor intente nuevamente!',
                 placement: 'bottomRight',
             });
-            setLoading(false)
+            setLoading(false);
         }
+    }
+
+    const handleChangueVicePresidencia = (id) => {
+        let auxListaGerencias = state.listaGerencias.filter((item) =>
+            item.idVicePresidencia === id
+        )
+
+        setState((prevState) => ({
+            ...prevState,
+            vicePresidencia: id? id: "0",
+            auxListaGerencias: id? auxListaGerencias: [],
+            gerencia: "0",
+            listaIndicadoresMostrar: [],
+            listaIndicadores: [],
+        }))
+    }
+
+    const handleChangueGerencia = (id) => {
+        setState((prevState) => ({
+            ...prevState,
+            gerencia: id,
+            listaIndicadoresMostrar: [],
+            listaIndicadores: []
+        }))
+        parseInt(id) >= 1 && handleGetListaGraficosGerencia(id)
     }
 
     const handleGetListaGraficosGerencia = async (id_gerencia) => {
@@ -90,10 +104,6 @@ const MyIndicators = (props) => {
         
         if (response.estatus === 1) {
             const { listaIndicadores, listaIndicadoresMostrar } = response
-            listaIndicadoresMostrar.map((item, index) => {
-                handleGetGrafics(index + 1, item.idIndicador)
-            })
-
             setState((prevState) => ({
                 ...prevState,
                 listaIndicadores,
@@ -107,76 +117,52 @@ const MyIndicators = (props) => {
             });
             setLoading(false)
         }
-
     }
 
-    const handleGetGrafics = async (grafica, idIndicador, anio = 2021) => {
-        let auxDataInd = []
+    const handleUpdateSelect = (posicion, idIndicador) => {
+        setShowBtnComparation(true);
+        state.listaIndicadoresMostrar.map((item) => {
+            if (item.posicion == posicion) {
+                item.idIndicador = idIndicador;
+            }
+        });
+        setState((prevState) => ({
+            ...prevState,
+            listaIndicadoresMostrar: [...state.listaIndicadoresMostrar],
+        }))
+    }
+
+    const handleCompartion = async () => {
+        setLoading(true);
+        const confIndicadorMostrar = state.listaIndicadoresMostrar.map((item) => ({
+            idNumCuadro: parseInt(item.posicion),
+            idIndicador: parseInt(item.idIndicador)
+        }));
+
         const response = await makeRequest({
             method: "POST",
-            path: "/indican/infoindicadorgra.php",
+            path: "/indican/configcuadro.php",
             body: {
-                idIndicador,
-                anio
-            }
-        })
-       
+                idVistaMando: "2",
+                idGerencia: dataUser.idGerencia,
+                confIndicadorMostrar
+            },
+        });
+
         if (response.estatus === 1) {
-            response.datosIndicador.map((item) => {
-                auxDataInd = auxDataInd.concat(item)
-            })
-        } else {
-            notification.warning({
-                message: 'Indicador sin data!',
-                placement: 'bottomRight',
+            notification.success({
+                message: response.mensaje,
+                placement: "bottomRight",
             });
-            return
+            setLoading(false);
+            setShowBtnComparation(false);
+        } else {
+            notification.error({
+                message: response.mensaje,
+                placement: "bottomRight",
+            });
+            setLoading(false);
         }
-
-        let auxLIM = state.listaIndicadoresMostrar
-        if (auxLIM.length > 0 && auxLIM[grafica - 1]?.idIndicador != idIndicador) {
-            auxLIM[grafica - 1].idIndicador = idIndicador
-            setState((prevState) => ({
-                ...prevState,
-                listaIndicadoresMostrar: auxLIM,
-            }))
-        }
-        auxDataInd.map((item) => item.valor = item.valor ? parseInt(item.valor) : 0)
-
-        setState((prevState) => ({
-            ...prevState,
-            [`datosIndicador${grafica}`]: auxDataInd,
-        }))
-    };
-
-    const handleChangueVicePresidencia = (id) => {
-        const { listaGerencias } = state;
-        let auxListaGerencias = listaGerencias.filter((item) =>
-            item.idVicePresidencia === id
-        )
-
-        setState((prevState) => ({
-            ...prevState,
-            vicePresidencia: id? id: "0",
-            auxListaGerencias: id? auxListaGerencias: [],
-            gerencia: "0",
-            listaIndicadoresMostrar: [],
-            listaIndicadores: [],
-            datosIndicador1: [],
-            datosIndicador2: [],
-            datosIndicador3: [],
-            datosIndicador4: [],
-        }))
-    }
-
-    const handleChangueGerencia = (id) => {
-        setState((prevState) => ({
-            ...prevState,
-            gerencia: id,
-            listaIndicadoresMostrar: [],
-            listaIndicadores: []
-        }))
-        parseInt(id) >= 1 && handleGetListaGraficosGerencia(id)
     }
 
     useEffect(() => {
@@ -211,11 +197,9 @@ const MyIndicators = (props) => {
                                 style={{ width: "100%" }}
                             >
                                 <Option value="0" key="vp-0">Seleccione</Option>
-                                {
-                                    state.listaVicePresidencias && state.listaVicePresidencias.map((item) => (
-                                        <Option value={item.idVicePresidencia} key={`vp-${item.idVicePresidencia}`}>{item.nbVicePresidencia}</Option>
-                                    ))
-                                }
+                                {state.listaVicePresidencias && state.listaVicePresidencias.map((item) => (
+                                    <Option value={item.idVicePresidencia} key={`vp-${item.idVicePresidencia}`}>{item.nbVicePresidencia}</Option>
+                                ))}
                             </Select>
                         </Col>
 
@@ -228,166 +212,28 @@ const MyIndicators = (props) => {
                                 onChange={(value) => handleChangueGerencia(value)}
                             >
                                 <Option value="0" key="ge-0">Seleccione</Option>
-                                {
-                                    state.auxListaGerencias && state.auxListaGerencias.map((item) => (
-                                        <Option value={item.idGerencia} key={`ge-${item.idGerencia}`}>{item.nbGerencia}</Option>
-                                    ))
-                                }
+                                {state.auxListaGerencias && state.auxListaGerencias.map((item) => (
+                                    <Option value={item.idGerencia} key={`ge-${item.idGerencia}`}>{item.nbGerencia}</Option>
+                                ))}
                             </Select>
                         </Col>
 
-                        {/* <Col xs={24} md={12} lg={6} >
-                            <label>Gerencia</label>
-                            <ButtonComponent
-                                key={"dsds"}
-                                type="primary"
-                                title="Guardar Configuración"
-                                onClick={() =>console.log("SE ejecuto el botón")}
-                                // onClick={() => props.handleOnClick(item.identifier)}
-                                className={item.className}
-                                loading={props.loading}
-                                disabled={item.disabled || props.loading}
-                            />
-                        </Col> */}
+                        {showBtnComparation && (
+                            <Col xs={24} md={12} lg={12} style={{ paddingTop: "22px", textAlign: "right" }}>
+                                <ButtonComponent
+                                    type="primary"
+                                    title="Guardar Configuración"
+                                    loading={loading}
+                                    onClick={handleCompartion}
+                                />
+                            </Col>
+                        )}
 
                         <Col span={24}>
                             <Row gutter={[24, 24]}>
-                                {state.listaIndicadoresMostrar[0] &&
-                                    <>
-                                        <Col xs={24} sm={24} md={12} >
-                                            <Card className="box-shadow">
-                                                <Row gutter={[24, 24]} justify="end">
-                                                    <Col xs={18} lg={10} >
-                                                        <Select
-                                                            defaultValue={state.listaIndicadoresMostrar[0]?.idIndicador}
-                                                            onChange={(value) => handleGetGrafics(1, value)}
-                                                            style={{ width: "100%" }}>
-                                                            {
-                                                                state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
-                                                                    <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
-                                                                ))
-                                                            }
-                                                        </Select>
-                                                    </Col>
-                                                    <Col>
-                                                        <Link key={1} href={`/charts/${state.listaIndicadoresMostrar[0]?.idIndicador}`}>
-                                                            <Tooltip title="Ver gráfica">
-                                                                <Button
-                                                                    icon={<EyeOutlined />}
-                                                                />
-                                                            </Tooltip>
-                                                        </Link>
-                                                    </Col>
-                                                    <Col span={24} style={{ minHeight: 200 }}>
-                                                        <ChartColumn data={state.datosIndicador1} height={200} />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </Col>
-                                    </>
-                                }
-                                {state.listaIndicadoresMostrar[1] &&
-                                    <>
-                                        <Col xs={24} sm={24} md={12} >
-                                            <Card className="box-shadow">
-                                                <Row gutter={[24, 24]} justify="end">
-                                                    <Col xs={18} lg={10} >
-                                                        <Select
-                                                            defaultValue={state.listaIndicadoresMostrar[1]?.idIndicador}
-                                                            onChange={(value) => handleGetGrafics(2, value)}
-                                                            style={{ width: "100%" }}>
-                                                            {
-                                                                state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
-                                                                    <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
-                                                                ))
-                                                            }
-                                                        </Select>
-                                                    </Col>
-                                                    <Col>
-                                                        <Link key={2} href={`/charts/${state.listaIndicadoresMostrar[1]?.idIndicador}`}>
-                                                            <Tooltip title="Ver gráfica">
-                                                                <Button
-                                                                    icon={<EyeOutlined />}
-                                                                />
-                                                            </Tooltip>
-                                                        </Link>
-                                                    </Col>
-                                                    <Col span={24} style={{ minHeight: 200 }}>
-                                                        <ChartColumn data={state.datosIndicador2} height={200} />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </Col>
-                                    </>
-                                }
-                                {state.listaIndicadoresMostrar[2] &&
-                                    <>
-                                        <Col xs={24} sm={24} md={12} >
-                                            <Card className="box-shadow">
-                                                <Row gutter={[24, 24]} justify="end">
-                                                    <Col xs={18} lg={10} >
-                                                        <Select
-                                                            defaultValue={parseInt(state.listaIndicadoresMostrar[2]?.idIndicador)}
-                                                            onChange={(value) => handleGetGrafics(3, value)}
-                                                            style={{ width: "100%" }}>
-                                                            {
-                                                                state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
-                                                                    <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
-                                                                ))
-                                                            }
-                                                        </Select>
-                                                    </Col>
-                                                    <Col>
-                                                        <Link key={1} href={`/charts/${state.listaIndicadoresMostrar[2]?.idIndicador}`}>
-                                                            <Tooltip title="Ver gráfica">
-                                                                <Button
-                                                                    icon={<EyeOutlined />}
-                                                                />
-                                                            </Tooltip>
-                                                        </Link>
-                                                    </Col>
-                                                    <Col span={24} style={{ minHeight: 200 }}>
-                                                        <ChartColumn data={state.datosIndicador3} height={200} />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </Col>
-                                    </>
-                                }
-                                {state.listaIndicadoresMostrar[3] &&
-                                    <>
-                                        <Col xs={24} sm={24} md={12} >
-                                            <Card className="box-shadow">
-                                                <Row gutter={[24, 24]} justify="end">
-                                                    <Col xs={18} lg={10} >
-                                                        <Select
-                                                            defaultValue={state.listaIndicadoresMostrar[3]?.idIndicador}
-                                                            onChange={(value) => handleGetGrafics(4, value)}
-                                                            style={{ width: "100%" }}>
-                                                            {
-                                                                state.listaIndicadores.length > 0 && state.listaIndicadores.map((item) => (
-                                                                    <Option value={item.idIndicador} key={item.idIndicador}>{item.nbIndicador}</Option>
-                                                                ))
-                                                            }
-                                                        </Select>
-                                                    </Col>
-                                                    <Col>
-                                                        <Link key={1} href={`/charts/${state.listaIndicadoresMostrar[3]?.idIndicador}`}>
-                                                            <Tooltip title="Ver gráfica">
-                                                                <Button
-                                                                    icon={<EyeOutlined />}
-                                                                />
-                                                            </Tooltip>
-                                                        </Link>
-                                                    </Col>
-                                                    <Col span={24} style={{ minHeight: 200 }}>
-                                                        <ChartColumn data={state.datosIndicador4} height={200} />
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-                                        </Col>
-                                    </>
-                                }
+                                {state.listaIndicadoresMostrar.length > 0 && state.listaIndicadoresMostrar.map((item) => (
+                                    <ChartCardComponent indicadorMostrar={item} listaIndicadores={state.listaIndicadores} handleUpdate={handleUpdateSelect} />
+                                ))}
                             </Row>
                         </Col>
 

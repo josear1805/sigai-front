@@ -36,7 +36,8 @@ const initialStateModalMonth = {
 
 const GoalsEdit = (props) => {
     const dateNow = moment().format("YYYY-MM-DD");
-    const tipoIndicador = 2;
+    const year = moment().format("YYYY");
+    const tipoIndicador = 5;
     const monthNumber =  parseInt(moment().subtract(1, 'months').format("M"));
     const router = useRouter();
     const [formMonth] = Form.useForm();
@@ -50,9 +51,9 @@ const GoalsEdit = (props) => {
 
     const buttonsHeader = [
         {
-            href: "/indicator_data",
             type: "primary",
             name: "Volver",
+            onClick: () => router.back(),
             className: "ant-btn-danger"
         },
     ];
@@ -60,12 +61,12 @@ const GoalsEdit = (props) => {
     const navigation = [
         {
             key: "1",
-            path: `/indicator_data`,
+            path: `/datos_indicadores`,
             breadcrumbName: "Datos de Indicadores",
         },
         {
             key: "2",
-            path: `/indicator_data/goals/${idIndicador}`,
+            path: `/datos_indicadores/goals/${idIndicador}`,
             breadcrumbName: "Editar meta",
         },
     ];
@@ -79,7 +80,7 @@ const GoalsEdit = (props) => {
                 idIndicador,
                 idUsuario: dataUser.idUsuario,
                 idTipo: tipoIndicador,
-                anio: "2021",
+                anio: year,
             },
         });
 
@@ -127,7 +128,7 @@ const GoalsEdit = (props) => {
             idUsuario: dataUser.idUsuario,
             idIndicador,
             idTipo: tipoIndicador,
-            anio: "2021",
+            anio: year,
             datos: [listMetas.find((meta) => meta.idMes === stateModalMonth.monthId)]
         }
 
@@ -142,7 +143,7 @@ const GoalsEdit = (props) => {
                     placement: "bottomRight",
                 });
                 // setTimeout(() => {
-                //     router.push("/indicator_data");
+                //     router.push("/datos_indicadores");
                 // }, 1000);
                 setLoading(false);
                 setListMetas([...listMetas]);
@@ -209,15 +210,18 @@ const GoalsEdit = (props) => {
         },
     ];
 
+    // useEffect(() => {
+    //     idIndicador && dataUser.idUsuario && handleExecutedGoals();
+    // }, [idIndicador]);
+
     useEffect(() => {
         !loadingGeneral && dataUser.idUsuario && handleExecutedGoals();
-        console.log("CASA GRANDE ENTRA USEEFFECT")
     }, [loadingGeneral]);
 
     return (
         <LayoutApp navigation={navigation}>
             <PageHeaderComponent
-                title="Meta física ejecutada"
+                title="Real"
                 reload={true}
                 handleReload={() => handleExecutedGoals()}
                 button={true}

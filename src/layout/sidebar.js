@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Link from "next/link";
 import { Layout, Menu, notification } from 'antd';
@@ -9,32 +9,36 @@ import {
     BarChartOutlined,
     LineChartOutlined,
 } from '@ant-design/icons';
-import axios from 'axios';
-import { enviroments } from 'src/config/enviroments';
-
+import { makeRequest } from "src/helpers";
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 const SidebarApp = (props) => {
-    // const { dataUser } = useSelector((stateData) => stateData.global)
-    // const { id_usuario, id_perfil } = dataUser;
+    const [menuList, setMenuList] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // const handleGetMenu = async () => {
-    //     await axios.get(`${enviroments.api}/indican/menu.php?id_Usuario=${id_usuario}&id_Perfil=${id_perfil}`)
-    //         .then(response => {
-    //             const { data } = response;
-    //             console.log(data)
-    //         })
-    //         .catch(error => {
-    //             console.log(error)
-    //         })
-    // }
+    const handleGetMenu = async () => {
+        const response = await makeRequest({
+            method: "POST",
+            path: "/indican/menu.php"
+        });
 
-    // useEffect(() => {
-    //     handleGetMenu()
-    // }, [])
+        if (response.estatus === 1) {
+            setMenuList(response.listaMenu);
+            setLoading(false);
+        } else {
+            notification.error({
+                message: response.mensaje,
+                placement: "bottomRight",
+            });
+            setLoading(false);
+        }
+    }
 
+    useEffect(() => {
+        handleGetMenu()
+    }, [])
 
     return (
 
@@ -45,12 +49,18 @@ const SidebarApp = (props) => {
                 </Link>
             </div>
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+                {/* {!loading && menuList.length >= 1 && menuList.map((item) => (
+                    <Menu.Item key={item.idMenu} icon={<HomeOutlined />}>
+                        <Link href={item.url}>
+                            <a>{item.nombre}</a>
+                        </Link>
+                    </Menu.Item>
+                ))} */}
                 <Menu.Item key="inicio" icon={<HomeOutlined />}>
                     <Link href="/">
                         <a>Inicio</a>
                     </Link>
                 </Menu.Item>
-
                 {/* <SubMenu key="sub1" icon={<BarChartOutlined />} title="Indicadores Iniciales">
                     <Menu.Item key="sub1_1">Team 1</Menu.Item>
                     <Menu.Item key="sub1_2">Team 2</Menu.Item>
@@ -66,14 +76,13 @@ const SidebarApp = (props) => {
                     <Menu.Item key="sub2_8">Sistemas</Menu.Item>
                     <Menu.Item key="sub2_9">Tecnología y operaciones</Menu.Item>
                 </SubMenu> */}
-
                 <Menu.Item key="9" icon={<LineChartOutlined />}>
                     <Link href="/mis_indicadores">
                         <a>Mis Indicadores</a>
                     </Link>
                 </Menu.Item>
                 <Menu.Item key="2" icon={<BarChartOutlined />}>
-                    <Link href="/indicator_data">
+                    <Link href="/datos_indicadores">
                         <a>Datos de Indicadores</a>
                     </Link>
                 </Menu.Item>
