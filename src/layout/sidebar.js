@@ -8,6 +8,8 @@ import {
     SettingOutlined,
     BarChartOutlined,
     LineChartOutlined,
+    RightOutlined,
+    FileProtectOutlined
 } from '@ant-design/icons';
 import { makeRequest } from "src/helpers";
 
@@ -17,6 +19,28 @@ const { SubMenu } = Menu;
 const SidebarApp = (props) => {
     const [menuList, setMenuList] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const handleGetIcon = (icon) => {
+        let response = null;
+        switch (icon) {
+            case "<HomeOutlined />":
+                response = <HomeOutlined />;
+                break;
+            case "<LineChartOutlined />":
+                response = <LineChartOutlined />;
+                break;
+            case "<BarChartOutlined />":
+                response = <BarChartOutlined />;
+                break;
+            case "<FileProtectOutlined />":
+                response = <FileProtectOutlined />;
+                break;
+            default:
+                response = <RightOutlined />;
+                break;
+        }
+        return response;
+    }
 
     const handleGetMenu = async () => {
         const response = await makeRequest({
@@ -49,18 +73,18 @@ const SidebarApp = (props) => {
                 </Link>
             </div>
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-                {/* {!loading && menuList.length >= 1 && menuList.map((item) => (
-                    <Menu.Item key={item.idMenu} icon={<HomeOutlined />}>
+                {!loading && menuList.length >= 1 && menuList.map((item) => (
+                    <Menu.Item key={item.idMenu} icon={handleGetIcon(item.icono)}>
                         <Link href={item.url}>
                             <a>{item.nombre}</a>
                         </Link>
                     </Menu.Item>
-                ))} */}
-                <Menu.Item key="inicio" icon={<HomeOutlined />}>
+                ))}
+                {/* <Menu.Item key="inicio" icon={<HomeOutlined />}>
                     <Link href="/">
                         <a>Inicio</a>
                     </Link>
-                </Menu.Item>
+                </Menu.Item> */}
                 {/* <SubMenu key="sub1" icon={<BarChartOutlined />} title="Indicadores Iniciales">
                     <Menu.Item key="sub1_1">Team 1</Menu.Item>
                     <Menu.Item key="sub1_2">Team 2</Menu.Item>
@@ -76,21 +100,21 @@ const SidebarApp = (props) => {
                     <Menu.Item key="sub2_8">Sistemas</Menu.Item>
                     <Menu.Item key="sub2_9">Tecnología y operaciones</Menu.Item>
                 </SubMenu> */}
-                <Menu.Item key="9" icon={<LineChartOutlined />}>
+                {/* <Menu.Item key="9" icon={<LineChartOutlined />}>
                     <Link href="/mis_indicadores">
                         <a>Mis Indicadores</a>
                     </Link>
-                </Menu.Item>
-                <Menu.Item key="2" icon={<BarChartOutlined />}>
+                </Menu.Item> */}
+                {/* <Menu.Item key="2" icon={<BarChartOutlined />}>
                     <Link href="/datos_indicadores">
                         <a>Datos de Indicadores</a>
                     </Link>
-                </Menu.Item>
-                <Menu.Item key="ficha_indicador" icon={<BarChartOutlined />}>
+                </Menu.Item> */}
+                {/* <Menu.Item key="ficha_indicador" icon={<BarChartOutlined />}>
                     <Link href="/ficha_indicador">
                         <a>Ficha Indicador</a>
                     </Link>
-                </Menu.Item>
+                </Menu.Item> */}
             </Menu>
         </Sider>
     );
