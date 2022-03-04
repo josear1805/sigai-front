@@ -144,7 +144,7 @@ const MyIndicators = (props) => {
             path: "/indican/configcuadro.php",
             body: {
                 idVistaMando: "2",
-                idGerencia: dataUser.idGerencia,
+                idGerencia: state.gerencia,
                 confIndicadorMostrar
             },
         });
