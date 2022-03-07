@@ -22,7 +22,7 @@ const MyIndicators = (props) => {
 
     const [state, setState] = useState(initialState);
     const [loading, setLoading] = useState(false);
-    const [showBtnComparation, setShowBtnComparation] = useState(false);
+    const [disabledBtnComparation, setDisabledBtnComparation] = useState(true);
 
     const navigation = [
         {
@@ -33,7 +33,7 @@ const MyIndicators = (props) => {
     ]
 
     const handleGetListaVPGerencia = async () => {
-        setShowBtnComparation(false);
+        setDisabledBtnComparation(true);
         setLoading(true);
         const response = await makeRequest({
             method: "POST",
@@ -69,7 +69,8 @@ const MyIndicators = (props) => {
         let auxListaGerencias = state.listaGerencias.filter((item) =>
             item.idVicePresidencia === id
         )
-
+        
+        setDisabledBtnComparation(true);
         setState((prevState) => ({
             ...prevState,
             vicePresidencia: id? id: "0",
@@ -81,6 +82,7 @@ const MyIndicators = (props) => {
     }
 
     const handleChangueGerencia = (id) => {
+        setDisabledBtnComparation(true);
         setState((prevState) => ({
             ...prevState,
             gerencia: id,
@@ -120,7 +122,7 @@ const MyIndicators = (props) => {
     }
 
     const handleUpdateSelect = (posicion, idIndicador) => {
-        setShowBtnComparation(true);
+        setDisabledBtnComparation(false);
         state.listaIndicadoresMostrar.map((item) => {
             if (item.posicion == posicion) {
                 item.idIndicador = idIndicador;
@@ -155,7 +157,7 @@ const MyIndicators = (props) => {
                 placement: "bottomRight",
             });
             setLoading(false);
-            setShowBtnComparation(false);
+            setDisabledBtnComparation(true);
         } else {
             notification.error({
                 message: response.mensaje,
@@ -218,16 +220,17 @@ const MyIndicators = (props) => {
                             </Select>
                         </Col>
 
-                        {showBtnComparation && (
+                        {/* {disabledBtnComparation && ( */}
                             <Col xs={24} md={12} lg={12} style={{ paddingTop: "22px", textAlign: "right" }}>
                                 <ButtonComponent
                                     type="primary"
                                     title="Guardar Configuración"
                                     loading={loading}
                                     onClick={handleCompartion}
+                                    disabled={disabledBtnComparation}
                                 />
                             </Col>
-                        )}
+                        {/* )} */}
 
                         <Col span={24}>
                             <Row gutter={[24, 24]}>
