@@ -88,7 +88,8 @@ const GoalsEdit = (props) => {
             const { datosGenerales, listaMetas } = response;
 
             listaMetas.map((meta) => {
-                meta.modify =  dateNow <= datosGenerales.fechaMaxIngresoDatos? meta.idMes === monthNumber: false
+                // meta.modify =  dateNow <= datosGenerales.fechaMaxIngresoDatos? meta.idMes === monthNumber: false
+                meta.modify =  meta.idMes <= monthNumber
             })
 
             setGeneralData(datosGenerales);
@@ -195,11 +196,11 @@ const GoalsEdit = (props) => {
                             {
                                 <Tag
                                     icon={<EditOutlined />}
-                                    // color={record.modify? "success": "default"}
-                                    color={"success"}
-                                    // disabled={!record.modify}
-                                    // onClick={record.modify? () => handleOpenModalMonth(record): null}
-                                    onClick={() => handleOpenModalMonth(record)}
+                                    color={record.modify? "success": "default"}
+                                    // color={"success"}
+                                    disabled={!record.modify}
+                                    onClick={record.modify? () => handleOpenModalMonth(record): null}
+                                    // onClick={() => handleOpenModalMonth(record)}
                                     className="tag-table"
                                 >
                                     Editar
