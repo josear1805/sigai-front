@@ -194,9 +194,11 @@ const GoalsEdit = (props) => {
                             {
                                 <Tag
                                     icon={<EditOutlined />}
-                                    color={record.modify? "success": "default"}
-                                    disabled={!record.modify}
-                                    onClick={record.modify? () => handleOpenModalMonth(record): null}
+                                    // color={record.modify? "success": "default"}
+                                    color={"success"}
+                                    // disabled={!record.modify}
+                                    // onClick={record.modify? () => handleOpenModalMonth(record): null}
+                                    onClick={() => handleOpenModalMonth(record)}
                                     className="tag-table"
                                 >
                                     Editar
