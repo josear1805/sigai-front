@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import LayoutApp from "src/layout";
-import { Spin, Card, notification, Row, Col, Select, Form } from "antd";
+import { Spin, Card, notification, Row, Col, Select, Form, Descriptions, Checkbox } from "antd";
 import { makeRequest } from "src/helpers";
 import { PageHeaderComponent, ButtonComponent, ChartColumnLine } from "@components";
 import moment from "moment";
@@ -33,6 +33,20 @@ const ChartDetails = () => {
             year: currentYear
         }
     })
+    const [totales, setTotales] = useState({
+        totalAnualMetaFinancieraEjecutada: 0,
+        showTotalAnualMetaFinancieraEjecutada: true,
+        totalAnualMetaFinancieraPlanificada: 0,
+        showTotalAnualMetaFinancieraPlanificada: true,
+        totalAnualMetaOperativaEjecutada: 0,
+        showTotalAnualMetaOperativaEjecutada: true,
+        totalAnualMetaOperativaPlanificada: 0,
+        showTotalAnualMetaOperativaPlanificada: true,
+        totalAnualValorReal: 0,
+        showTotalAnualValorReal: true,
+        unidadMedidaFinanciera: "",
+        unidadMedidaOperativa: ""
+    });
 
     const buttonsHeader = [
         {
@@ -86,6 +100,16 @@ const ChartDetails = () => {
             );
             setDatosIndicadorOne(auxDataInd);
             setDatosIndicadorTwo(auxDataInd);
+            setTotales((prevState) => ({
+                ...prevState,
+                totalAnualMetaFinancieraEjecutada: response.totalAnualMetaFinancieraEjecutada,
+                totalAnualMetaFinancieraPlanificada: response.totalAnualMetaFinancieraPlanificada,
+                totalAnualMetaOperativaEjecutada: response.totalAnualMetaOperativaEjecutada,
+                totalAnualMetaOperativaPlanificada: response.totalAnualMetaOperativaPlanificada,
+                totalAnualValorReal: response.totalAnualValorReal,
+                unidadMedidaFinanciera: response.unidadMedidaFinanciera,
+                unidadMedidaOperativa: response.unidadMedidaOperativa
+            }))
             handleGetList();
             setLoading(false);
         } else {
@@ -139,6 +163,13 @@ const ChartDetails = () => {
         }
     }
 
+    const handleSetTotales = (value) => {
+        setTotales((prevState) => ({
+            ...prevState,
+            [value]: !prevState[value]
+        }))
+    }
+
     useEffect(() => {
         idIndicador && handleGetGrafics();
     }, [idIndicador]);
@@ -153,7 +184,40 @@ const ChartDetails = () => {
                 dataButton={buttonsHeader}
                 loading={loading}
                 navigation={navigation}
-            />
+            >
+                <Row gutter={[24, 8]}>
+                    <Col xs={24} sm={12} md={8}>
+                        <Checkbox defaultChecked={totales.showTotalAnualMetaFinancieraPlanificada} onChange={() => handleSetTotales("showTotalAnualMetaFinancieraPlanificada")}>
+                            <strong>Total Financiera Planificada: </strong> 
+                            {totales.showTotalAnualMetaFinancieraPlanificada && `${totales.totalAnualMetaFinancieraPlanificada} ${totales.unidadMedidaFinanciera}`}
+                        </Checkbox>
+                    </Col>
+                    <Col xs={24} sm={12} md={8}>
+                        <Checkbox defaultChecked={totales.showTotalAnualMetaFinancieraEjecutada} onChange={() => handleSetTotales("showTotalAnualMetaFinancieraEjecutada")}>
+                            <strong>Total Financiera Ejecutada: </strong>
+                            {totales.showTotalAnualMetaFinancieraEjecutada && `${totales.totalAnualMetaFinancieraEjecutada} ${totales.unidadMedidaFinanciera}`}
+                        </Checkbox>
+                    </Col>
+                    <Col xs={24} sm={12} md={8}>
+                        <Checkbox defaultChecked={totales.showTotalAnualMetaOperativaPlanificada} onChange={() => handleSetTotales("showTotalAnualMetaOperativaPlanificada")}>
+                            <strong>Total Fisica Acumulada: </strong>
+                            {totales.showTotalAnualMetaOperativaPlanificada && `${totales.totalAnualMetaOperativaPlanificada} ${totales.unidadMedidaOperativa}`}
+                        </Checkbox>
+                    </Col>
+                    <Col xs={24} sm={12} md={8}>
+                        <Checkbox defaultChecked={totales.showTotalAnualMetaOperativaEjecutada} onChange={() => handleSetTotales("showTotalAnualMetaOperativaEjecutada")}>
+                            <strong>Total Física Ejecutada Acumulada: </strong>
+                            {totales.showTotalAnualMetaOperativaEjecutada && `${totales.totalAnualMetaOperativaEjecutada} ${totales.unidadMedidaOperativa}`}
+                        </Checkbox>
+                    </Col>
+                    <Col xs={24} sm={12} md={8}>
+                        <Checkbox defaultChecked={totales.showTotalAnualValorReal} onChange={() => handleSetTotales("showTotalAnualValorReal")}>
+                            <strong>Total Valor Real: </strong>
+                            {totales.showTotalAnualValorReal && `${totales.totalAnualValorReal} ${totales.unidadMedidaOperativa}`}
+                        </Checkbox>
+                    </Col>
+                </Row>
+            </PageHeaderComponent> 
 
             <Spin tip="Cargando..." spinning={loading}>
                 {!loading && (

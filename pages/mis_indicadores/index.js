@@ -196,6 +196,12 @@ const MyIndicators = (props) => {
                             <Select
                                 value={state.vicePresidencia}
                                 onChange={(value) => handleChangueVicePresidencia(value)}
+                                showSearch
+                                placeholder="Select a person"
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
                                 style={{ width: "100%" }}
                             >
                                 <Option value="0" key="vp-0">Seleccione</Option>
@@ -212,6 +218,12 @@ const MyIndicators = (props) => {
                                 style={{ width: "100%" }}
                                 disabled={state.vicePresidencia === "0"}
                                 onChange={(value) => handleChangueGerencia(value)}
+                                showSearch
+                                placeholder="Select a person"
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
                             >
                                 <Option value="0" key="ge-0">Seleccione</Option>
                                 {state.auxListaGerencias && state.auxListaGerencias.map((item) => (

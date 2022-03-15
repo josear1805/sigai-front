@@ -54,11 +54,17 @@ const ChartCardComponent = (props) => {
                 <Row gutter={[24, 24]} justify="end">
                     <Col xs={18} lg={10}>
                         <Select
+                            showSearch
+                            placeholder="Select a person"
+                            optionFilterProp="children"
                             defaultValue={indicadorMostrar.idIndicador}
                             onChange={(value) => {
                                 handleGetDatosIndicador(value, currentYear)
                                 handleUpdate(indicadorMostrar.posicion, value);
                             }}
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
                             style={{ width: "100%" }}
                         >
                             <Option value={0}>Seleccione</Option>

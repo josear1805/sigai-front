@@ -294,6 +294,12 @@ const DataIndicators = () => {
                                     onChange={
                                         handleChangueVicePresidencia
                                     }
+                                    showSearch
+                                    placeholder="Select a person"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
                                     style={{ width: "100%" }}
                                 >
                                     <Option value={0} key={999}>
@@ -325,6 +331,12 @@ const DataIndicators = () => {
                                     disabled={!state.idVicePresidencia}
                                     onChange={(value) =>
                                         handleChangueGerencia(value)
+                                    }
+                                    showSearch
+                                    placeholder="Select a person"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                     }
                                 >
                                     <Option value={0} key={999}>

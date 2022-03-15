@@ -204,6 +204,12 @@ const FichaIndicador = () => {
                                     onChange={
                                         handleChangueVicePresidencia
                                     }
+                                    showSearch
+                                    placeholder="Select a person"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
                                     style={{ width: "100%" }}
                                 >
                                     <Option value={0} key={999}>
@@ -235,6 +241,12 @@ const FichaIndicador = () => {
                                     disabled={!state.idVicePresidencia}
                                     onChange={(value) =>
                                         handleChangueGerencia(value)
+                                    }
+                                    showSearch
+                                    placeholder="Select a person"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                     }
                                 >
                                     <Option value={0} key={999}>
