@@ -27,9 +27,11 @@ const ChartDetails = () => {
     const [state, setState] = useState({
         compare: false,
         filterOne: {
+            disabled: true,
             year: currentYear
         },
         filterTwo: {
+            disabled: true,
             year: currentYear
         }
     })
@@ -134,6 +136,18 @@ const ChartDetails = () => {
     }
 
     const handleGraphicFilter = async (values, chart) => {
+        setState((prevState) => ({
+            ...prevState,
+            filterOne: {
+                ...prevState.filterOne,
+                disabled: true,
+            },
+            filterTwo: {
+                ...prevState.filterTwo,
+                disabled: true,
+            }
+        }))
+
         const response = await makeRequest({
             method: "POST",
             path: "/indican/infoindicadorgra.php",
@@ -187,31 +201,35 @@ const ChartDetails = () => {
             >
                 <Row gutter={[24, 8]}>
                     <Col xs={24} sm={12} md={8}>
-                        <Checkbox defaultChecked={totales.showTotalAnualMetaFinancieraPlanificada} onChange={() => handleSetTotales("showTotalAnualMetaFinancieraPlanificada")}>
-                            <strong>Total Financiera Planificada: </strong> 
-                            {totales.showTotalAnualMetaFinancieraPlanificada && `${totales.totalAnualMetaFinancieraPlanificada} ${totales.unidadMedidaFinanciera}`}
-                        </Checkbox>
+                        <Col span={24}>
+                            <Checkbox defaultChecked={totales.showTotalAnualMetaFinancieraPlanificada} onChange={() => handleSetTotales("showTotalAnualMetaFinancieraPlanificada")} className="m-0">
+                                <strong>Total Financiera Planificada: </strong> 
+                                {totales.showTotalAnualMetaFinancieraPlanificada && `${totales.totalAnualMetaFinancieraPlanificada} ${totales.unidadMedidaFinanciera}`}
+                            </Checkbox>
+                        </Col>
+                        <Col span={24}>
+                            <Checkbox defaultChecked={totales.showTotalAnualMetaFinancieraEjecutada} onChange={() => handleSetTotales("showTotalAnualMetaFinancieraEjecutada")} className="m-0">
+                                <strong>Total Financiera Ejecutada: </strong>
+                                {totales.showTotalAnualMetaFinancieraEjecutada && `${totales.totalAnualMetaFinancieraEjecutada} ${totales.unidadMedidaFinanciera}`}
+                            </Checkbox>
+                        </Col>
                     </Col>
                     <Col xs={24} sm={12} md={8}>
-                        <Checkbox defaultChecked={totales.showTotalAnualMetaFinancieraEjecutada} onChange={() => handleSetTotales("showTotalAnualMetaFinancieraEjecutada")}>
-                            <strong>Total Financiera Ejecutada: </strong>
-                            {totales.showTotalAnualMetaFinancieraEjecutada && `${totales.totalAnualMetaFinancieraEjecutada} ${totales.unidadMedidaFinanciera}`}
-                        </Checkbox>
+                        <Col span={24}>
+                            <Checkbox defaultChecked={totales.showTotalAnualMetaOperativaPlanificada} onChange={() => handleSetTotales("showTotalAnualMetaOperativaPlanificada")} className="m-0">
+                                <strong>Total Fisica Acumulada: </strong>
+                                {totales.showTotalAnualMetaOperativaPlanificada && `${totales.totalAnualMetaOperativaPlanificada} ${totales.unidadMedidaOperativa}`}
+                            </Checkbox>
+                        </Col>
+                        <Col span={24}>
+                            <Checkbox defaultChecked={totales.showTotalAnualMetaOperativaEjecutada} onChange={() => handleSetTotales("showTotalAnualMetaOperativaEjecutada")} className="m-0">
+                                <strong>Total Física Ejecutada Acumulada: </strong>
+                                {totales.showTotalAnualMetaOperativaEjecutada && `${totales.totalAnualMetaOperativaEjecutada} ${totales.unidadMedidaOperativa}`}
+                            </Checkbox>
+                        </Col>
                     </Col>
                     <Col xs={24} sm={12} md={8}>
-                        <Checkbox defaultChecked={totales.showTotalAnualMetaOperativaPlanificada} onChange={() => handleSetTotales("showTotalAnualMetaOperativaPlanificada")}>
-                            <strong>Total Fisica Acumulada: </strong>
-                            {totales.showTotalAnualMetaOperativaPlanificada && `${totales.totalAnualMetaOperativaPlanificada} ${totales.unidadMedidaOperativa}`}
-                        </Checkbox>
-                    </Col>
-                    <Col xs={24} sm={12} md={8}>
-                        <Checkbox defaultChecked={totales.showTotalAnualMetaOperativaEjecutada} onChange={() => handleSetTotales("showTotalAnualMetaOperativaEjecutada")}>
-                            <strong>Total Física Ejecutada Acumulada: </strong>
-                            {totales.showTotalAnualMetaOperativaEjecutada && `${totales.totalAnualMetaOperativaEjecutada} ${totales.unidadMedidaOperativa}`}
-                        </Checkbox>
-                    </Col>
-                    <Col xs={24} sm={12} md={8}>
-                        <Checkbox defaultChecked={totales.showTotalAnualValorReal} onChange={() => handleSetTotales("showTotalAnualValorReal")}>
+                        <Checkbox defaultChecked={totales.showTotalAnualValorReal} onChange={() => handleSetTotales("showTotalAnualValorReal")} className="m-0">
                             <strong>Total Valor Real: </strong>
                             {totales.showTotalAnualValorReal && `${totales.totalAnualValorReal} ${totales.unidadMedidaOperativa}`}
                         </Checkbox>
@@ -245,6 +263,7 @@ const ChartDetails = () => {
                                                         ...prevState,
                                                         filterOne: {
                                                             ...prevState.filterOne,
+                                                            disabled: false,
                                                             year: value
                                                         }
                                                     }))}
@@ -311,10 +330,11 @@ const ChartDetails = () => {
                                         </Col>
                                         <Col xs={24} sm={12} md={3} style={{ paddingTop: "21px" }}>
                                             <ButtonComponent
-                                                type="default"
+                                                type="primary"
                                                 htmlType="buttom"
                                                 title="Filtrar"
                                                 block
+                                                disabled={state.filterOne.disabled}
                                             />
                                         </Col>
                                         <Col span={24} style={{ minHeight: state.compare ? 200: 400 }}>
@@ -415,10 +435,11 @@ const ChartDetails = () => {
                                                 </Col>
                                                 <Col xs={24} sm={12} md={3} style={{ paddingTop: "21px" }}>
                                                     <ButtonComponent
-                                                        type="default"
+                                                        type="primary"
                                                         htmlType="buttom"
                                                         title="Filtrar"
                                                         block
+                                                        disabled={state.filterOne.disabled}
                                                     />
                                                 </Col>
                                                 <Col span={24} style={{ minHeight: state.compare ? 200: 400 }}>

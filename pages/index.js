@@ -65,7 +65,7 @@ const Home = (props) => {
             path: "/indican/configcuadro.php",
             body: {
                 idVistaMando: "1",
-                idGerencia: dataUser.idGerencia,
+                idGerencia: 0,
                 confIndicadorMostrar
             },
         });
