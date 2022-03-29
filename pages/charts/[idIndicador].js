@@ -28,11 +28,13 @@ const ChartDetails = () => {
         compare: false,
         filterOne: {
             disabled: true,
-            year: currentYear
+            year: currentYear,
+            type: 1
         },
         filterTwo: {
             disabled: true,
-            year: currentYear
+            year: currentYear,
+            type: 1
         }
     })
     const [totales, setTotales] = useState({
@@ -277,23 +279,6 @@ const ChartDetails = () => {
                                                 </Select>
                                             </Form.Item>
                                         </Col>
-                                        {/* <Col xs={24} sm={12} md={3}>
-                                            <Form.Item
-                                                label={"Indicador"}
-                                                name={"indicador"}
-                                                className="mb-0"
-                                            >
-                                                <Select
-                                                    defaultValue={0}
-                                                    onChange={(value) => console.log(value)}
-                                                    style={{ width: "100%" }}
-                                                >
-                                                    <Option value={0}>
-                                                        Seleccione
-                                                    </Option>
-                                                </Select>
-                                            </Form.Item>
-                                        </Col> */}
                                         <Col xs={24} sm={12} md={3}>
                                             <Form.Item
                                                 label={"Periocidad"}
@@ -318,13 +303,18 @@ const ChartDetails = () => {
                                                 className="mb-0"
                                             >
                                                 <Select
-                                                    defaultValue={0}
-                                                    onChange={(value) => console.log(value)}
+                                                    defaultValue={state.filterOne.type}
+                                                    onChange={(value) => setState((prevState) => ({
+                                                        ...prevState,
+                                                        filterOne: {
+                                                            ...prevState.filterOne,
+                                                            type: value
+                                                        }
+                                                    }))}
                                                     style={{ width: "100%" }}
                                                 >
-                                                    <Option value={0}>
-                                                        Seleccione
-                                                    </Option>
+                                                    <Option value={1}>Gráfica Simple</Option>
+                                                    <Option value={2}>Gráfica con Línea</Option>
                                                 </Select>
                                             </Form.Item>
                                         </Col>
@@ -338,7 +328,12 @@ const ChartDetails = () => {
                                             />
                                         </Col>
                                         <Col span={24} style={{ minHeight: state.compare ? 200: 400 }}>
-                                            <ChartColumn data={datosIndicadorOne} height={state.compare ? 200: 400} />
+                                            {state.filterOne.type === 1 && (
+                                                <ChartColumn data={datosIndicadorOne} height={state.compare ? 200: 400} />
+                                            )}
+                                            {state.filterOne.type === 2 && (
+                                                <ChartColumnLine data={datosIndicadorOne} height={state.compare ? 200: 400} />
+                                            )}
                                         </Col>
                                     </Row>
                                 </Form>
@@ -423,13 +418,18 @@ const ChartDetails = () => {
                                                         className="mb-0"
                                                     >
                                                         <Select
-                                                            defaultValue={0}
-                                                            onChange={(value) => console.log(value)}
+                                                            defaultValue={state.filterTwo.type}
+                                                            onChange={(value) => setState((prevState) => ({
+                                                                ...prevState,
+                                                                filterTwo: {
+                                                                    ...prevState.filterTwo,
+                                                                    type: value
+                                                                }
+                                                            }))}
                                                             style={{ width: "100%" }}
                                                         >
-                                                            <Option value={0}>
-                                                                Seleccione
-                                                            </Option>
+                                                            <Option value={1}>Gráfica Simple</Option>
+                                                            <Option value={2}>Gráfica con Línea</Option>
                                                         </Select>
                                                     </Form.Item>
                                                 </Col>
@@ -443,7 +443,12 @@ const ChartDetails = () => {
                                                     />
                                                 </Col>
                                                 <Col span={24} style={{ minHeight: state.compare ? 200: 400 }}>
-                                                    <ChartColumn data={datosIndicadorTwo} height={state.compare ? 200: 400} />
+                                                    {state.filterTwo.type === 1 && (
+                                                        <ChartColumn data={datosIndicadorTwo} height={state.compare ? 200: 400} />
+                                                    )}
+                                                    {state.filterTwo.type === 2 && (
+                                                        <ChartColumnLine data={datosIndicadorTwo} height={state.compare ? 200: 400} />
+                                                    )}
                                                 </Col>
                                             </Row>
                                         </Form>
@@ -451,15 +456,6 @@ const ChartDetails = () => {
                                 </Col>
                             )
                         }
-                        <Col span={24}>
-                            <Card className="box-shadow">
-                                <Row gutter={[24, 24]} justify="center">
-                                    <Col span={24} style={{ minHeight: state.compare ? 200: 400 }}>
-                                        <ChartColumnLine />
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
                     </Row>
                 )}
             </Spin>
