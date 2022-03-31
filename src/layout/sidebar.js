@@ -9,9 +9,11 @@ import {
     BarChartOutlined,
     LineChartOutlined,
     RightOutlined,
-    FileProtectOutlined
+    FileProtectOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 import { makeRequest } from "src/helpers";
+import usuariosSlice from 'src/redux/reducers/usuariosSlice';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -34,6 +36,9 @@ const SidebarApp = (props) => {
                 break;
             case "<FileProtectOutlined />":
                 response = <FileProtectOutlined />;
+                break;
+            case "<UserOutlined />":
+                response = <UserOutlined />;
                 break;
             default:
                 response = <RightOutlined />;
