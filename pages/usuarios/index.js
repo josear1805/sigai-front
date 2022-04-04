@@ -89,7 +89,7 @@ const Users = () => {
 			method: "POST",
 			path: "/indican/listausuarios.php",
 			body: {
-				pathView: router.pathname,
+				vista: router.pathname,
 			}
 		});
 

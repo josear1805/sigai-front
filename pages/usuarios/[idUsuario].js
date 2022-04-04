@@ -30,7 +30,7 @@ const EditarFicha = () => {
             />
 
             <Spin tip="Cargando datos..." spinning={loading}>
-                <FormUsuarios idUsuario={idUsuario} loading={loading} setLoading={setLoading}/>
+                <FormUsuarios idUsuario={idUsuario} pathView={router.pathname} loading={loading} setLoading={setLoading}/>
             </Spin>
         </LayoutApp>
     );

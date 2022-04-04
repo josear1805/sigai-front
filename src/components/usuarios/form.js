@@ -1,33 +1,35 @@
 import { useState, useEffect } from "react";
-import LayoutApp from "src/layout";
-import { useRouter } from "next/router";
-import { PageHeaderComponent, ButtonComponent } from "@components";
+import { ButtonComponent } from "@components";
 import {
-    Spin,
     Card,
     Form,
     Col,
     Row,
     Input,
     Select,
-    DatePicker
+    DatePicker,
+
 } from "antd";
 import { makeRequest } from "src/helpers";
 import moment from "moment";
 
 const { Option } = Select;
-const dateFormat = 'YYYY-MM-DD';
+const dateFormat = 'DD-MM-YYYY';
 const currentDate = moment().format(dateFormat);
 
 const FormUsuarios = (props) => {
     const {
         idUsuario,
+        pathView,
         loading,
         setLoading
     } = props
     const [formUser] = Form.useForm();
 
-    const year = moment().format("YYYY");
+    const [tipoDocIdentidad, setTipoDocIdentidad] = useState([]);
+    const [perfiles, setPerfiles] = useState([]);
+    const [gerencias, setGerencias] = useState([]);
+    const [unidadesAdministrativas, setUnidadesAdministrativas] = useState([]);
 
     const validations = {
         required: {
@@ -36,60 +38,64 @@ const FormUsuarios = (props) => {
         },
     }
 
-    const handleGuardarFicha = (values) => {
-        // setLoading(true);
-        // values.idIndicador = idUsuario
-        // console.log("values", values)
+    const handleGuardarUsuario = (values) => {
+        setLoading(true);
+        values.idUsuario = idUsuario;
+        values.vista = pathView;
 
-        // makeRequest({
-        //     path: "/indican/inclumodfichaindicador.php",
-        //     method: "POST",
-        //     body: values,
-        // }).then((response) => {
-        //     if (response.estatus === 1) {
-        //         notification.success({
-        //             message: response.mensaje,
-        //             placement: "bottomRight",
-        //         });
-        //         setTimeout(() => {
-        //             router.push("/ficha_indicador");
-        //         }, 1000);
-        //         setLoading(false);
-        //     } else {
-        //         notification.error({
-        //             message: response.mensaje,
-        //             placement: "bottomRight",
-        //         });
-        //         setLoading(false);
-        //     }
-        // });
-
-        
+        makeRequest({
+            path: "/indican/guardardatosusuarioapp.php",
+            method: "POST",
+            body: values,
+        }).then((response) => {
+            if (response.estatus === 1) {
+                notification.success({
+                    message: response.mensaje,
+                    placement: "bottomRight",
+                });
+                setTimeout(() => {
+                    router.push("/usuarios");
+                }, 1000);
+                setLoading(false);
+            } else {
+                notification.error({
+                    message: response.mensaje,
+                    placement: "bottomRight",
+                });
+                setLoading(false);
+            }
+        });
     };
 
-    // const handleGetData = async () => {
-    //     setLoading(true);
-    //     const response = await makeRequest({
-    //         method: "POST",
-    //         path: "/indican/fichaindicador.php",
-    //         body: {
-    //             idUsuario: "1",
-    //             idIndicador: idUsuario,
-    //             idTipo: 1,
-    //             anio: year
-    //         },
-    //     });
+    const handleGetData = async () => {
+        setLoading(true);
+        const response = await makeRequest({
+            path: "/indican/datosusuarioapp.php",
+			method: "POST",
+			body: {
+				vista: pathView,
+                idUsuario
+			}
+		});
 
-    //     if (response.estatus) {
+        if (response.estatus) {
+            if (parseInt(idUsuario) > 0) {
+                formUser.setFieldsValue(response.datosUsuario);
+            }
 
-    //         setLoading(false);
-    //     } else {
-    //         setLoading(false);
-    //     }
-    // };
+            setTipoDocIdentidad(response.tipoDocIdentidad);
+            setPerfiles(response.perfiles);
+            setGerencias(response.gerencias);
+            setUnidadesAdministrativas(response.unidadesAdministrativas);
+
+            setLoading(false);
+        } else {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        // handleGetData();
+        handleGetData();
         setTimeout(() => {
             setLoading(false)
         }, 5000)
@@ -103,14 +109,14 @@ const FormUsuarios = (props) => {
                 initialValues={{
                     remember: true,
                 }}
-                onFinish={handleGuardarFicha}
+                onFinish={handleGuardarUsuario}
                 form={formUser}
             >
                 <Row gutter={[24, 16]}>
                     <Col xs={24} sm={12} md={6}>
                         <Form.Item
                             label={"Usuario"}
-                            name={"usuario"}
+                            name={"nombreUsuario"}
                             rules={[validations.required]}
                         >
                             <Input
@@ -123,19 +129,18 @@ const FormUsuarios = (props) => {
                     <Col xs={24} sm={12} md={6}>
                         <Form.Item
                             label={"Tipo Doc. Identidad"}
-                            name={"tipoDoc"}
+                            name={"idTipoDocIdent"}
                             rules={[validations.required]}
                         >
                             <Select placeholder="Seleccione..." disabled={loading}>
-                                {/* {categoriaIndicador.length >= 1 &&
-                                    categoriaIndicador.map((item) => (
-                                        <Option
-                                            key={item.idCategoria}
-                                            value={item.idCategoria}
-                                        >
-                                            {item.nbCategoria}
-                                        </Option>
-                                    ))} */}
+                                {tipoDocIdentidad.length >= 1 && tipoDocIdentidad.map((item) => (
+                                    <Option
+                                        key={item.idTipoDocIdent}
+                                        value={item.idTipoDocIdent}
+                                    >
+                                        {item.nombreTipoDocIdentidad}
+                                    </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -143,7 +148,7 @@ const FormUsuarios = (props) => {
                     <Col xs={24} sm={12} md={6}>
                         <Form.Item
                             label={"Doc. Identidad"}
-                            name={"doc"}
+                            name={"docIdentidad"}
                             rules={[validations.required]}
                         >
                             <Input
@@ -169,7 +174,7 @@ const FormUsuarios = (props) => {
                     <Col xs={24} sm={12} md={6}>
                         <Form.Item
                             label={"Apellido(s)"}
-                            name={"apellido"}
+                            name={"apellidos"}
                             rules={[validations.required]}
                         >
                             <Input
@@ -182,19 +187,18 @@ const FormUsuarios = (props) => {
                     <Col xs={24} sm={12} md={6}>
                         <Form.Item
                             label={"Perfil"}
-                            name={"perfil"}
+                            name={"idPerfil"}
                             rules={[validations.required]}
                         >
                             <Select placeholder="Seleccione..." disabled={loading}>
-                                {/* {categoriaIndicador.length >= 1 &&
-                                    categoriaIndicador.map((item) => (
-                                        <Option
-                                            key={item.idCategoria}
-                                            value={item.idCategoria}
-                                        >
-                                            {item.nbCategoria}
-                                        </Option>
-                                    ))} */}
+                                {perfiles.length >= 1 && perfiles.map((item) => (
+                                    <Option
+                                        key={item.idPerfil}
+                                        value={item.idPerfil}
+                                    >
+                                        {item.nombrePerfil}
+                                    </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -202,19 +206,18 @@ const FormUsuarios = (props) => {
                     <Col xs={24} sm={12} md={6}>
                         <Form.Item
                             label={"Gerencia"}
-                            name={"gerencia"}
+                            name={"idGerencia"}
                             rules={[validations.required]}
                         >
                             <Select placeholder="Seleccione..." disabled={loading}>
-                                {/* {categoriaIndicador.length >= 1 &&
-                                    categoriaIndicador.map((item) => (
-                                        <Option
-                                            key={item.idCategoria}
-                                            value={item.idCategoria}
-                                        >
-                                            {item.nbCategoria}
-                                        </Option>
-                                    ))} */}
+                                {gerencias.length >= 1 && gerencias.map((item) => (
+                                    <Option
+                                        key={item.idGerencia}
+                                        value={item.idGerencia}
+                                    >
+                                        {item.nombreGerencia}
+                                    </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -222,33 +225,36 @@ const FormUsuarios = (props) => {
                     <Col xs={24} sm={12} md={6}>
                         <Form.Item
                             label={"Unidad Administratia"}
-                            name={"unidadAdministrativa"}
+                            name={"idUnidAdmin"}
                             rules={[validations.required]}
                         >
                             <Select placeholder="Seleccione..." disabled={loading}>
-                                {/* {categoriaIndicador.length >= 1 &&
-                                    categoriaIndicador.map((item) => (
-                                        <Option
-                                            key={item.idCategoria}
-                                            value={item.idCategoria}
-                                        >
-                                            {item.nbCategoria}
-                                        </Option>
-                                    ))} */}
+                                {unidadesAdministrativas.length >= 1 && unidadesAdministrativas.map((item) => (
+                                    <Option
+                                        key={item.idUnidAdmin}
+                                        value={item.idUnidAdmin}
+                                    >
+                                        {item.nombreUnidades}
+                                    </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>
 
                     <Col xs={24} sm={12} md={6}>
                         <Form.Item
-                            label={"Fecha Max Meta"}
-                            name={"fechaMaxMeta"}
+                            label={"Fecha Nacimiento"}
+                            name={"fNacimiento"}
                             rules={[validations.required]}
                         >
                             <DatePicker format={dateFormat} style={{ width: "100%" }} disabled={loading}/>
+                            {/* <Input
+                                placeholder={"Seleccionar fecha"}
+                                type={"date"}
+                                disabled={loading}
+                            /> */}
                         </Form.Item>
                     </Col>
-                    
                 </Row>
 
                 <Row gutter={[16, 16]} justify="space-around">
@@ -266,15 +272,12 @@ const FormUsuarios = (props) => {
                             type="primary"
                             title="Cancelar"
                             path="/usuarios"
-                            // onClick={() => console.log("Closed")}
                             block
                             className="ant-btn-danger"
                         />
                     </Col>
                 </Row>
-
             </Form>
-            
         </Card>
     )
 };

@@ -3,8 +3,11 @@ import LayoutApp from "src/layout";
 import { PageHeaderComponent } from "@components";
 import { Spin } from "antd";
 import FormUsuarios from "src/components/usuarios/form";
+import { useRouter } from "next/router";
 
 const NuevoUsuario = () => {
+
+    const router = useRouter();
 
     const [loading, setLoading] = useState(true);
 
@@ -27,7 +30,7 @@ const NuevoUsuario = () => {
             />
 
             <Spin tip="Cargando datos..." spinning={loading}>
-                <FormUsuarios idUsuario={0} loading={loading} setLoading={setLoading}/>
+                <FormUsuarios idUsuario={0} pathView={router.pathname} loading={loading} setLoading={setLoading}/>
             </Spin>
         </LayoutApp>
     );
