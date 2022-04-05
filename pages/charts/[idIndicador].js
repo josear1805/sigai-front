@@ -29,7 +29,7 @@ const ChartDetails = () => {
         filterOne: {
             disabled: true,
             year: currentYear,
-            type: 1
+            type: 2
         },
         filterTwo: {
             disabled: true,
@@ -205,13 +205,13 @@ const ChartDetails = () => {
                     <Col xs={24} sm={12} md={8}>
                         <Col span={24}>
                             <Checkbox defaultChecked={totales.showTotalAnualMetaFinancieraPlanificada} onChange={() => handleSetTotales("showTotalAnualMetaFinancieraPlanificada")} className="m-0">
-                                <strong>Total Financiera Planificada: </strong> 
+                                <strong>Meta Financiera Planificada: </strong> 
                                 {totales.showTotalAnualMetaFinancieraPlanificada && `${totales.totalAnualMetaFinancieraPlanificada} ${totales.unidadMedidaFinanciera}`}
                             </Checkbox>
                         </Col>
                         <Col span={24}>
                             <Checkbox defaultChecked={totales.showTotalAnualMetaFinancieraEjecutada} onChange={() => handleSetTotales("showTotalAnualMetaFinancieraEjecutada")} className="m-0">
-                                <strong>Total Financiera Ejecutada: </strong>
+                                <strong>Meta Financiera Ejecutada: </strong>
                                 {totales.showTotalAnualMetaFinancieraEjecutada && `${totales.totalAnualMetaFinancieraEjecutada} ${totales.unidadMedidaFinanciera}`}
                             </Checkbox>
                         </Col>
@@ -219,20 +219,20 @@ const ChartDetails = () => {
                     <Col xs={24} sm={12} md={8}>
                         <Col span={24}>
                             <Checkbox defaultChecked={totales.showTotalAnualMetaOperativaPlanificada} onChange={() => handleSetTotales("showTotalAnualMetaOperativaPlanificada")} className="m-0">
-                                <strong>Total Fisica Acumulada: </strong>
+                                <strong>Meta Operativa Planificada Acum.: </strong>
                                 {totales.showTotalAnualMetaOperativaPlanificada && `${totales.totalAnualMetaOperativaPlanificada} ${totales.unidadMedidaOperativa}`}
                             </Checkbox>
                         </Col>
                         <Col span={24}>
                             <Checkbox defaultChecked={totales.showTotalAnualMetaOperativaEjecutada} onChange={() => handleSetTotales("showTotalAnualMetaOperativaEjecutada")} className="m-0">
-                                <strong>Total Física Ejecutada Acumulada: </strong>
+                                <strong>Meta Operativa Ejecutada Acum.: </strong>
                                 {totales.showTotalAnualMetaOperativaEjecutada && `${totales.totalAnualMetaOperativaEjecutada} ${totales.unidadMedidaOperativa}`}
                             </Checkbox>
                         </Col>
                     </Col>
                     <Col xs={24} sm={12} md={8}>
                         <Checkbox defaultChecked={totales.showTotalAnualValorReal} onChange={() => handleSetTotales("showTotalAnualValorReal")} className="m-0">
-                            <strong>Total Valor Real: </strong>
+                            <strong>Meta Valor Real: </strong>
                             {totales.showTotalAnualValorReal && `${totales.totalAnualValorReal} ${totales.unidadMedidaOperativa}`}
                         </Checkbox>
                     </Col>
@@ -329,10 +329,10 @@ const ChartDetails = () => {
                                         </Col>
                                         <Col span={24} style={{ minHeight: state.compare ? 200: 400 }}>
                                             {state.filterOne.type === 1 && (
-                                                <ChartColumn data={datosIndicadorOne} height={state.compare ? 200: 400} />
+                                                <ChartColumn data={datosIndicadorOne} height={state.compare ? 200: 400} unidadMedidaOperativa={totales.unidadMedidaOperativa} />
                                             )}
                                             {state.filterOne.type === 2 && (
-                                                <ChartColumnLine data={datosIndicadorOne} height={state.compare ? 200: 400} />
+                                                <ChartColumnLine data={datosIndicadorOne} height={state.compare ? 200: 400} unidadMedidaFinanciera={totales.unidadMedidaFinanciera} unidadMedidaOperativa={totales.unidadMedidaOperativa} />
                                             )}
                                         </Col>
                                     </Row>
@@ -364,6 +364,7 @@ const ChartDetails = () => {
                                                                 ...prevState,
                                                                 filterTwo: {
                                                                     ...prevState.filterTwo,
+                                                                    disabled: false,
                                                                     year: value
                                                                 }
                                                             }))}
@@ -439,15 +440,15 @@ const ChartDetails = () => {
                                                         htmlType="buttom"
                                                         title="Filtrar"
                                                         block
-                                                        disabled={state.filterOne.disabled}
+                                                        disabled={state.filterTwo.disabled}
                                                     />
                                                 </Col>
                                                 <Col span={24} style={{ minHeight: state.compare ? 200: 400 }}>
                                                     {state.filterTwo.type === 1 && (
-                                                        <ChartColumn data={datosIndicadorTwo} height={state.compare ? 200: 400} />
+                                                        <ChartColumn data={datosIndicadorTwo} height={state.compare ? 200: 400} unidadMedidaOperativa={totales.unidadMedidaOperativa} />
                                                     )}
                                                     {state.filterTwo.type === 2 && (
-                                                        <ChartColumnLine data={datosIndicadorTwo} height={state.compare ? 200: 400} />
+                                                        <ChartColumnLine data={datosIndicadorTwo} height={state.compare ? 200: 400} unidadMedidaFinanciera={totales.unidadMedidaFinanciera} unidadMedidaOperativa={totales.unidadMedidaOperativa} />
                                                     )}
                                                 </Col>
                                             </Row>

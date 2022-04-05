@@ -2,39 +2,45 @@ import { Column } from '@ant-design/charts'
 import { useEffect, useState } from 'react';
 import { Spin } from 'antd';
 
-const initialConfig = {
-    height: 400,
-    data: [],
-    isGroup: true,
-    xField: 'mes',
-    yField: 'valor',
-    seriesField: 'nombre',
-    dodgePadding: 1,
-    // label: false,
-    label: {
-        position: 'middle',
-        // rotate: 5,
-        layout: [
-            { type: 'interval-adjust-position' },
-            { type: 'interval-hide-overlap' },
-            { type: 'adjust-color' },
-        ]
-    },
-    scrollbar: { type: 'horizontal' },
-};
-
 const ChartColumn = (props) => {
-    const { height, data } = props
+    const { height, data, unidadMedidaOperativa = ""} = props
 
     const [loading, setLoading] = useState(false)
-    const [config, setConfig] = useState(initialConfig)
+    const [config, setConfig] = useState({
+        height: 400,
+        data: [],
+        isGroup: true,
+        xField: 'mes',
+        yField: 'valor',
+        seriesField: 'nombre',
+        dodgePadding: 1,
+        // label: false,
+        label: {
+            position: 'middle',
+            // rotate: 5,
+            layout: [
+                { type: 'interval-adjust-position' },
+                { type: 'interval-hide-overlap' },
+                { type: 'adjust-color' },
+            ]
+        },
+        tooltip: {
+            formatter: (item) => ({
+                name: `${item.nombre}`,
+                value: `${item.valor} ${unidadMedidaOperativa}`,
+            }),
+        },
+        scrollbar: { type: 'horizontal' },
+    })
 
     useEffect(() => {
         setLoading(true);
+        let aux = data.filter((item) => item.nombre != "metaFinancieraEjecutada" && item.nombre != "metaFinancieraPlanificada")
+
         setConfig((prevState) => ({
             ...prevState,
             height,
-            data
+            data: aux
         }))
         setTimeout(() => {
             setLoading(false);
