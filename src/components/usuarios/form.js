@@ -42,6 +42,7 @@ const FormUsuarios = (props) => {
         setLoading(true);
         values.idUsuario = idUsuario;
         values.vista = pathView;
+        values.idJerarquia = 1;
 
         makeRequest({
             path: "/indican/guardardatosusuarioapp.php",
