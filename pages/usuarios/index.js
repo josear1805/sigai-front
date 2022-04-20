@@ -110,15 +110,16 @@ const Users = () => {
 	};
 
 	const handleChangueVicePresidencia = (idVP) => {
-		const { listaGerencias } = state;
+		const { listaGerencias, listaUsuarios } = state;
 		let listaGerenciasMostrar = listaGerencias.filter((item) => item.idVicePresidencia == idVP);
+		let listaUsuariosMostrar = listaUsuarios.filter((item) => item.idVicePresidencia == idVP);
 
 		setState((prevState) => ({
 			...prevState,
 			idVicePresidencia: idVP,
 			listaGerenciasMostrar,
 			idGerencia: null,
-			listaUsuariosMostrar: [],
+			listaUsuariosMostrar,
 		}));
 		
 		dispatch(setUsuarios({
@@ -128,7 +129,7 @@ const Users = () => {
 			idVicePresidencia: idVP,
 			listaGerenciasMostrar,
 			idGerencia: null,
-			listaUsuariosMostrar: [],
+			listaUsuariosMostrar,
 		}));
 	};
 

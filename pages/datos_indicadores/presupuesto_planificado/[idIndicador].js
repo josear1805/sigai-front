@@ -83,8 +83,7 @@ const GoalsEdit = (props) => {
             path: "/indican/datosmetasindicador.php",
             body: {
                 idIndicador: id,
-                idUsuario: dataUser.idUsuario,
-                tipo: tipoIndicador,
+                idTipo: tipoIndicador,
                 anio: year
             },
         });

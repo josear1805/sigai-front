@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import Link from "next/link";
-import { Layout, Menu, notification } from 'antd';
+import { Layout, Menu } from 'antd';
 import {
     DesktopOutlined,
     HomeOutlined,
@@ -12,16 +11,11 @@ import {
     FileProtectOutlined,
     UserOutlined
 } from '@ant-design/icons';
-import { makeRequest } from "src/helpers";
-import usuariosSlice from 'src/redux/reducers/usuariosSlice';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-const SidebarApp = (props) => {
-    const [menuList, setMenuList] = useState([]);
-    const [loading, setLoading] = useState(true);
-
+const SidebarApp = ({ listaMenu }) => {
     const handleGetIcon = (icon) => {
         let response = null;
         switch (icon) {
@@ -47,30 +41,7 @@ const SidebarApp = (props) => {
         return response;
     }
 
-    const handleGetMenu = async () => {
-        const response = await makeRequest({
-            method: "POST",
-            path: "/indican/menu.php"
-        });
-
-        if (response.estatus === 1) {
-            setMenuList(response.listaMenu);
-            setLoading(false);
-        } else {
-            notification.error({
-                message: response.mensaje,
-                placement: "bottomRight",
-            });
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        handleGetMenu()
-    }, [])
-
     return (
-
         <Sider breakpoint="sm" collapsedWidth={0} width={300}>
             <div className="div-logo">
                 <Link href="/">
@@ -78,7 +49,7 @@ const SidebarApp = (props) => {
                 </Link>
             </div>
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-                {!loading && menuList.length >= 1 && menuList.map((item) => (
+                {listaMenu.length >= 1 && listaMenu.map((item) => (
                     <Menu.Item key={item.idMenu} icon={handleGetIcon(item.icono)}>
                         <Link href={item.url}>
                             <a>{item.nombre}</a>

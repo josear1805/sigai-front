@@ -7,7 +7,7 @@ import FooterApp from "./footer";
 import ContentApp from "./content";
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector, connect } from 'react-redux';
-import { setUser, setListadosCategorias } from "src/redux/reducers/globalSlice";
+import { setUser, setListadosCategorias, setListaMenu } from "src/redux/reducers/globalSlice";
 import SkeletonApp from "./skeleton";
 
 
@@ -15,14 +15,15 @@ const LayoutApp = (props) => {
     const router = useRouter();
     const dispatch = useDispatch();
     const token = process.browser && JSON.parse(localStorage.getItem("token_sigai"))
-    const { dataUser, loadingGeneral, error } = useSelector((stateData) => stateData.global)
+    const { dataUser, loadingGeneral, error, listaMenu } = useSelector((stateData) => stateData.global)
 
     const validationUser = () => {
         !token && router.push("/login");
 
         if (token && dataUser.token !== token) {
-            dispatch(setUser(token))
-            dispatch(setListadosCategorias())
+            dispatch(setUser(token));
+            dispatch(setListaMenu());
+            dispatch(setListadosCategorias());
         }
     }
 
@@ -46,7 +47,7 @@ const LayoutApp = (props) => {
                 <SkeletonApp />
             ) : (
                 <>
-                    <SidebarApp />
+                    <SidebarApp listaMenu={listaMenu} />
                     <Layout className="site-layout">
                         <HeaderApp {...props}/>
                         <ContentApp {...props}/>

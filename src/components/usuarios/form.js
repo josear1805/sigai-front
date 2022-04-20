@@ -15,7 +15,6 @@ import moment from "moment";
 
 const { Option } = Select;
 const dateFormat = 'DD-MM-YYYY';
-const currentDate = moment().format(dateFormat);
 
 const FormUsuarios = (props) => {
     const {
@@ -80,14 +79,14 @@ const FormUsuarios = (props) => {
 		});
 
         if (response.estatus) {
-            if (parseInt(idUsuario) > 0) {
-                formUser.setFieldsValue(response.datosUsuario);
-            }
-
             setTipoDocIdentidad(response.tipoDocIdentidad);
             setPerfiles(response.perfiles);
             setGerencias(response.gerencias);
             setUnidadesAdministrativas(response.unidadesAdministrativas);
+
+            if (parseInt(idUsuario) > 0) {
+                formUser.setFieldsValue(response.datosUsuario);
+            }
 
             setLoading(false);
         } else {
@@ -248,12 +247,12 @@ const FormUsuarios = (props) => {
                             name={"fNacimiento"}
                             rules={[validations.required]}
                         >
-                            <DatePicker format={dateFormat} style={{ width: "100%" }} disabled={loading}/>
-                            {/* <Input
+                            {/* <DatePicker format={"YYYY-MM-DD"} style={{ width: "100%" }} disabled={loading}/> */}
+                            <Input
                                 placeholder={"Seleccionar fecha"}
                                 type={"date"}
                                 disabled={loading}
-                            /> */}
+                            />
                         </Form.Item>
                     </Col>
                 </Row>

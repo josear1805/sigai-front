@@ -10,6 +10,7 @@ const initialState = {
     error: {
         dataUser: false,
     },
+    listaMenu: [],
 };
 
 export const setUser = createAsyncThunk("dataUser", async (token) => {
@@ -36,6 +37,14 @@ export const setListadosCategorias = createAsyncThunk("listadosCategorias", asyn
     return response.categorias;
 });
 
+export const setListaMenu = createAsyncThunk("listaMenu", async () => {
+    const response = await makeRequest({
+        method: "POST",
+        path: "/indican/menu.php",
+    });
+    return response.listaMenu;
+});
+
 export const globalSlice = createSlice({
     name: "global",
     initialState,
@@ -55,6 +64,10 @@ export const globalSlice = createSlice({
         /* Lista Categorias */
         builder.addCase(setListadosCategorias.fulfilled, (state, action) => {
             state.listaCategorias = action.payload;
+        });
+        /* Lista Menu */
+        builder.addCase(setListaMenu.fulfilled, (state, action) => {
+            state.listaMenu = action.payload;
         });
     },
 });

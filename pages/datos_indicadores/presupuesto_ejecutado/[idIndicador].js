@@ -78,7 +78,6 @@ const GoalsEdit = (props) => {
             path: "/indican/datosresulrealindicador.php",
             body: {
                 idIndicador,
-                idUsuario: dataUser.idUsuario,
                 idTipo: tipoIndicador,
                 anio: year,
             },
