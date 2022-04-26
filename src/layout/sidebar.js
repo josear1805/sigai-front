@@ -9,7 +9,8 @@ import {
     LineChartOutlined,
     RightOutlined,
     FileProtectOutlined,
-    UserOutlined
+    UserOutlined,
+    ProfileOutlined
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -33,6 +34,9 @@ const SidebarApp = ({ listaMenu }) => {
                 break;
             case "<UserOutlined />":
                 response = <UserOutlined />;
+                break;
+            case "<ProfileOutlined />":
+                response = <ProfileOutlined />;
                 break;
             default:
                 response = <RightOutlined />;

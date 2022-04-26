@@ -7,14 +7,12 @@ import {
     Row,
     Input,
     Select,
-    DatePicker,
-
+    notification
 } from "antd";
 import { makeRequest } from "src/helpers";
-import moment from "moment";
+import { useRouter } from "next/router";
 
 const { Option } = Select;
-const dateFormat = 'DD-MM-YYYY';
 
 const FormUsuarios = (props) => {
     const {
@@ -22,7 +20,10 @@ const FormUsuarios = (props) => {
         pathView,
         loading,
         setLoading
-    } = props
+    } = props;
+
+    const router = useRouter();
+
     const [formUser] = Form.useForm();
 
     const [tipoDocIdentidad, setTipoDocIdentidad] = useState([]);
@@ -53,10 +54,10 @@ const FormUsuarios = (props) => {
                     message: response.mensaje,
                     placement: "bottomRight",
                 });
+                setLoading(false);
                 setTimeout(() => {
                     router.push("/usuarios");
                 }, 1000);
-                setLoading(false);
             } else {
                 notification.error({
                     message: response.mensaje,
@@ -261,7 +262,7 @@ const FormUsuarios = (props) => {
                     <Col xs={24} sm={12} md={6}>
                         <ButtonComponent
                             type="primary"
-                            title={parseInt(idUsuario) > 0 ? "Editar" : "Guardar"}
+                            title={"Guardar"}
                             htmlType="submit"
                             block
                             className="ant-btn-success"
