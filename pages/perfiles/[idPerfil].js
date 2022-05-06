@@ -1,9 +1,9 @@
 import { useState } from "react";
-import LayoutApp from "src/layout";
 import { useRouter } from "next/router";
-import { PageHeaderComponent } from "@components";
 import { Spin } from "antd";
-import FormUsuarios from "src/components/usuarios/form";
+import LayoutApp from "src/layout";
+import { PageHeaderComponent } from "@components";
+import FormPerfiles from "src/components/perfiles/form";
 
 const EditarFicha = () => {
     const router = useRouter();
@@ -29,9 +29,13 @@ const EditarFicha = () => {
                 loading={loading}
             />
 
-            {/* <Spin tip="Cargando datos..." spinning={loading}>
-                <FormUsuarios idUsuario={idUsuario} pathView={router.pathname} loading={loading} setLoading={setLoading}/>
-            </Spin> */}
+            <Spin tip="Cargando datos..." spinning={loading}>
+                <FormPerfiles
+                    idPerfil={parseInt(idPerfil)}
+                    loading={loading}
+                    setLoading={setLoading}
+                />
+            </Spin>
         </LayoutApp>
     );
 };

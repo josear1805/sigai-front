@@ -1,14 +1,10 @@
 import { useState } from "react";
+import { Spin } from "antd";
 import LayoutApp from "src/layout";
 import { PageHeaderComponent } from "@components";
-import { Spin } from "antd";
-import FormUsuarios from "src/components/usuarios/form";
-import { useRouter } from "next/router";
+import FormPerfiles from "src/components/perfiles/form";
 
-const NuevoUsuario = () => {
-
-    const router = useRouter();
-
+const NuevoPerfil = () => {
     const [loading, setLoading] = useState(false);
 
     const buttonsHeader = [
@@ -29,11 +25,15 @@ const NuevoUsuario = () => {
                 loading={loading}
             />
 
-            {/* <Spin tip="Cargando datos..." spinning={loading}>
-                <FormUsuarios idUsuario={0} pathView={router.pathname} loading={loading} setLoading={setLoading}/>
-            </Spin> */}
+            <Spin tip="Cargando datos..." spinning={loading}>
+                <FormPerfiles
+                    idPerfil={parseInt(idPerfil)}
+                    loading={loading}
+                    setLoading={setLoading}
+                />
+            </Spin>
         </LayoutApp>
     );
 };
 
-export default NuevoUsuario;
+export default NuevoPerfil;

@@ -97,6 +97,25 @@ $spacer: 24px;
     padding: 0 !important;
 }
 
+.ant-card-bordered {
+    border: 2px solid #f0f0f0;
+}
+
+.label-card {
+    position: absolute;
+    z-index: 1;
+    top: -10px;
+    padding: 0 20px;
+    background: white;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.overflow-200 {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
 /* TAGS TABLE */
 .tag-table {
     width: 100%;
@@ -160,13 +179,13 @@ $spacer: 24px;
     background: #0069d9;
 }
 
-.ant-btn-primary[disabled],
-.ant-btn-primary[disabled]:hover,
-.ant-btn-primary[disabled]:focus,
-.ant-btn-primary[disabled]:active {
-    color: #fff;
-    background: #6c757d;
-    border-color: #6c757d;
+.ant-btn[disabled],
+.ant-btn[disabled]:hover,
+.ant-btn[disabled]:focus,
+.ant-btn[disabled]:active {
+    color: #fff !important;
+    background: #6c757d !important;
+    border-color: #6c757d !important;
 }
 
 .ant-btn-danger {
