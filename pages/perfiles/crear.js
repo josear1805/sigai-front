@@ -27,7 +27,7 @@ const NuevoPerfil = () => {
 
             <Spin tip="Cargando datos..." spinning={loading}>
                 <FormPerfiles
-                    idPerfil={parseInt(idPerfil)}
+                    idPerfil={0}
                     loading={loading}
                     setLoading={setLoading}
                 />
