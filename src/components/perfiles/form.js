@@ -136,7 +136,7 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
 
         const response = await makeRequest({
             method: "POST",
-            path: "/indican/guardarmenuperfil.php",
+            path: "/indican/guardarvistasperfil.php",
             body: {
                 idVista,
                 idPerfilCon,
