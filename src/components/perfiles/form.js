@@ -49,6 +49,17 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
             idPerfilCon > 0 && formPerfil.setFieldsValue(values);
             setLoading(false);
         }
+
+        if (response.estatus == 5) {
+            notification.error({
+                message: response.mensaje,
+                placement: "bottomRight",
+            });
+            setTimeout(()=> {
+                setLoading(false);
+                router.push("/perfiles")
+            }, 3000 )
+        }
     };
 
     const handleGuardarPerfil = (values) => {
@@ -151,7 +162,7 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
                 placement: "bottomRight",
             });
             const aux = listaVistas.map((item) => {
-                if (item.idVista == idVista) {
+                if (item.idPagina == idVista) {
                     item.activo = activo;
                 }
                 return item;
@@ -267,8 +278,8 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
                 <label className="label-card">Menú</label>
                 <Row className="overflow-200">
                     {listaMenu.length >= 1 &&
-                        listaMenu.map((item) => (
-                            <Col span={24}>
+                        listaMenu.map((item, index) => (
+                            <Col span={24}  key={index}>
                                 <Checkbox
                                     checked={item.activo}
                                     value={item.idMenu}
@@ -286,8 +297,8 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
                 <label className="label-card">Vista Permitidas</label>
                 <Row className="overflow-200">
                     {listaVistas.length >= 1 &&
-                        listaVistas.map((item) => (
-                            <Col span={24}>
+                        listaVistas.map((item, index) => (
+                            <Col span={24}  key={index}>
                                 <Checkbox
                                     checked={item.activo}
                                     value={item.idPagina}
@@ -305,8 +316,8 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
                 <label className="label-card">Indicadores Asociados</label>
                 <Row className="overflow-200">
                     {listaIndicadores.length >= 1 &&
-                        listaIndicadores.map((item) => (
-                            <Col span={24}>
+                        listaIndicadores.map((item, index) => (
+                            <Col span={24}  key={index}>
                                 <Checkbox
                                     checked={item.activo}
                                     value={item.idIndicador}
