@@ -35,9 +35,21 @@ const Users = () => {
 
 	const columns = [
 		{
-			title: "Nombre",
+			title: "Usuario",
 			dataIndex: "nombreUsuario",
 			key: "nombreUsuario",
+			search: true,
+		},
+		{
+			title: "Nombres",
+			dataIndex: "nombres",
+			key: "nombres",
+			search: true,
+		},
+		{
+			title: "Apellidos",
+			dataIndex: "apellidos",
+			key: "apellidos",
 			search: true,
 		},
 		{

@@ -2,7 +2,7 @@ import { useState } from "react";
 import LayoutApp from "src/layout";
 import { PageHeaderComponent } from "@components";
 import { Spin } from "antd";
-import FormFichaIndicador from "src/components/ficha_indicador/form";
+import FormFichaIndicadorTwo from "src/components/ficha_indicador/form2";
 
 const AgregarFicha = () => {
     const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ const AgregarFicha = () => {
             />
 
             <Spin tip="Cargando datos..." spinning={loading}>
-                <FormFichaIndicador idFicha={0} loading={loading} setLoading={setLoading}/>
+                <FormFichaIndicadorTwo idFicha={0} loading={loading} setLoading={setLoading}/>
             </Spin>
         </LayoutApp>
     );

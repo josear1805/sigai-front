@@ -48,13 +48,14 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
             setInitialValues(values);
             idPerfilCon > 0 && formPerfil.setFieldsValue(values);
             setLoading(false);
-        }
-
-        if (response.estatus == 5) {
+        } else {
             notification.error({
                 message: response.mensaje,
                 placement: "bottomRight",
             });
+        }
+
+        if (response.estatus == 5) {
             setTimeout(()=> {
                 setLoading(false);
                 router.push("/perfiles")

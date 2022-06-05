@@ -90,37 +90,37 @@ const FormFichaIndicador = (props) => {
         });
 
         if (response.estatus) {
-            setCategoriaIndicador(response.categoriaIndicador);
-            setEscalasMediciones(response.escalasMediciones);
-            setGerencia(response.gerencia);
-            setPeriodoPublicacionDatos(response.periodoPublicacionDatos);
-            setPeriodoRecoleccionDatos(response.periodoRecoleccionDatos);
-            setSubTipoCobertura(response.subTipoCobertura);
-            setSubTipoIndicador(response.subTipoIndicador);
-            setUnidadesMedicion(response.unidadesMedicion);
-            formFicha.setFieldsValue({
-                idIndicador: response.ficha.idIndicador,
-                nbIndicador: response.ficha.nbIndicador,
-                operacionEstadistica: response.ficha.operacionEstadistica,
-                idSubTipoIndicador: response.ficha.idSubTipoIndicador,
-                idEscalaMedicion: response.ficha.idEscalaMedicion,
-                definicionIndicador: response.ficha.definicionIndicador,
-                objetivoIndicador: response.ficha.objetivoIndicador,
-                justificacionIndicador: response.ficha.justificacionIndicador,
-                metodologiaCalculo: response.ficha.metodologiaCalculo,
-                formula: response.ficha.formula,
-                defConceptosInvol: response.ficha.defConceptosInvol,
-                idUnidadMedicion: response.ficha.idUnidadMedicion,
-                interpretacionIndicador: response.ficha.interpretacionIndicador,
-                idPeriodoRecDatos: response.ficha.idPeriodoRecDatos,
-                idPeriodoPubDatos: response.ficha.idPeriodoPubDatos,
-                idGerencia: response.ficha.idGerencia,
-                idSubTipoCobertura: response.ficha.idSubTipoCobertura,
-                fechaMaxMeta: moment(response.ficha.fechaMaxMeta || currentDate, dateFormat),
-                diasIncResult: response.ficha.diasIncResult,
-                idCategoria: response.ficha.idCategoria,
-                permiso: response.ficha.permiso,
-            });
+            // setCategoriaIndicador(response.categoriaIndicador);
+            // setEscalasMediciones(response.escalasMediciones);
+            // setGerencia(response.gerencia);
+            // setPeriodoPublicacionDatos(response.periodoPublicacionDatos);
+            // setPeriodoRecoleccionDatos(response.periodoRecoleccionDatos);
+            // setSubTipoCobertura(response.subTipoCobertura);
+            // setSubTipoIndicador(response.subTipoIndicador);
+            // setUnidadesMedicion(response.unidadesMedicion);
+            // formFicha.setFieldsValue({
+            //     idIndicador: response.ficha.idIndicador,
+            //     nbIndicador: response.ficha.nbIndicador,
+            //     operacionEstadistica: response.ficha.operacionEstadistica,
+            //     idSubTipoIndicador: response.ficha.idSubTipoIndicador,
+            //     idEscalaMedicion: response.ficha.idEscalaMedicion,
+            //     definicionIndicador: response.ficha.definicionIndicador,
+            //     objetivoIndicador: response.ficha.objetivoIndicador,
+            //     justificacionIndicador: response.ficha.justificacionIndicador,
+            //     metodologiaCalculo: response.ficha.metodologiaCalculo,
+            //     formula: response.ficha.formula,
+            //     defConceptosInvol: response.ficha.defConceptosInvol,
+            //     idUnidadMedicion: response.ficha.idUnidadMedicion,
+            //     interpretacionIndicador: response.ficha.interpretacionIndicador,
+            //     idPeriodoRecDatos: response.ficha.idPeriodoRecDatos,
+            //     idPeriodoPubDatos: response.ficha.idPeriodoPubDatos,
+            //     idGerencia: response.ficha.idGerencia,
+            //     idSubTipoCobertura: response.ficha.idSubTipoCobertura,
+            //     fechaMaxMeta: moment(response.ficha.fechaMaxMeta || currentDate, dateFormat),
+            //     diasIncResult: response.ficha.diasIncResult,
+            //     idCategoria: response.ficha.idCategoria,
+            //     permiso: response.ficha.permiso,
+            // });
             setLoading(false);
         } else {
             setLoading(false);
