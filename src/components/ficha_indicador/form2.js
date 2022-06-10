@@ -38,6 +38,8 @@ const FormFichaIndicadorTwo = (props) => {
     const [subTipoCobertura, setSubTipoCobertura] = useState([]);
     const [subTipoIndicador, setSubTipoIndicador] = useState([]);
     const [unidadesMedicion, setUnidadesMedicion] = useState([]);
+    const [unidadMedidaFinanciera, setUnidadMedidaFinanciera] = useState([]);
+    const [vicePresidencia, setVicePresidencia] = useState([]);
 
     const validations = {
         required: {
@@ -121,7 +123,7 @@ const FormFichaIndicadorTwo = (props) => {
             },
         });
 
-        if (response.estatus == 2) {
+        if (response.estatus == 1) {
             handleSetSubTipoIndicador(response.subTipoIndicador);
 
             setCategoriaIndicador(response.categoriaIndicador);
@@ -130,7 +132,8 @@ const FormFichaIndicadorTwo = (props) => {
             setPeriodoPublicacionDatos(response.periodoPublicacionDatos);
             setPeriodoRecoleccionDatos(response.periodoRecoleccionDatos);
             setSubTipoCobertura(response.subTipoCobertura);
-            // setSubTipoIndicador(response.subTipoIndicador);
+            setVicePresidencia(response.vicePresidencia);
+            setUnidadMedidaFinanciera(response.unidadMedidaFinanciera);
             setUnidadesMedicion(response.unidadesMedicion);
             formFicha.setFieldsValue({
                 idIndicador: response.ficha.idIndicador,
@@ -161,6 +164,38 @@ const FormFichaIndicadorTwo = (props) => {
         }
     };
 
+    const handleGuardarFicha = (values) => {
+        setLoading(true);
+
+        values.idSubTipoIndicador = values.idSubTipoIndicador[values.idSubTipoIndicador.length - 1];
+        values.idSubTipoCobertura = values.idSubTipoCobertura[values.idSubTipoCobertura.length - 1];
+        values.idIndicador = idFicha
+        console.log("values", values)
+
+        makeRequest({
+            path: "/indican/inclumodfichaindicador.php",
+            method: "POST",
+            body: values,
+        }).then((response) => {
+            if (response.estatus === 1) {
+                notification.success({
+                    message: response.mensaje,
+                    placement: "bottomRight",
+                });
+                setTimeout(() => {
+                    router.push("/ficha_indicador");
+                }, 1000);
+                setLoading(false);
+            } else {
+                notification.error({
+                    message: response.mensaje,
+                    placement: "bottomRight",
+                });
+                setLoading(false);
+            }
+        });
+    };
+
     useEffect(() => {
         handleGetData();
     }, [])
@@ -173,7 +208,7 @@ const FormFichaIndicadorTwo = (props) => {
                 initialValues={{
                     remember: true,
                 }}
-                // onFinish={handleGuardarFicha}
+                onFinish={handleGuardarFicha}
                 form={formFicha}
             >
                 <Row gutter={[24, 16]}>
@@ -198,12 +233,14 @@ const FormFichaIndicadorTwo = (props) => {
                             className={"m-0"}
                         >
                             <Select placeholder="Seleccione..." disabled={loading}>
-                                <Option
-                                    key={0}
-                                    value={0}
-                                >
-                                    {"dasdasd"}
-                                </Option>
+                                {vicePresidencia.length >= 1 && vicePresidencia.map((item, key) => (
+                                    <Option
+                                        key={key}
+                                        value={item.idVicePresidencia}
+                                    >
+                                        {item.nbVicepresidencia}
+                                    </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -272,7 +309,14 @@ const FormFichaIndicadorTwo = (props) => {
                             className={"m-0"}
                         >
                             <Select placeholder="Seleccione..." disabled={loading}>
-                                
+                                {unidadMedidaFinanciera.length >= 1 && unidadMedidaFinanciera.map((item, key) => (
+                                    <Option
+                                        key={key}
+                                        value={item.idUnidadMedicion}
+                                    >
+                                        {item.unidadMedicion}
+                                    </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -290,7 +334,7 @@ const FormFichaIndicadorTwo = (props) => {
                         <Form.Item
                             label={"Tipo de indicador"}
                             name={"idSubTipoIndicador"}
-                            rules={[validations.required]}
+                            // rules={[validations.required]}
                             className={"m-0"}
                         >
                             <Cascader options={subTipoIndicador} onChange={onChange} placeholder="Please select" />

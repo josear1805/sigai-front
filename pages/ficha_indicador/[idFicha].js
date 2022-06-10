@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { PageHeaderComponent } from "@components";
 import { Spin } from "antd";
 import FormFichaIndicador from "src/components/ficha_indicador/form";
+import FormFichaIndicadorTwo from "src/components/ficha_indicador/form2";
 
 const EditarFicha = () => {
     const router = useRouter();
@@ -30,7 +31,8 @@ const EditarFicha = () => {
             />
 
             <Spin tip="Cargando datos..." spinning={loading}>
-                <FormFichaIndicador idFicha={idFicha} loading={loading} setLoading={setLoading}/>
+                <FormFichaIndicadorTwo idFicha={idFicha} loading={loading} setLoading={setLoading}/>
+                {/* <FormFichaIndicador idFicha={idFicha} loading={loading} setLoading={setLoading}/> */}
             </Spin>
         </LayoutApp>
     );
