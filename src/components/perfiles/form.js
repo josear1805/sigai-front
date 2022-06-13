@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { ButtonComponent } from "@components";
-import { Card, Checkbox, Col, Form, Input, notification, Row } from "antd";
+import { Card, Checkbox, Col, Form, Input, notification, Row, Select } from "antd";
 import { makeRequest } from "src/helpers";
 import { useRouter } from "next/router";
+
+const { Option } = Select;
 
 const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
     const router = useRouter();
@@ -16,6 +18,12 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
     const [initialValues, setInitialValues] = useState({});
     const [listaMenu, setListaMenu] = useState([]);
     const [listaIndicadores, setListaIndicadores] = useState([]);
+    const [listaIndicadoresMostrar, setListaIndicadoresMostrar] = useState([]);
+    const [listaUnidadOrganizativa, setListaUnidadOrganizativa] = useState([]);
+    const [unidadOrganizativa, setUnidadOrganizativa] = useState(0);
+    const [listaGerencias, setListaGerencia] = useState([]);
+    const [listaGerenciasMostrar, setListaGerenciaMostrar] = useState([]);
+    const [gerencia, setGerencia] = useState(0);
     const [listaVistas, setListaVistas] = useState([]);
 
     const validations = {
@@ -40,6 +48,9 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
             setListaMenu(response.menu);
             setListaVistas(response.vistas);
             setListaIndicadores(response.indicadores);
+            setListaIndicadoresMostrar(response.indicadores);
+            setListaUnidadOrganizativa(response.unidadOrganizativa);
+            setListaGerencia(response.gerencia);
 
             const values = {
                 nombre: response.nombrePerfil,
@@ -218,6 +229,25 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
         }
     };
 
+    const handleChangueVicePresidencia = (id) => {
+        setUnidadOrganizativa(id);
+        setGerencia(0);
+        let auxListaGerencias = listaGerencias.filter((item) => item.idVicePresidencia === id);
+        setListaGerenciaMostrar(id === 0? listaGerencias: auxListaGerencias);
+        let auxListaIndicadores = listaIndicadores.filter((item) => item.idUnidadOrganizativa === id);
+        setListaIndicadoresMostrar(id === 0? listaIndicadores: auxListaIndicadores);
+    }
+
+    const handleChangueGerencia = (id) => {
+        setGerencia(id);
+        let auxListaIndicadores = listaIndicadores.filter((item) => item.idGerencia === id);
+        if (id >= 1) {
+            setListaIndicadoresMostrar(auxListaIndicadores);
+        } else {
+            handleChangueVicePresidencia(unidadOrganizativa);
+        }
+    }
+
     useEffect(async () => {
         handleGetDatosPerfil();
     }, []);
@@ -315,9 +345,52 @@ const FormPerfiles = ({ idPerfil, loading, setLoading }) => {
 
             <Card className="mt-4">
                 <label className="label-card">Indicadores Asociados</label>
+                <Row gutter={[24, 24]} justify="end">
+                    <Col xs={24} md={12} lg={6} >
+                        <label>Unidad organizativa</label>
+                        <Select
+                            value={unidadOrganizativa}
+                            onChange={handleChangueVicePresidencia}
+                            showSearch
+                            placeholder="Seleccione"
+                            optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                            style={{ width: "100%" }}
+                        >
+                            <Option value={0} key="vp-0">TODAS</Option>
+                            {listaUnidadOrganizativa && listaUnidadOrganizativa.map((item, key) => (
+                                <Option value={item.idVicePresidencia} key={key}>{item.nbVicepresidencia}</Option>
+                            ))}
+                        </Select>
+                    </Col>
+
+                    <Col xs={24} md={12} lg={6} >
+                        <label>Gerencia</label>
+                        <Select
+                            value={gerencia}
+                            style={{ width: "100%" }}
+                            disabled={unidadOrganizativa === 0}
+                            onChange={handleChangueGerencia}
+                            showSearch
+                            placeholder="Seleccione"
+                            optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
+                            <Option value={0} key="ge-0">TODAS</Option>
+                            {listaGerenciasMostrar && listaGerenciasMostrar.map((item, key) => (
+                                <Option value={item.idGerencia} key={key}>{item.nbGerencia}</Option>
+                            ))}
+                        </Select>
+                    </Col>
+
+                </Row>
                 <Row className="overflow-200">
-                    {listaIndicadores.length >= 1 &&
-                        listaIndicadores.map((item, index) => (
+                    {listaIndicadoresMostrar.length >= 1 &&
+                        listaIndicadoresMostrar.map((item, index) => (
                             <Col span={24}  key={index}>
                                 <Checkbox
                                     checked={item.activo}
